@@ -1,5 +1,4 @@
 import { Pool } from "pg";
-import "server-only"; // Ensures this code only runs on the server.
 
 const databaseUrl = process.env.DATABASE_URL;
 
