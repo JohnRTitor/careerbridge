@@ -2,28 +2,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  Briefcase,
-  Menu,
-  X,
-  Search,
-  MapPin,
-  Clock,
-  Bookmark,
-  Code2,
-  PenTool,
-  Megaphone,
-  LineChart,
-  Stethoscope,
-  GraduationCap,
-  Building2,
-  HeadphonesIcon,
-  UserPlus,
-  Send,
-  ArrowUpRight,
-  AlertCircle,
-  CheckCircle2,
-} from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BriefcaseIcon, MenuIcon, Cancel01Icon, SearchIcon, Location01Icon, ClockIcon, BookmarkIcon, CodeIcon, PenToolIcon, MegaphoneIcon, ChartBarLineIcon, StethoscopeIcon, GraduationCapIcon, Building01Icon, HeadphonesIcon, UserAdd01Icon, SentIcon, ArrowUpRightIcon, Alert01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,13 +24,13 @@ const popularSearches = [
 ];
 
 const categories = [
-  { name: "Engineering", jobs: 1240, icon: Code2 },
-  { name: "Design", jobs: 680, icon: PenTool },
-  { name: "Marketing", jobs: 540, icon: Megaphone },
-  { name: "Finance", jobs: 420, icon: LineChart },
-  { name: "Healthcare", jobs: 910, icon: Stethoscope },
-  { name: "Education", jobs: 350, icon: GraduationCap },
-  { name: "Real Estate", jobs: 210, icon: Building2 },
+  { name: "Engineering", jobs: 1240, icon: CodeIcon },
+  { name: "Design", jobs: 680, icon: PenToolIcon },
+  { name: "Marketing", jobs: 540, icon: MegaphoneIcon },
+  { name: "Finance", jobs: 420, icon: ChartBarLineIcon },
+  { name: "Healthcare", jobs: 910, icon: StethoscopeIcon },
+  { name: "Education", jobs: 350, icon: GraduationCapIcon },
+  { name: "Real Estate", jobs: 210, icon: Building01Icon },
   { name: "Support", jobs: 470, icon: HeadphonesIcon },
 ];
 
@@ -130,19 +110,19 @@ const initialJobs: Job[] = [
 
 const steps = [
   {
-    icon: UserPlus,
+    icon: UserAdd01Icon,
     title: "Create your profile",
     description:
       "Sign up and build a standout profile that showcases your skills and experience.",
   },
   {
-    icon: Search,
+    icon: SearchIcon,
     title: "Discover matches",
     description:
       "Browse curated roles and get smart recommendations tailored to your goals.",
   },
   {
-    icon: Send,
+    icon: SentIcon,
     title: "Apply with ease",
     description:
       "Apply in a single click and track every application from one dashboard.",
@@ -292,7 +272,7 @@ export default function Page() {
             aria-label="Toggle menu"
             aria-expanded={open}
           >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            {open ? <HugeiconsIcon icon={Cancel01Icon} className="size-5" /> : <HugeiconsIcon icon={MenuIcon} className="size-5" />}
           </button>
         </div>
 
@@ -349,7 +329,7 @@ export default function Page() {
               {/* Functional Search Container */}
               <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
-                  <Search className="size-5 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon icon={SearchIcon} className="size-5 shrink-0 text-muted-foreground" />
                   <Input
                     placeholder="Job title or keyword"
                     value={searchTitle}
@@ -359,7 +339,7 @@ export default function Page() {
                 </div>
                 <div className="hidden h-8 w-px bg-border sm:block" />
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
-                  <MapPin className="size-5 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon icon={Location01Icon} className="size-5 shrink-0 text-muted-foreground" />
                   <Input
                     placeholder="Location"
                     value={searchLocation}
@@ -368,7 +348,7 @@ export default function Page() {
                   />
                 </div>
                 <Button size="lg" className="gap-2" onClick={handleSearch}>
-                  <Briefcase className="size-4" />
+                  <HugeiconsIcon icon={BriefcaseIcon} className="size-4" />
                   Search
                 </Button>
               </div>
@@ -384,9 +364,9 @@ export default function Page() {
                     }`}
                   >
                     {searchMessage.type === "success" ? (
-                      <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                      <HugeiconsIcon icon={Tick01Icon} className="size-4 text-emerald-600 shrink-0" />
                     ) : (
-                      <AlertCircle className="size-4 text-rose-600 shrink-0" />
+                      <HugeiconsIcon icon={Alert01Icon} className="size-4 text-rose-600 shrink-0" />
                     )}
                     <span>{searchMessage.text}</span>
                     <button
@@ -446,7 +426,7 @@ export default function Page() {
               <a key={category.name} href="#jobs">
                 <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md">
                   <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    <category.icon className="size-6" />
+                    <HugeiconsIcon icon={category.icon} className="size-6" />
                   </span>
                   <div>
                     <h3 className="font-semibold">{category.name}</h3>
@@ -500,7 +480,7 @@ export default function Page() {
                           className="text-muted-foreground transition-colors hover:text-primary"
                           aria-label="Save job"
                         >
-                          <Bookmark className="size-5" />
+                          <HugeiconsIcon icon={BookmarkIcon} className="size-5" />
                         </button>
                       </div>
 
@@ -515,11 +495,11 @@ export default function Page() {
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <MapPin className="size-4" />
+                          <HugeiconsIcon icon={Location01Icon} className="size-4" />
                           {job.location}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Clock className="size-4" />
+                          <HugeiconsIcon icon={ClockIcon} className="size-4" />
                           {job.posted}
                         </span>
                       </div>
@@ -554,7 +534,7 @@ export default function Page() {
             ) : (
               /* No Results State Layout */
               <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
-                <AlertCircle className="size-12 text-muted-foreground stroke-1 mb-4" />
+                <HugeiconsIcon icon={Alert01Icon} className="size-12 text-muted-foreground stroke-1 mb-4" />
                 <h3 className="text-lg font-semibold text-foreground">
                   No matches listed
                 </h3>
@@ -596,7 +576,7 @@ export default function Page() {
                 className="relative flex flex-col items-center text-center"
               >
                 <span className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-                  <step.icon className="size-7" />
+                  <HugeiconsIcon icon={step.icon} className="size-7" />
                 </span>
                 <span className="mt-4 font-mono text-sm font-semibold text-primary">
                   Step {i + 1}
@@ -652,7 +632,7 @@ export default function Page() {
                     </p>
                   </div>
                   <div className="flex flex-col items-end">
-                    <ArrowUpRight className="size-5 text-muted-foreground transition-colors group-hover:text-primary" />
+                    <HugeiconsIcon icon={ArrowUpRightIcon} className="size-5 text-muted-foreground transition-colors group-hover:text-primary" />
                     <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
                       {company.openings} jobs
                     </span>

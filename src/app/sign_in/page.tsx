@@ -1,15 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  Briefcase,
-  Mail,
-  Lock,
-  ArrowRight,
-  ShieldCheck,
-  Building2,
-  User,
-} from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BriefcaseIcon, MailIcon, LockIcon, ArrowRightIcon, Shield02Icon, Building01Icon, UserIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -72,7 +65,7 @@ export default function SignInPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <User className="size-3.5" /> Candidate
+              <HugeiconsIcon icon={UserIcon} className="size-3.5" /> Candidate
             </button>
             <button
               onClick={() => setRole("recruiter")}
@@ -82,7 +75,7 @@ export default function SignInPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Building2 className="size-3.5" /> Employer
+              <HugeiconsIcon icon={Building01Icon} className="size-3.5" /> Employer
             </button>
           </div>
 
@@ -94,7 +87,7 @@ export default function SignInPage() {
                   Email Address
                 </label>
                 <div className="flex items-center gap-2 rounded-xl border border-border bg-slate-50/50 px-3 py-1">
-                  <Mail className="size-4 text-muted-foreground shrink-0" />
+                  <HugeiconsIcon icon={MailIcon} className="size-4 text-muted-foreground shrink-0" />
                   <Input
                     type="email"
                     required
@@ -124,7 +117,7 @@ export default function SignInPage() {
                   </a>
                 </div>
                 <div className="flex items-center gap-2 rounded-xl border border-border bg-slate-50/50 px-3 py-1">
-                  <Lock className="size-4 text-muted-foreground shrink-0" />
+                  <HugeiconsIcon icon={LockIcon} className="size-4 text-muted-foreground shrink-0" />
                   <Input
                     type="password"
                     required
@@ -139,7 +132,7 @@ export default function SignInPage() {
               {/* Submit Button Trigger */}
               <Button type="submit" className="w-full gap-2 h-11 mt-2 text-sm">
                 Sign In as {role === "candidate" ? "Candidate" : "Employer"}{" "}
-                <ArrowRight className="size-4" />
+                <HugeiconsIcon icon={ArrowRightIcon} className="size-4" />
               </Button>
             </form>
 
@@ -159,7 +152,7 @@ export default function SignInPage() {
 
         {/* Security context disclaimer footer */}
         <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-          <ShieldCheck className="size-3.5 text-emerald-600" />
+          <HugeiconsIcon icon={Shield02Icon} className="size-3.5 text-emerald-600" />
           <span>SSL Secure 256-bit encrypted dynamic state parsing</span>
         </div>
       </div>

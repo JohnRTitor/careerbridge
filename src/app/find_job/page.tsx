@@ -1,21 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  Briefcase,
-  Menu,
-  X,
-  Search,
-  MapPin,
-  Clock,
-  Bookmark,
-  Building2,
-  ArrowUpRight,
-  Sparkles,
-  Filter,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BriefcaseIcon, MenuIcon, Cancel01Icon, SearchIcon, Location01Icon, ClockIcon, BookmarkIcon, Building01Icon, ArrowUpRightIcon, SparklesIcon, FilterIcon, Tick01Icon, Alert01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -222,7 +209,7 @@ export default function FindJobsPage() {
             className="flex size-10 items-center justify-center rounded-lg text-foreground md:hidden"
             onClick={() => setOpen((v) => !v)}
           >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            {open ? <HugeiconsIcon icon={Cancel01Icon} className="size-5" /> : <HugeiconsIcon icon={MenuIcon} className="size-5" />}
           </button>
         </div>
       </header>
@@ -251,7 +238,7 @@ export default function FindJobsPage() {
               {/* Functional Filtering Module */}
               <div className="mx-auto mt-8 flex max-w-3xl flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-2">
-                  <Search className="size-4 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon icon={SearchIcon} className="size-4 shrink-0 text-muted-foreground" />
                   <Input
                     placeholder="Keywords or tech stack..."
                     value={searchTitle}
@@ -261,7 +248,7 @@ export default function FindJobsPage() {
                 </div>
                 <div className="hidden h-6 w-px bg-border sm:block" />
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-2">
-                  <MapPin className="size-4 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon icon={Location01Icon} className="size-4 shrink-0 text-muted-foreground" />
                   <Input
                     placeholder="City or Remote..."
                     value={searchLocation}
@@ -274,7 +261,7 @@ export default function FindJobsPage() {
                   className="gap-1.5 h-10 px-4"
                   onClick={() => handleSearchFilter()}
                 >
-                  <Filter className="size-4" /> Filter Roles
+                  <HugeiconsIcon icon={FilterIcon} className="size-4" /> Filter Roles
                 </Button>
               </div>
 
@@ -285,9 +272,9 @@ export default function FindJobsPage() {
                     className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium border shadow-sm ${searchMessage.type === "success" ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-rose-50 text-rose-800 border-rose-200"}`}
                   >
                     {searchMessage.type === "success" ? (
-                      <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                      <HugeiconsIcon icon={Tick01Icon} className="size-3.5 text-emerald-600 shrink-0" />
                     ) : (
-                      <AlertCircle className="size-3.5 text-rose-600 shrink-0" />
+                      <HugeiconsIcon icon={Alert01Icon} className="size-3.5 text-rose-600 shrink-0" />
                     )}
                     <span>{searchMessage.text}</span>
                     <button
@@ -307,7 +294,7 @@ export default function FindJobsPage() {
         <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <div className="flex items-center gap-2 mb-6">
             <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Sparkles className="size-4" />
+              <HugeiconsIcon icon={SparklesIcon} className="size-4" />
             </span>
             <h2 className="text-xl font-bold tracking-tight text-foreground">
               Featured Inbound Campaigns
@@ -352,7 +339,7 @@ export default function FindJobsPage() {
                         handleSearchFilter();
                       }}
                     >
-                      Explore <ArrowUpRight className="size-3" />
+                      Explore <HugeiconsIcon icon={ArrowUpRightIcon} className="size-3" />
                     </Button>
                   </div>
                 </div>
@@ -397,24 +384,24 @@ export default function FindJobsPage() {
                           {job.logo}
                         </span>
                         <button className="text-muted-foreground hover:text-primary transition-colors">
-                          <Bookmark className="size-4.5" />
+                          <HugeiconsIcon icon={BookmarkIcon} className="size-4.5" />
                         </button>
                       </div>
                       <h3 className="font-semibold text-sm leading-snug mt-3">
                         {job.title}
                       </h3>
                       <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                        <Building2 className="size-3" /> {job.company}
+                        <HugeiconsIcon icon={Building01Icon} className="size-3" /> {job.company}
                       </p>
                     </div>
 
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <MapPin className="size-3" /> {job.location}
+                          <HugeiconsIcon icon={Location01Icon} className="size-3" /> {job.location}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Clock className="size-3" /> {job.posted}
+                          <HugeiconsIcon icon={ClockIcon} className="size-3" /> {job.posted}
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-1">
@@ -448,7 +435,7 @@ export default function FindJobsPage() {
             </div>
           ) : (
             <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-12 text-center">
-              <AlertCircle className="size-10 text-muted-foreground stroke-1 mb-3" />
+              <HugeiconsIcon icon={Alert01Icon} className="size-10 text-muted-foreground stroke-1 mb-3" />
               <h3 className="text-sm font-semibold text-foreground">
                 No vacancies correspond to these filters
               </h3>

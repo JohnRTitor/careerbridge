@@ -1,22 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  Briefcase,
-  Menu,
-  X,
-  Users,
-  Plus,
-  Clock,
-  Building2,
-  Calendar,
-  CheckCircle2,
-  UserCheck,
-  MoreVertical,
-  ChevronRight,
-  MapPin,
-  ArrowUpRight,
-} from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BriefcaseIcon, MenuIcon, Cancel01Icon, UserGroupIcon, PlusSignIcon, ClockIcon, Building01Icon, CalendarIcon, Tick01Icon, UserCheckIcon, MoreVerticalIcon, ArrowRight01Icon, Location01Icon, ArrowUpRightIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -79,25 +65,25 @@ const recruiterStats = [
   {
     label: "Active Postings",
     value: "6",
-    icon: Briefcase,
+    icon: BriefcaseIcon,
     color: "text-primary",
   },
   {
     label: "Total Applicants",
     value: "184",
-    icon: Users,
+    icon: UserGroupIcon,
     color: "text-indigo-600",
   },
   {
     label: "Interviews Booked",
     value: "12",
-    icon: Calendar,
+    icon: CalendarIcon,
     color: "text-amber-600",
   },
   {
     label: "Offers Extended",
     value: "2",
-    icon: UserCheck,
+    icon: UserCheckIcon,
     color: "text-emerald-600",
   },
 ];
@@ -154,9 +140,9 @@ export default function RecruiterDashboard() {
             onClick={() => setMobileMenuOpen((v) => !v)}
           >
             {mobileMenuOpen ? (
-              <X className="size-5" />
+              <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
             ) : (
-              <Menu className="size-5" />
+              <HugeiconsIcon icon={MenuIcon} className="size-5" />
             )}
           </button>
         </div>
@@ -183,7 +169,7 @@ export default function RecruiterDashboard() {
               </p>
             </div>
             <Button className="gap-2 shrink-0">
-              <Plus className="size-4" /> Create New Posting
+              <HugeiconsIcon icon={PlusSignIcon} className="size-4" /> Create New Posting
             </Button>
           </div>
         </div>
@@ -207,7 +193,7 @@ export default function RecruiterDashboard() {
                 <div
                   className={`size-12 rounded-xl bg-[#f0f7ff] flex items-center justify-center ${stat.color}`}
                 >
-                  <stat.icon className="size-6" />
+                  <HugeiconsIcon icon={stat.icon} className="size-6" />
                 </div>
               </CardContent>
             </Card>
@@ -260,7 +246,7 @@ export default function RecruiterDashboard() {
 
                     <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 mt-3 sm:mt-0">
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Clock className="size-3.5" />
+                        <HugeiconsIcon icon={ClockIcon} className="size-3.5" />
                         <span>{candidate.appliedTime}</span>
                       </div>
 
@@ -310,7 +296,7 @@ export default function RecruiterDashboard() {
                       Remote · 42 Applicants
                     </p>
                   </div>
-                  <ChevronRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
                 <div className="p-4 flex items-center justify-between hover:bg-slate-50/50 cursor-pointer group">
                   <div className="min-w-0">
@@ -321,7 +307,7 @@ export default function RecruiterDashboard() {
                       San Francisco · 18 Applicants
                     </p>
                   </div>
-                  <ChevronRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
                 <div className="p-4 flex items-center justify-between hover:bg-slate-50/50 cursor-pointer group">
                   <div className="min-w-0">
@@ -332,7 +318,7 @@ export default function RecruiterDashboard() {
                       Hybrid · 29 Applicants
                     </p>
                   </div>
-                  <ChevronRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
               </CardContent>
             </Card>
@@ -340,7 +326,7 @@ export default function RecruiterDashboard() {
             {/* Quick Sourcing Advice Block */}
             <Card className="bg-gradient-to-br from-[#f0f7ff] to-white border border-border p-5">
               <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-primary" /> Core
+                <HugeiconsIcon icon={Tick01Icon} className="size-4 text-primary" /> Core
                 Recruitment Tips
               </h3>
               <ul className="mt-3 space-y-2.5 text-xs text-muted-foreground">

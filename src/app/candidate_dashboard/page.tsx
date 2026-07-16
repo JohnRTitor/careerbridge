@@ -1,22 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  Briefcase,
-  Menu,
-  X,
-  MapPin,
-  Clock,
-  Bookmark,
-  Building2,
-  FileText,
-  Calendar,
-  CheckCircle2,
-  AlertCircle,
-  TrendingUp,
-  User,
-  LogOut,
-} from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BriefcaseIcon, MenuIcon, Cancel01Icon, Location01Icon, ClockIcon, BookmarkIcon, Building01Icon, File01Icon, CalendarIcon, Tick01Icon, Alert01Icon, TrendingUp, UserIcon, Logout01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -73,25 +59,25 @@ const candidateStats = [
   {
     label: "Total Applications",
     value: "14",
-    icon: Briefcase,
+    icon: BriefcaseIcon,
     color: "text-primary",
   },
   {
     label: "Interviews Slotted",
     value: "3",
-    icon: Calendar,
+    icon: CalendarIcon,
     color: "text-amber-600",
   },
   {
     label: "Job Offers",
     value: "1",
-    icon: CheckCircle2,
+    icon: Tick01Icon,
     color: "text-emerald-600",
   },
   {
     label: "Saved Openings",
     value: "8",
-    icon: Bookmark,
+    icon: BookmarkIcon,
     color: "text-indigo-600",
   },
 ];
@@ -179,7 +165,7 @@ export default function CandidateDashboard() {
               <span>Jane Doe</span>
             </div>
             <Button variant="ghost" size="icon">
-              <LogOut className="size-4" />
+              <HugeiconsIcon icon={Logout01Icon} className="size-4" />
             </Button>
           </div>
           <button
@@ -187,9 +173,9 @@ export default function CandidateDashboard() {
             onClick={() => setMobileMenuOpen((v) => !v)}
           >
             {mobileMenuOpen ? (
-              <X className="size-5" />
+              <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
             ) : (
-              <Menu className="size-5" />
+              <HugeiconsIcon icon={MenuIcon} className="size-5" />
             )}
           </button>
         </div>
@@ -216,7 +202,7 @@ export default function CandidateDashboard() {
               </p>
             </div>
             <Button className="gap-2 shrink-0">
-              <FileText className="size-4" /> Update Resume
+              <HugeiconsIcon icon={File01Icon} className="size-4" /> Update Resume
             </Button>
           </div>
         </div>
@@ -240,7 +226,7 @@ export default function CandidateDashboard() {
                 <div
                   className={`size-12 rounded-xl bg-[#f0f7ff] flex items-center justify-center ${stat.color}`}
                 >
-                  <stat.icon className="size-6" />
+                  <HugeiconsIcon icon={stat.icon} className="size-6" />
                 </div>
               </CardContent>
             </Card>
@@ -275,12 +261,12 @@ export default function CandidateDashboard() {
                           {app.title}
                         </h3>
                         <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                          <Building2 className="size-3.5" /> {app.company} ·{" "}
+                          <HugeiconsIcon icon={Building01Icon} className="size-3.5" /> {app.company} ·{" "}
                           {app.location}
                         </p>
                         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mt-3">
                           <span className="flex items-center gap-1">
-                            <Clock className="size-3.5" /> {app.appliedDate}
+                            <HugeiconsIcon icon={ClockIcon} className="size-3.5" /> {app.appliedDate}
                           </span>
                           <span>•</span>
                           <span>{app.salary}</span>
@@ -315,7 +301,7 @@ export default function CandidateDashboard() {
             <Card className="bg-white border border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-bold flex items-center gap-2">
-                  <Calendar className="size-4 text-primary" /> Upcoming
+                  <HugeiconsIcon icon={CalendarIcon} className="size-4 text-primary" /> Upcoming
                   Interviews
                 </CardTitle>
               </CardHeader>
@@ -354,7 +340,7 @@ export default function CandidateDashboard() {
             <Card className="bg-white border border-border overflow-hidden">
               <CardContent className="p-6 bg-gradient-to-b from-[#f0f7ff] to-white">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
-                  <TrendingUp className="size-4" /> Profile Discovery
+                  <HugeiconsIcon icon={TrendingUp} className="size-4" /> Profile Discovery
                 </div>
                 <h3 className="font-bold text-lg mt-2">
                   Appearing in Searches

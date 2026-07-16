@@ -1,16 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  Briefcase,
-  Mail,
-  Lock,
-  User,
-  Building2,
-  ArrowRight,
-  FileCheck2,
-  CheckCircle2,
-} from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BriefcaseIcon, MailIcon, LockIcon, UserIcon, Building01Icon, ArrowRightIcon, File02Icon, Tick01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -73,7 +65,7 @@ export default function SignUpPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <User className="size-3.5" /> Candidate
+              <HugeiconsIcon icon={UserIcon} className="size-3.5" /> Candidate
             </button>
             <button
               onClick={() => setRole("recruiter")}
@@ -83,7 +75,7 @@ export default function SignUpPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Building2 className="size-3.5" /> Employer / Partner
+              <HugeiconsIcon icon={Building01Icon} className="size-3.5" /> Employer / Partner
             </button>
           </div>
 
@@ -96,7 +88,7 @@ export default function SignUpPage() {
                     Full Name
                   </label>
                   <div className="flex items-center gap-2 rounded-xl border border-border bg-slate-50/50 px-3 py-1">
-                    <User className="size-4 text-muted-foreground shrink-0" />
+                    <HugeiconsIcon icon={UserIcon} className="size-4 text-muted-foreground shrink-0" />
                     <Input
                       type="text"
                       required
@@ -113,7 +105,7 @@ export default function SignUpPage() {
                     Company Entity Name
                   </label>
                   <div className="flex items-center gap-2 rounded-xl border border-border bg-slate-50/50 px-3 py-1">
-                    <Building2 className="size-4 text-muted-foreground shrink-0" />
+                    <HugeiconsIcon icon={Building01Icon} className="size-4 text-muted-foreground shrink-0" />
                     <Input
                       type="text"
                       required
@@ -132,7 +124,7 @@ export default function SignUpPage() {
                   Work or Personal Email
                 </label>
                 <div className="flex items-center gap-2 rounded-xl border border-border bg-slate-50/50 px-3 py-1">
-                  <Mail className="size-4 text-muted-foreground shrink-0" />
+                  <HugeiconsIcon icon={MailIcon} className="size-4 text-muted-foreground shrink-0" />
                   <Input
                     type="email"
                     required
@@ -150,7 +142,7 @@ export default function SignUpPage() {
                   Choose Password
                 </label>
                 <div className="flex items-center gap-2 rounded-xl border border-border bg-slate-50/50 px-3 py-1">
-                  <Lock className="size-4 text-muted-foreground shrink-0" />
+                  <HugeiconsIcon icon={LockIcon} className="size-4 text-muted-foreground shrink-0" />
                   <Input
                     type="password"
                     required
@@ -163,7 +155,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="flex items-start gap-2 pt-1 text-pretty text-[11px] leading-relaxed text-muted-foreground">
-                <CheckCircle2 className="size-3.5 text-primary shrink-0 mt-0.5" />
+                <HugeiconsIcon icon={Tick01Icon} className="size-3.5 text-primary shrink-0 mt-0.5" />
                 <span>
                   By checking setup parameters, you agree to the default Terms
                   of System Operation and Automated Data Policies.
@@ -172,7 +164,7 @@ export default function SignUpPage() {
 
               {/* Submission Button Pipeline */}
               <Button type="submit" className="w-full gap-2 h-11 mt-2 text-sm">
-                Get Started Now <ArrowRight className="size-4" />
+                Get Started Now <HugeiconsIcon icon={ArrowRightIcon} className="size-4" />
               </Button>
             </form>
 
