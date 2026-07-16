@@ -1,8 +1,7 @@
 
 CREATE TYPE visibility AS ENUM (
   'public',
-  'private',
-  'connections_only'
+  'private'
 );
 
 CREATE TYPE job_type AS ENUM (
@@ -25,12 +24,6 @@ CREATE TYPE application_status AS ENUM (
   'shortlisted',
   'rejected',
   'hired'
-);
-
-CREATE TYPE connection_status AS ENUM (
-  'pending',
-  'accepted',
-  'declined'
 );
 
 CREATE TABLE "user" (
@@ -191,78 +184,6 @@ CREATE TABLE applications (
   applied_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP NOT NULL DEFAULT now(),
   UNIQUE(job_id, candidate_id)
-);
-
--- ==========================================
--- Professional Networking
--- ==========================================
-
-CREATE TABLE connections (
-  requester_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  recipient_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  status connection_status NOT NULL DEFAULT 'pending',
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP NOT NULL DEFAULT now(),
-  PRIMARY KEY (requester_id, recipient_id)
-);
-
-CREATE TABLE user_skills (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  skill_name TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  UNIQUE(user_id, skill_name)
-);
-
-CREATE TABLE endorsements (
-  skill_id UUID NOT NULL REFERENCES user_skills(id) ON DELETE CASCADE,
-  endorser_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  PRIMARY KEY (skill_id, endorser_id)
-);
-
-CREATE TABLE recommendations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  author_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  recipient_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP NOT NULL DEFAULT now()
-);
-
--- ==========================================
--- Messaging System
--- ==========================================
-
-CREATE TABLE conversations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP NOT NULL DEFAULT now()
-);
-
-CREATE TABLE conversation_participants (
-  conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-  user_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  joined_at TIMESTAMP NOT NULL DEFAULT now(),
-  PRIMARY KEY (conversation_id, user_id)
-);
-
-CREATE TABLE messages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-  sender_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  content TEXT,
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP NOT NULL DEFAULT now()
-);
-
-CREATE TABLE message_attachments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  message_id UUID NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
-  file_url TEXT NOT NULL,
-  file_type TEXT,
-  file_name TEXT,
-  created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
 -- ==========================================

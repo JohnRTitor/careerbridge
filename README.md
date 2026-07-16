@@ -1,6 +1,6 @@
-# CareerBridge - Job Portal and Professional Networking Platform
+# CareerBridge - Job Portal Platform
 
-CareerBridge is a unified platform designed for professional networking, job discovery, recruitment management, employer branding, and career development. It connects job seekers with recruiters while providing robust tools for building professional profiles, discovering jobs, tracking applications, and fostering professional relationships.
+CareerBridge is a unified platform designed for job discovery, recruitment management, employer branding, and career development. It connects job seekers with recruiters while providing robust tools for building professional profiles, discovering jobs, and tracking applications.
 
 ## Tech Stack
 
@@ -81,17 +81,6 @@ This project is built using modern web technologies:
 - [ ] Implement candidate review, filtering, and shortlisting.
 - [ ] Add recruitment analytics.
 
-### Professional Networking (Optional/Phase 2)
-
-- [ ] Implement connection requests and relationship management.
-- [ ] Build user follow/unfollow functionality for companies.
-- [ ] Add professional recommendations and skill endorsements.
-
-### Messaging System (Optional/Phase 2)
-
-- [ ] Develop real-time direct messaging between candidates and recruiters.
-- [ ] Implement file attachment support in messages.
-
 ### Administration & Governance
 
 - [ ] Build System Admin dashboard for user management.
@@ -133,21 +122,6 @@ This project is built using modern web technologies:
 - [ ] `GET /api/recruiters/jobs/:id/applicants` - Get applicants for a job
 - [ ] `PUT /api/recruiters/applications/:id/status` - Update applicant status (shortlist, reject, hire)
 - [ ] `GET /api/recruiters/analytics` - Get recruitment analytics dashboard data
-
-### Professional Networking
-- [ ] `GET /api/network/connections` - Get user connections
-- [ ] `POST /api/network/connections/request` - Send connection request
-- [ ] `PUT /api/network/connections/request/:id` - Accept/Decline connection request
-- [ ] `POST /api/network/companies/:id/follow` - Follow a company
-- [ ] `DELETE /api/network/companies/:id/follow` - Unfollow a company
-- [ ] `POST /api/network/users/:id/endorse` - Endorse a user's skill
-- [ ] `POST /api/network/users/:id/recommend` - Write a recommendation for a user
-
-### Messaging System
-- [ ] `GET /api/messages/conversations` - List all conversations
-- [ ] `GET /api/messages/conversations/:id` - Get messages in a conversation
-- [ ] `POST /api/messages/conversations/:id` - Send a message
-- [ ] `POST /api/messages/attachments` - Upload file attachment for a message
 
 ### Administration & Governance
 - [ ] `GET /api/admin/users` - List all users (with filtering)
