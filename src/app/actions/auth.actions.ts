@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth/auth";
-import { updateUserRole } from "@/server/repositories/user.repository";
+import { updateUserRole } from "@/server/modules/user/user.service";
 import { headers } from "next/headers";
 import { LoginInput, RegisterInput } from "@/lib/zod-schemas";
 
@@ -21,8 +21,9 @@ export async function loginAction(data: LoginInput) {
     }
 
     return { success: true, user: response.user };
-  } catch (error: any) {
-    return { error: error.message || "An error occurred during login" };
+  } catch (error: unknown) {
+    const err = error as Error;
+    return { error: err.message || "An error occurred during login" };
   }
 }
 
@@ -45,7 +46,8 @@ export async function registerAction(data: RegisterInput) {
     const updatedUser = await updateUserRole(response.user.id, data.accountType);
 
     return { success: true, user: updatedUser };
-  } catch (error: any) {
-    return { error: error.message || "An error occurred during registration" };
+  } catch (error: unknown) {
+    const err = error as Error;
+    return { error: err.message || "An error occurred during registration" };
   }
 }

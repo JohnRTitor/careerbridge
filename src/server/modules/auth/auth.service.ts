@@ -1,5 +1,5 @@
-import { auth } from "../../auth/auth";
-import { updateUserRole } from "../repositories/user.repository";
+import { auth } from "../../../auth/auth";
+import { updateUserRole } from "../user/user.service";
 
 export async function registerNewUser(
   name: string,
@@ -27,3 +27,6 @@ export async function registerNewUser(
     user: updatedUser,
   };
 }
+
+// Better auth manages auth queries directly via the database pool adapter.
+// We can place manual authentication/session SQL queries here if needed outside of better-auth.

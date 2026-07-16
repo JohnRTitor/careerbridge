@@ -1,4 +1,4 @@
-import { pool } from "../db/pool";
+import { pool } from "../../db/pool";
 
 export async function getJobs() {
   const result = await pool.query(`SELECT * FROM jobs ORDER BY title ASC`);
