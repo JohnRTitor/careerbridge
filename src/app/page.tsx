@@ -1,65 +1,756 @@
+// app/page.tsx
+"use client";
 import Image from "next/image";
+import { useState } from "react";
+import {
+  Briefcase,
+  Menu,
+  X,
+  Search,
+  MapPin,
+  Clock,
+  Bookmark,
+  Code2,
+  PenTool,
+  Megaphone,
+  LineChart,
+  Stethoscope,
+  GraduationCap,
+  Building2,
+  HeadphonesIcon,
+  UserPlus,
+  Send,
+  ArrowUpRight,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-export default function Home() {
+const navLinks = [
+  { label: "Find Jobs", href: "#jobs" },
+  { label: "Categories", href: "#categories" },
+  { label: "Companies", href: "#companies" },
+  { label: "How it Works", href: "#how-it-works" },
+];
+
+const popularSearches = [
+  "Product Designer",
+  "Frontend Developer",
+  "Data Analyst",
+  "Marketing",
+];
+
+const categories = [
+  { name: "Engineering", jobs: 1240, icon: Code2 },
+  { name: "Design", jobs: 680, icon: PenTool },
+  { name: "Marketing", jobs: 540, icon: Megaphone },
+  { name: "Finance", jobs: 420, icon: LineChart },
+  { name: "Healthcare", jobs: 910, icon: Stethoscope },
+  { name: "Education", jobs: 350, icon: GraduationCap },
+  { name: "Real Estate", jobs: 210, icon: Building2 },
+  { name: "Support", jobs: 470, icon: HeadphonesIcon },
+];
+
+type Job = {
+  title: string;
+  company: string;
+  logo: string;
+  location: string;
+  type: string;
+  salary: string;
+  tags: string[];
+  posted: string;
+};
+
+const initialJobs: Job[] = [
+  {
+    title: "Senior Frontend Engineer",
+    company: "Northwind Labs",
+    logo: "NL",
+    location: "Remote · US",
+    type: "Full-time",
+    salary: "$130k – $160k",
+    tags: ["React", "TypeScript", "Next.js"],
+    posted: "2d ago",
+  },
+  {
+    title: "Product Designer",
+    company: "Fable Studio",
+    logo: "FS",
+    location: "New York, NY",
+    type: "Full-time",
+    salary: "$95k – $120k",
+    tags: ["Figma", "UI/UX", "Design Systems"],
+    posted: "1d ago",
+  },
+  {
+    title: "Data Analyst",
+    company: "Quanta Finance",
+    logo: "QF",
+    location: "London, UK",
+    type: "Hybrid",
+    salary: "£55k – £70k",
+    tags: ["SQL", "Python", "Tableau"],
+    posted: "3d ago",
+  },
+  {
+    title: "Marketing Manager",
+    company: "Bloom & Co.",
+    logo: "BC",
+    location: "Remote · EU",
+    type: "Full-time",
+    salary: "€60k – €80k",
+    tags: ["SEO", "Content", "Growth"],
+    posted: "5h ago",
+  },
+  {
+    title: "Backend Engineer",
+    company: "CloudPeak",
+    logo: "CP",
+    location: "San Francisco, CA",
+    type: "Full-time",
+    salary: "$140k – $175k",
+    tags: ["Node.js", "PostgreSQL", "AWS"],
+    posted: "4d ago",
+  },
+  {
+    title: "Customer Success Lead",
+    company: "Helio",
+    logo: "HL",
+    location: "Austin, TX",
+    type: "Full-time",
+    salary: "$80k – $100k",
+    tags: ["SaaS", "CRM", "Retention"],
+    posted: "6h ago",
+  },
+];
+
+const steps = [
+  {
+    icon: UserPlus,
+    title: "Create your profile",
+    description:
+      "Sign up and build a standout profile that showcases your skills and experience.",
+  },
+  {
+    icon: Search,
+    title: "Discover matches",
+    description:
+      "Browse curated roles and get smart recommendations tailored to your goals.",
+  },
+  {
+    icon: Send,
+    title: "Apply with ease",
+    description:
+      "Apply in a single click and track every application from one dashboard.",
+  },
+];
+
+const stats = [
+  { value: "50k+", label: "Active jobs" },
+  { value: "12k+", label: "Companies" },
+  { value: "3M+", label: "Job seekers" },
+  { value: "92%", label: "Hire success" },
+];
+
+const companies = [
+  { name: "Northwind Labs", logo: "NL", industry: "Technology", openings: 42 },
+  { name: "Fable Studio", logo: "FS", industry: "Design", openings: 18 },
+  { name: "Quanta Finance", logo: "QF", industry: "Finance", openings: 27 },
+  { name: "CloudPeak", logo: "CP", industry: "Cloud", openings: 55 },
+  { name: "Bloom & Co.", logo: "BC", industry: "Marketing", openings: 12 },
+  { name: "Helio", logo: "HL", industry: "SaaS", openings: 31 },
+];
+
+const footerLinks = [
+  {
+    title: "For Candidates",
+    links: [
+      "Browse Jobs",
+      "Browse Categories",
+      "Candidate Dashboard",
+      "Job Alerts",
+    ],
+  },
+  {
+    title: "For Employers",
+    links: ["Post a Job", "Browse Candidates", "Employer Dashboard", "Pricing"],
+  },
+  {
+    title: "Company",
+    links: ["About Us", "Careers", "Blog", "Contact"],
+  },
+];
+
+export default function Page() {
+  const [open, setOpen] = useState(false);
+
+  // Search states
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>(initialJobs);
+  const [searchMessage, setSearchMessage] = useState<{
+    type: "success" | "error" | null;
+    text: string;
+  }>({
+    type: null,
+    text: "",
+  });
+
+  const handleSearch = () => {
+    // Trim and switch to lowercase for precise matching
+    const queryTitle = searchTitle.trim().toLowerCase();
+    const queryLocation = searchLocation.trim().toLowerCase();
+
+    // If both fields are empty, reset to all jobs
+    if (!queryTitle && !queryLocation) {
+      setFilteredJobs(initialJobs);
+      setSearchMessage({ type: null, text: "" });
+      return;
+    }
+
+    const results = initialJobs.filter((job) => {
+      const matchTitle =
+        job.title.toLowerCase().includes(queryTitle) ||
+        job.tags.some((tag) => tag.toLowerCase().includes(queryTitle));
+      const matchLocation = job.location.toLowerCase().includes(queryLocation);
+
+      return matchTitle && matchLocation;
+    });
+
+    if (results.length > 0) {
+      setFilteredJobs(results);
+      setSearchMessage({
+        type: "success",
+        text: `Found ${results.length} job matching your search!`,
+      });
+
+      // Auto smooth-scroll to the jobs list section
+      document.getElementById("jobs")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      setFilteredJobs([]);
+      setSearchMessage({
+        type: "error",
+        text: "No jobs found matching your criteria. Try adjusting your keywords or location.",
+      });
+    }
+  };
+
+  const resetSearch = () => {
+    setSearchTitle("");
+    setSearchLocation("");
+    setFilteredJobs(initialJobs);
+    setSearchMessage({ type: null, text: "" });
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div className="flex min-h-screen flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
+          {/* Logo */}
+          <a href="#" className="flex items-center gap-1.5">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="/logo.svg"
+              alt="CareerBridge Logo"
+              width={80}
+              height={80}
+              priority
+              className="h-20 w-20 object-contain"
             />
-            Deploy Now
+            <span className="text-xl font-bold tracking-tight">
+              CareerBridge
+            </span>
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          {/* Navigation */}
+          <nav className="hidden items-center gap-8 md:flex">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Right Buttons */}
+          <div className="hidden items-center gap-2 md:flex">
+            <Button variant="ghost">Sign in</Button>
+            <Button>Post a Job</Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="flex size-10 items-center justify-center rounded-lg text-foreground md:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={open}
           >
-            Documentation
-          </a>
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {open && (
+          <div className="border-t border-border bg-background md:hidden">
+            <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ))}
+
+              <div className="mt-2 flex flex-col gap-2">
+                <Button variant="outline">Sign in</Button>
+                <Button>Post a Job</Button>
+              </div>
+            </nav>
+          </div>
+        )}
+      </header>
+
+      <main className="flex-1">
+        {/* Hero Section with Light Ice-Blue Gradient and Subtle Dot Grid */}
+        <section
+          className="relative overflow-hidden bg-gradient-to-b from-[#e0efff] via-[#f0f7ff] to-background"
+          style={{
+            backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to bottom, #e0efff, #f0f7ff, #ffffff)`,
+            backgroundSize: "24px 24px, 100% 100%",
+          }}
+        >
+          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
+                <span className="size-2 rounded-full bg-primary" />
+                Over 12,000 jobs added this week
+              </span>
+
+              <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
+                Find your role <span className="text-primary">reach</span> your
+                goal
+              </h1>
+
+              <p className="mx-auto mt-5 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
+                Search thousands of open roles from the world&apos;s most
+                exciting companies and take the next step in your career.
+              </p>
+
+              {/* Functional Search Container */}
+              <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
+                <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
+                  <Search className="size-5 shrink-0 text-muted-foreground" />
+                  <Input
+                    placeholder="Job title or keyword"
+                    value={searchTitle}
+                    onChange={(e) => setSearchTitle(e.target.value)}
+                    className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                  />
+                </div>
+                <div className="hidden h-8 w-px bg-border sm:block" />
+                <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
+                  <MapPin className="size-5 shrink-0 text-muted-foreground" />
+                  <Input
+                    placeholder="Location"
+                    value={searchLocation}
+                    onChange={(e) => setSearchLocation(e.target.value)}
+                    className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                  />
+                </div>
+                <Button size="lg" className="gap-2" onClick={handleSearch}>
+                  <Briefcase className="size-4" />
+                  Search
+                </Button>
+              </div>
+
+              {/* Status & Feedback Messages */}
+              {searchMessage.type && (
+                <div className="mx-auto mt-4 flex max-w-2xl justify-center">
+                  <div
+                    className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium border shadow-sm ${
+                      searchMessage.type === "success"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : "bg-rose-50 text-rose-800 border-rose-200"
+                    }`}
+                  >
+                    {searchMessage.type === "success" ? (
+                      <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                    ) : (
+                      <AlertCircle className="size-4 text-rose-600 shrink-0" />
+                    )}
+                    <span>{searchMessage.text}</span>
+                    <button
+                      onClick={resetSearch}
+                      className="ml-2 text-xs underline opacity-80 hover:opacity-100"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+                <span className="text-muted-foreground">Popular:</span>
+                {popularSearches.map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => {
+                      setSearchTitle(term);
+                      setSearchLocation("");
+                      // Immediate search trigger logic alternative
+                      const results = initialJobs.filter((job) =>
+                        job.title.toLowerCase().includes(term.toLowerCase()),
+                      );
+                      setFilteredJobs(results);
+                      setSearchMessage({
+                        type: "success",
+                        text: `Curated ${results.length} positions.`,
+                      });
+                    }}
+                    className="rounded-full border border-border bg-card px-3 py-1 text-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Categories */}
+        <section
+          id="categories"
+          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
+        >
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Browse by category
+            </h2>
+            <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+              Explore opportunities across the fields you care about most.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {categories.map((category) => (
+              <a key={category.name} href="#jobs">
+                <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md">
+                  <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    <category.icon className="size-6" />
+                  </span>
+                  <div>
+                    <h3 className="font-semibold">{category.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {category.jobs.toLocaleString()} open jobs
+                    </p>
+                  </div>
+                </Card>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* Featured jobs Section */}
+        <section id="jobs" className="bg-[#f0f7ff] transition-all duration-300">
+          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+                  {searchMessage.type === "success"
+                    ? "Search Results"
+                    : "Featured jobs"}
+                </h2>
+                <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+                  {searchMessage.type === "success"
+                    ? "Roles matching your search parameters located below."
+                    : "Hand-picked roles from companies actively hiring right now."}
+                </p>
+              </div>
+              {searchMessage.type && (
+                <Button variant="outline" onClick={resetSearch}>
+                  Reset view
+                </Button>
+              )}
+            </div>
+
+            {/* Dynamic Job Cards Display */}
+            {filteredJobs.length > 0 ? (
+              <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredJobs.map((job) => (
+                  <Card
+                    key={job.title}
+                    className="transition-all hover:border-primary hover:shadow-md bg-white flex flex-col justify-between"
+                  >
+                    <CardContent className="flex h-full flex-col gap-4 p-6">
+                      <div className="flex items-start justify-between">
+                        <span className="flex size-12 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-secondary-foreground">
+                          {job.logo}
+                        </span>
+                        <button
+                          className="text-muted-foreground transition-colors hover:text-primary"
+                          aria-label="Save job"
+                        >
+                          <Bookmark className="size-5" />
+                        </button>
+                      </div>
+
+                      <div>
+                        <h3 className="font-semibold leading-snug">
+                          {job.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {job.company}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="size-4" />
+                          {job.location}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="size-4" />
+                          {job.posted}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {job.tags.map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="font-normal"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
+                        <div>
+                          <p className="font-semibold text-foreground">
+                            {job.salary}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {job.type}
+                          </p>
+                        </div>
+                        <Button size="sm">Apply</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              /* No Results State Layout */
+              <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
+                <AlertCircle className="size-12 text-muted-foreground stroke-1 mb-4" />
+                <h3 className="text-lg font-semibold text-foreground">
+                  No matches listed
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                  We couldn't find anything matching your exact text. Double
+                  check spelling or try looking with empty parameters to view
+                  everything.
+                </p>
+                <Button
+                  className="mt-6"
+                  variant="outline"
+                  onClick={resetSearch}
+                >
+                  Browse All Postings
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section
+          id="how-it-works"
+          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
+        >
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              How it works
+            </h2>
+            <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+              Get from search to offer in three simple steps.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {steps.map((step, i) => (
+              <div
+                key={step.title}
+                className="relative flex flex-col items-center text-center"
+              >
+                <span className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                  <step.icon className="size-7" />
+                </span>
+                <span className="mt-4 font-mono text-sm font-semibold text-primary">
+                  Step {i + 1}
+                </span>
+                <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
+                <p className="mt-2 max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats Display Block */}
+          <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-[#f0f7ff] p-8 sm:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl font-bold text-primary sm:text-4xl">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Top companies */}
+        <section
+          id="companies"
+          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
+        >
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Top companies hiring
+            </h2>
+            <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+              Join teams that are shaping the future of their industries.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {companies.map((company) => (
+              <a key={company.name} href="#jobs">
+                <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">
+                  <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-base font-bold text-secondary-foreground">
+                    {company.logo}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-semibold">{company.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {company.industry}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <ArrowUpRight className="size-5 text-muted-foreground transition-colors group-hover:text-primary" />
+                    <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
+                      {company.openings} jobs
+                    </span>
+                  </div>
+                </Card>
+              </a>
+            ))}
+          </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border bg-secondary/40">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          {/* CTA Box */}
+          <div className="flex flex-col items-center gap-6 rounded-3xl bg-[#f0f7ff] border border-primary/10 py-14 my-8 text-center">
+            <h2 className="max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Ready to find your next opportunity?
+            </h2>
+
+            <p className="max-w-xl text-pretty text-muted-foreground">
+              Create a free account and get matched with roles built for you.
+            </p>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button size="lg">Get Started</Button>
+              <Button size="lg" variant="outline" className="bg-white">
+                Post a Job
+              </Button>
+            </div>
+          </div>
+
+          {/* Footer Content Links */}
+          <div className="grid gap-10 py-14 md:grid-cols-4">
+            {/* Logo Column */}
+            <div>
+              <a href="#" className="flex items-center gap-1.5">
+                <Image
+                  src="/logo.svg"
+                  alt="CareerBridge Logo"
+                  width={80}
+                  height={80}
+                  className="h-20 w-20 object-contain"
+                />
+                <span className="text-xl font-bold tracking-tight">
+                  CareerBridge
+                </span>
+              </a>
+
+              <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
+                The modern job portal helping people and companies grow
+                together.
+              </p>
+            </div>
+
+            {/* Footer Links Column Maps */}
+            {footerLinks.map((column) => (
+              <div key={column.title}>
+                <h3 className="text-sm font-semibold">{column.title}</h3>
+
+                <ul className="mt-4 flex flex-col gap-3">
+                  {column.links.map((link) => (
+                    <li key={`${column.title}-${link}`}>
+                      <a
+                        href="#"
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom Legal Footer */}
+          <div className="flex flex-col items-center justify-between gap-3 border-t border-border py-6 text-sm text-muted-foreground sm:flex-row">
+            <p>
+              © {new Date().getFullYear()} CareerBridge. All rights reserved.
+            </p>
+
+            <div className="flex gap-6">
+              <a href="#" className="transition-colors hover:text-foreground">
+                Privacy
+              </a>
+
+              <a href="#" className="transition-colors hover:text-foreground">
+                Terms
+              </a>
+
+              <a href="#" className="transition-colors hover:text-foreground">
+                Cookies
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
