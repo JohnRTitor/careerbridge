@@ -1,0 +1,35 @@
+import { pool } from "../../app/db";
+
+export class ApplicationsRepository {
+  static async getUserApplications(userId: string) {
+    const query = `
+      SELECT a.*, j.title as job_title, c.name as company_name, c.logo_url as company_logo
+      FROM applications a
+      JOIN jobs j ON a.job_id = j.id
+      LEFT JOIN companies c ON j.company_id = c.id
+      WHERE a.candidate_id = $1
+      ORDER BY a.applied_at DESC
+    `;
+    const result = await pool.query(query, [userId]);
+    return result.rows;
+  }
+
+  static async applyForJob(jobId: string, candidateId: string, data: { resume_url?: string; cover_letter?: string }) {
+    const query = `
+      INSERT INTO applications (job_id, candidate_id, resume_url, cover_letter)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [jobId, candidateId, data.resume_url, data.cover_letter]);
+    return result.rows[0];
+  }
+
+  static async getApplication(jobId: string, candidateId: string) {
+    const query = `
+      SELECT * FROM applications
+      WHERE job_id = $1 AND candidate_id = $2
+    `;
+    const result = await pool.query(query, [jobId, candidateId]);
+    return result.rows[0];
+  }
+}
