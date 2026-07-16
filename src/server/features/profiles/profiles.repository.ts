@@ -1,4 +1,9 @@
 import { pool } from "../../app/db";
+import type { z } from "zod";
+import type { EducationSchema, ExperienceSchema } from "./profiles.schemas";
+
+type EducationInput = z.infer<typeof EducationSchema>;
+type ExperienceInput = z.infer<typeof ExperienceSchema>;
 
 export class ProfilesRepository {
   static async getProfile(userId: string) {
@@ -51,7 +56,7 @@ export class ProfilesRepository {
     return result.rows;
   }
 
-  static async addEducation(userId: string, data: any) {
+  static async addEducation(userId: string, data: EducationInput) {
     const query = `
       INSERT INTO education (user_id, institution, degree, field_of_study, start_date, end_date, description)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -69,7 +74,7 @@ export class ProfilesRepository {
     return result.rows[0];
   }
 
-  static async updateEducation(id: string, userId: string, data: any) {
+  static async updateEducation(id: string, userId: string, data: Partial<EducationInput>) {
     const query = `
       UPDATE education SET
         institution = COALESCE($3, institution),
@@ -107,7 +112,7 @@ export class ProfilesRepository {
     return result.rows;
   }
 
-  static async addExperience(userId: string, data: any) {
+  static async addExperience(userId: string, data: ExperienceInput) {
     const query = `
       INSERT INTO experience (user_id, title, company, location, start_date, end_date, description)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -125,7 +130,7 @@ export class ProfilesRepository {
     return result.rows[0];
   }
 
-  static async updateExperience(id: string, userId: string, data: any) {
+  static async updateExperience(id: string, userId: string, data: Partial<ExperienceInput>) {
     const query = `
       UPDATE experience SET
         title = COALESCE($3, title),

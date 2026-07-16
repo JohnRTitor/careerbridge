@@ -1,7 +1,11 @@
 import { pool } from "../../app/db";
+import type { z } from "zod";
+import type { CreateJobSchema } from "./recruiters.schemas";
+
+type CreateJobInput = z.infer<typeof CreateJobSchema>;
 
 export class RecruitersRepository {
-  static async createJob(recruiterId: string, data: any) {
+  static async createJob(recruiterId: string, data: CreateJobInput) {
     const query = `
       INSERT INTO jobs (title, description, recruiter_id, company_id, location, type, salary_range, status)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -20,7 +24,7 @@ export class RecruitersRepository {
     return result.rows[0];
   }
 
-  static async updateJob(jobId: string, recruiterId: string, data: any) {
+  static async updateJob(jobId: string, recruiterId: string, data: Partial<CreateJobInput>) {
     const query = `
       UPDATE jobs SET
         title = COALESCE($3, title),

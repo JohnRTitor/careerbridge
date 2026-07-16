@@ -3,7 +3,7 @@ import { pool } from "../../app/db";
 export class AdminRepository {
   static async listUsers(limit: number, offset: number, queryStr?: string, role?: string) {
     let baseQuery = `SELECT id, name, email, role, banned, "banReason" as ban_reason, "createdAt" as created_at FROM "user"`;
-    const values: any[] = [];
+    const values: (string | number)[] = [];
     let paramIndex = 1;
 
     const conditions = [];

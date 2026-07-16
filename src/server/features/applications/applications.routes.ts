@@ -2,7 +2,8 @@ import { Hono } from "hono";
 import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
-import { authGuard } from "../../app/middleware/auth.guard";
+import { requireAuth } from "../../app/middleware/auth";
+import { requireCandidate, requirePermission } from "../../app/middleware/authorize";
 import { ApplicationsService } from "./applications.service";
 import { ApplyJobSchema } from "./applications.schemas";
 import { ok, created } from "../../shared/responses";
@@ -10,7 +11,7 @@ import { UuidParamSchema } from "../../shared/schemas";
 
 export const applicationsRoutes = new Hono<AppEnv>();
 
-applicationsRoutes.use("*", authGuard);
+applicationsRoutes.use("*", requireAuth);
 
 applicationsRoutes.get(
   "/",
@@ -18,6 +19,7 @@ applicationsRoutes.get(
     summary: "Get user applications",
     tags: ["Applications"],
   }),
+  requirePermission("application", "read"),
   async (c) => {
     const user = c.get("user");
     const applications = await ApplicationsService.getUserApplications(user.id);
@@ -29,7 +31,9 @@ export const jobApplicationsRoutes = new Hono<AppEnv>();
 
 jobApplicationsRoutes.post(
   "/:id/apply",
-  authGuard,
+  requireAuth,
+  requireCandidate(),
+  requirePermission("application", "create"),
   describeRoute({
     summary: "Submit job application",
     tags: ["Applications", "Jobs"],

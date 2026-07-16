@@ -2,7 +2,8 @@ import { Hono } from "hono";
 import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
-import { authGuard } from "../../app/middleware/auth.guard";
+import { requireAuth } from "../../app/middleware/auth";
+import { requirePermission } from "../../app/middleware/authorize";
 import { JobsService } from "./jobs.service";
 import { JobSearchQuerySchema } from "./jobs.schemas";
 import { ok, noContent } from "../../shared/responses";
@@ -26,7 +27,8 @@ jobsRoutes.get(
 
 jobsRoutes.get(
   "/recommendations",
-  authGuard,
+  requireAuth,
+  requirePermission("job", "read"),
   describeRoute({
     summary: "Get personalized job recommendations",
     tags: ["Jobs"],
@@ -54,7 +56,8 @@ jobsRoutes.get(
 
 jobsRoutes.post(
   "/:id/save",
-  authGuard,
+  requireAuth,
+  requirePermission("bookmark", "create"),
   describeRoute({
     summary: "Save a job",
     tags: ["Jobs"],
@@ -70,7 +73,8 @@ jobsRoutes.post(
 
 jobsRoutes.delete(
   "/:id/save",
-  authGuard,
+  requireAuth,
+  requirePermission("bookmark", "delete"),
   describeRoute({
     summary: "Remove saved job",
     tags: ["Jobs"],

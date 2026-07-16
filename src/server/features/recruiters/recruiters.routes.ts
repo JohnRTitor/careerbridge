@@ -2,7 +2,10 @@ import { Hono } from "hono";
 import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
-import { authGuard, roleGuard } from "../../app/middleware/auth.guard";
+import { requireAuth } from "../../app/middleware/auth";
+import { requirePermission } from "../../app/middleware/authorize";
+import { requireOwnership } from "../../app/middleware/ownership";
+import { pool } from "../../app/db";
 import { RecruitersService } from "./recruiters.service";
 import { CreateJobSchema, UpdateApplicationStatusSchema } from "./recruiters.schemas";
 import { ok, created, noContent } from "../../shared/responses";
@@ -10,9 +13,8 @@ import { UuidParamSchema } from "../../shared/schemas";
 
 export const recruitersRoutes = new Hono<AppEnv>();
 
-// All recruiter routes require auth and 'recruiter' or 'admin' role
-recruitersRoutes.use("*", authGuard);
-recruitersRoutes.use("*", roleGuard(["recruiter", "admin"]));
+// All recruiter routes require auth
+recruitersRoutes.use("*", requireAuth);
 
 recruitersRoutes.post(
   "/jobs",
@@ -21,6 +23,7 @@ recruitersRoutes.post(
     tags: ["Recruiters"],
   }),
   sValidator("json", CreateJobSchema),
+  requirePermission("job", "create"),
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
@@ -37,6 +40,11 @@ recruitersRoutes.put(
   }),
   sValidator("param", UuidParamSchema),
   sValidator("json", CreateJobSchema.partial()),
+  requirePermission("job", "update"),
+  requireOwnership(
+    (c) => pool.query<{ recruiter_id: string }>("SELECT recruiter_id FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
+    (user, job) => job?.recruiter_id === user.id
+  ),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -53,6 +61,11 @@ recruitersRoutes.delete(
     tags: ["Recruiters"],
   }),
   sValidator("param", UuidParamSchema),
+  requirePermission("job", "delete"),
+  requireOwnership(
+    (c) => pool.query<{ recruiter_id: string }>("SELECT recruiter_id FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
+    (user, job) => job?.recruiter_id === user.id
+  ),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -68,6 +81,7 @@ recruitersRoutes.get(
     tags: ["Recruiters"],
   }),
   sValidator("param", UuidParamSchema),
+  requirePermission("application", "read"),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -84,6 +98,16 @@ recruitersRoutes.put(
   }),
   sValidator("param", UuidParamSchema),
   sValidator("json", UpdateApplicationStatusSchema),
+  requirePermission("application", "review"),
+  requireOwnership(
+    (c) => pool.query<{ recruiter_id: string }>(
+      `SELECT jobs.recruiter_id FROM applications 
+       JOIN jobs ON applications.job_id = jobs.id 
+       WHERE applications.id = $1`, 
+      [c.req.param("id")]
+    ).then((r) => r.rows[0]),
+    (user, data) => data?.recruiter_id === user.id
+  ),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -99,6 +123,7 @@ recruitersRoutes.get(
     summary: "Get recruitment analytics dashboard data",
     tags: ["Recruiters"],
   }),
+  requirePermission("analytics", "read"),
   async (c) => {
     const user = c.get("user");
     const analytics = await RecruitersService.getAnalytics(user.id);

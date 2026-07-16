@@ -1,12 +1,12 @@
 import { HTTPException } from "hono/http-exception";
-import type { StatusCode } from "hono/utils/http-status";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 export class AppError extends HTTPException {
   public code: string;
   public details?: unknown;
 
-  constructor(status: StatusCode, message: string, code: string, details?: unknown) {
-    super(status as any, { message });
+  constructor(status: ContentfulStatusCode, message: string, code: string, details?: unknown) {
+    super(status, { message });
     this.code = code;
     this.details = details;
   }
@@ -25,8 +25,14 @@ export class UnauthorizedError extends AppError {
 }
 
 export class ForbiddenError extends AppError {
-  constructor(message = "Forbidden", details?: unknown) {
+  constructor(message = "You do not have permission to perform this action.", details?: unknown) {
     super(403, message, "FORBIDDEN", details);
+  }
+}
+
+export class ResourceForbiddenError extends AppError {
+  constructor(message = "You cannot modify this resource.", details?: unknown) {
+    super(403, message, "RESOURCE_FORBIDDEN", details);
   }
 }
 

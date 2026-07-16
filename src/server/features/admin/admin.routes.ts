@@ -2,7 +2,8 @@ import { Hono } from "hono";
 import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
-import { authGuard, roleGuard } from "../../app/middleware/auth.guard";
+import { requireAuth } from "../../app/middleware/auth";
+import { requireAdmin, requirePermission } from "../../app/middleware/authorize";
 import { AdminService } from "./admin.service";
 import { UsersQuerySchema, UpdateUserRoleSchema, UpdateUserStatusSchema } from "./admin.schemas";
 import { CompaniesService } from "../companies/companies.service";
@@ -17,8 +18,8 @@ const UserIdParamSchema = z.object({ id: z.string() }).meta({ id: "UserIdParam" 
 export const adminRoutes = new Hono<AppEnv>();
 
 // All admin routes require auth and 'admin' role
-adminRoutes.use("*", authGuard);
-adminRoutes.use("*", roleGuard(["admin"]));
+adminRoutes.use("*", requireAuth);
+adminRoutes.use("*", requireAdmin());
 
 adminRoutes.get(
   "/users",
@@ -27,6 +28,7 @@ adminRoutes.get(
     tags: ["Admin"],
   }),
   sValidator("query", UsersQuerySchema),
+  requirePermission("admin", "users"),
   async (c) => {
     const query = c.req.valid("query");
     const result = await AdminService.listUsers(query);
@@ -42,6 +44,7 @@ adminRoutes.put(
   }),
   sValidator("param", UserIdParamSchema),
   sValidator("json", UpdateUserRoleSchema),
+  requirePermission("admin", "roles"),
   async (c) => {
     const { id } = c.req.valid("param");
     const { role } = c.req.valid("json");
@@ -62,6 +65,7 @@ adminRoutes.put(
   }),
   sValidator("param", UserIdParamSchema),
   sValidator("json", UpdateUserStatusSchema),
+  requirePermission("admin", "moderate"),
   async (c) => {
     const { id } = c.req.valid("param");
     const data = c.req.valid("json");
@@ -81,6 +85,7 @@ adminRoutes.get(
     tags: ["Admin"],
   }),
   sValidator("query", PaginationQuerySchema),
+  requirePermission("analytics", "read"),
   async (c) => {
     const query = c.req.valid("query");
     const logs = await AuditService.getLogs(query);
@@ -96,6 +101,7 @@ adminRoutes.put(
   }),
   sValidator("param", UuidParamSchema),
   sValidator("json", VerifyCompanySchema),
+  requirePermission("company", "verify"),
   async (c) => {
     const { id } = c.req.valid("param");
     const { is_verified } = c.req.valid("json");

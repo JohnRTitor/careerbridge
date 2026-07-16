@@ -2,7 +2,8 @@ import { Hono } from "hono";
 import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
-import { authGuard } from "../../app/middleware/auth.guard";
+import { requireAuth } from "../../app/middleware/auth";
+import { requirePermission } from "../../app/middleware/authorize";
 import { ProfilesService } from "./profiles.service";
 import { UpdateProfileSchema, ResumeUploadSchema, EducationSchema, ExperienceSchema } from "./profiles.schemas";
 import { ok, noContent, created } from "../../shared/responses";
@@ -11,7 +12,7 @@ import { UuidParamSchema } from "../../shared/schemas";
 export const profilesRoutes = new Hono<AppEnv>();
 
 // All profile routes require authentication
-profilesRoutes.use("*", authGuard);
+profilesRoutes.use("*", requireAuth);
 
 profilesRoutes.get(
   "/profile",
@@ -19,6 +20,7 @@ profilesRoutes.get(
     summary: "Get current user profile",
     tags: ["Profiles"],
   }),
+  requirePermission("profile", "read"),
   async (c) => {
     const user = c.get("user");
     const profile = await ProfilesService.getProfile(user.id);
@@ -33,6 +35,7 @@ profilesRoutes.put(
     tags: ["Profiles"],
   }),
   sValidator("json", UpdateProfileSchema),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
@@ -48,6 +51,7 @@ profilesRoutes.post(
     tags: ["Profiles"],
   }),
   sValidator("json", ResumeUploadSchema),
+  requirePermission("resume", "create"),
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
@@ -63,6 +67,7 @@ profilesRoutes.post(
     tags: ["Profiles"],
   }),
   sValidator("json", EducationSchema),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
@@ -79,6 +84,7 @@ profilesRoutes.put(
   }),
   sValidator("param", UuidParamSchema),
   sValidator("json", EducationSchema.partial()),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -95,6 +101,7 @@ profilesRoutes.delete(
     tags: ["Profiles"],
   }),
   sValidator("param", UuidParamSchema),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -110,6 +117,7 @@ profilesRoutes.post(
     tags: ["Profiles"],
   }),
   sValidator("json", ExperienceSchema),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
@@ -126,6 +134,7 @@ profilesRoutes.put(
   }),
   sValidator("param", UuidParamSchema),
   sValidator("json", ExperienceSchema.partial()),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
@@ -142,6 +151,7 @@ profilesRoutes.delete(
     tags: ["Profiles"],
   }),
   sValidator("param", UuidParamSchema),
+  requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
     const { id } = c.req.valid("param");
