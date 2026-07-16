@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth/auth";
-import { updateUserRole } from "@/server/modules/user/user.service";
+import { AdminService } from "@/server/features/admin/admin.service";
 import { headers } from "next/headers";
 import { LoginInput, RegisterInput } from "@/lib/zod-schemas";
 
@@ -43,7 +43,7 @@ export async function registerAction(data: RegisterInput) {
     }
 
     // Assign the role requested
-    const updatedUser = await updateUserRole(response.user.id, data.accountType);
+    const updatedUser = await AdminService.updateUserRole(response.user.id, data.accountType);
 
     return { success: true, user: updatedUser };
   } catch (error: unknown) {
