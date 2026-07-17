@@ -2,10 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+<<<<<<< HEAD
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 
+=======
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Menu01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+>>>>>>> 551ed9564b5c777fde3408938564eb427a2f62bb
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
@@ -52,6 +57,7 @@ export default function Header() {
           <Button>Post a Job</Button>
         </div>
 
+<<<<<<< HEAD
         {/* Mobile */}
         <div className="lg:hidden">
           <Drawer open={open} onOpenChange={setOpen} direction="right">
@@ -62,6 +68,20 @@ export default function Header() {
                 </Button>
               }
             />
+=======
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="rounded-lg p-2 lg:hidden"
+        >
+          {open ? (
+            <HugeiconsIcon icon={Cancel01Icon} className="h-7 w-7" />
+          ) : (
+            <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
+          )}
+        </button>
+      </div>
+>>>>>>> 551ed9564b5c777fde3408938564eb427a2f62bb
 
             <DrawerContent className="h-full w-72 ml-auto rounded-l-xl rounded-r-none">
               <div className="flex flex-col gap-5 p-6 pt-12">

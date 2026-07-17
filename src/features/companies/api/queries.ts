@@ -18,3 +18,17 @@ export const useCompanies = (filters: CompanyFilters) =>
 
 export const useCompany = (id: string) => 
   useQuery(companyDetailQueryOptions(id));
+
+export const followedCompaniesQueryOptions = () => queryOptions({
+  queryKey: companyKeys.all.concat(["followed"]),
+  queryFn: () => api.getFollowedCompanies(),
+});
+
+export const useFollowedCompanies = () => useQuery(followedCompaniesQueryOptions());
+
+export const companyMembersQueryOptions = (id: string) => queryOptions({
+  queryKey: [...companyKeys.detail(id), "members"],
+  queryFn: () => api.getCompanyMembers(id),
+});
+
+export const useCompanyMembers = (id: string) => useQuery(companyMembersQueryOptions(id));

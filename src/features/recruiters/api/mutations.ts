@@ -47,3 +47,12 @@ export const useUpdateApplicationStatus = () => {
     },
   });
 };
+export const useUpdateRecruiterProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: api.upsertRecruiterProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.all.concat(["profile"]) });
+    },
+  });
+};

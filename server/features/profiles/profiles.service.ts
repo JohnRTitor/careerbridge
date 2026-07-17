@@ -39,7 +39,22 @@ export async function getProfile(input: GetProfileInput) {
   }
   const education = await profilesRepository.getEducation({ userId });
   const experience = await profilesRepository.getExperience({ userId });
-  return { ...profile, education, experience };
+  const certifications = await profilesRepository.getCertifications({ userId });
+  const projects = await profilesRepository.getProjects({ userId });
+  const skills = await profilesRepository.getUserSkills({ userId });
+  const languages = await profilesRepository.getUserLanguages({ userId });
+  const social_links = await profilesRepository.getSocialLinks({ userId });
+  
+  return { 
+    ...profile, 
+    education, 
+    experience,
+    certifications,
+    projects,
+    skills,
+    languages,
+    social_links
+  };
 }
 
 export async function updateProfile(input: UpdateProfileInput) {

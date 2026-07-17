@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { CompaniesQuerySchema, CompanySchema, UpdateCompanySchema } from "@server/features/companies/companies.schemas";
+import { 
+  CompaniesQuerySchema, 
+  CompanySchema, 
+  UpdateCompanySchema,
+  CompanyMemberSchema,
+  UpdateCompanyMemberSchema
+} from "@server/features/companies/companies.schemas";
 
 // Since base schemas map nicely to entities here, we can use z.infer
 export type Company = z.infer<typeof CompanySchema> & {
@@ -12,3 +18,7 @@ export type Company = z.infer<typeof CompanySchema> & {
 export type CompanyFilters = z.infer<typeof CompaniesQuerySchema>;
 export type CreateCompanyPayload = z.infer<typeof CompanySchema>;
 export type UpdateCompanyPayload = z.infer<typeof UpdateCompanySchema>;
+
+export type AddCompanyMemberPayload = z.infer<typeof CompanyMemberSchema>;
+export type UpdateCompanyMemberPayload = z.infer<typeof UpdateCompanyMemberSchema>;
+

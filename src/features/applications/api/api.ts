@@ -23,3 +23,10 @@ export const applyForJob = async (jobId: string, data: ApplyJobPayload) => {
   const json = await res.json();
   return json.data;
 };
+export const withdrawApplication = async (id: string) => {
+  const res = await rpcClient.api.applications[":id"].$delete({ param: { id } });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to withdraw application");
+  }
+};

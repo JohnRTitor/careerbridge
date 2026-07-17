@@ -17,3 +17,10 @@ export const useJobApplicants = (jobId: string) =>
 
 export const useRecruiterAnalytics = () => 
   useQuery(recruiterAnalyticsQueryOptions());
+
+export const recruiterProfileQueryOptions = () => queryOptions({
+  queryKey: recruiterKeys.all.concat(["profile"]),
+  queryFn: api.getRecruiterProfile,
+});
+
+export const useRecruiterProfile = () => useQuery(recruiterProfileQueryOptions());
