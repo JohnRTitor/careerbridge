@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
+import { ZodError } from "zod";
 import { setupOpenAPI } from "./openapi";
 import { fail } from "../shared/responses";
 import { AppError } from "../shared/errors";
@@ -68,7 +69,7 @@ app.onError((err, c) => {
   }
 
   if (err.name === "ZodError") {
-    return fail(c, 400, "Validation failed", "VALIDATION_ERROR", (err as any).issues);
+    return fail(c, 400, "Validation failed", "VALIDATION_ERROR", (err as ZodError).issues);
   }
 
   console.error("Unhandled error:", err);

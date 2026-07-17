@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import type { StatusCode } from "hono/utils/http-status";
+import type { StatusCode, ContentfulStatusCode } from "hono/utils/http-status";
 
 export type SuccessResponse<T> = {
   success: true;
@@ -52,6 +52,6 @@ export function fail(c: Context, status: StatusCode, message: string, code: stri
         details,
       },
     },
-    status as any
+    status as ContentfulStatusCode
   );
 }

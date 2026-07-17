@@ -17,8 +17,8 @@ export function getFieldState(field: AnyFieldApi): ResolvedFieldState {
           .map((error) => {
             if (typeof error === "string") return error;
             if (error instanceof Error) return error.message;
-            if (error && typeof error === "object" && "message" in (error as any)) {
-              return String((error as any).message);
+            if (error && typeof error === "object" && "message" in error) {
+              return String((error as Record<string, unknown>).message);
             }
             return JSON.stringify(error);
           })

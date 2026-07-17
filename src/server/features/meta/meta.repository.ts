@@ -4,7 +4,7 @@ import type { SearchMetaInput, CreateSkillInput, CreateLanguageInput } from "./m
 export async function searchSkills(input: SearchMetaInput) {
   const { query, limit } = input;
   let baseQuery = `SELECT * FROM skills`;
-  const values: any[] = [];
+  const values: unknown[] = [];
   
   if (query) {
     baseQuery += ` WHERE name ILIKE $1`;
@@ -33,7 +33,7 @@ export async function createSkill(input: CreateSkillInput) {
 export async function searchLanguages(input: SearchMetaInput) {
   const { query, limit } = input;
   let baseQuery = `SELECT * FROM languages`;
-  const values: any[] = [];
+  const values: unknown[] = [];
   
   if (query) {
     baseQuery += ` WHERE name ILIKE $1`;

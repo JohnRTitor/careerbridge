@@ -1,5 +1,5 @@
 import { pool } from "../../app/db";
-import type { GetUserApplicationsInput, ApplyForJobInput, GetApplicationInput } from "./applications.schemas";
+import type { GetUserApplicationsInput, ApplyForJobInput, GetApplicationInput, WithdrawApplicationInput } from "./applications.schemas";
 
 export async function getUserApplications(input: GetUserApplicationsInput) {
   const { userId } = input;
@@ -36,7 +36,7 @@ export async function getApplication(input: GetApplicationInput) {
   return result.rows[0];
 }
 
-export async function withdrawApplication(input: any) {
+export async function withdrawApplication(input: WithdrawApplicationInput) {
   const { applicationId, candidateId } = input;
   const query = `
     DELETE FROM applications 

@@ -1,5 +1,5 @@
 import { pool } from "../../app/db";
-import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput } from "./jobs.schemas";
+import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput } from "./jobs.schemas";
 
 export async function searchJobs(input: SearchJobsInput & { limit: number; offset: number }) {
   const { query: queryStr, location, type, limit, offset } = input;
@@ -10,7 +10,7 @@ export async function searchJobs(input: SearchJobsInput & { limit: number; offse
     WHERE j.status = 'open'
   `;
   
-  const values: any[] = [];
+  const values: unknown[] = [];
   let paramIndex = 1;
 
   if (queryStr) {
@@ -92,7 +92,7 @@ export async function getRecommendations(input: GetRecommendationsInput & { limi
   const result = await pool.query(query, [limit]);
   return result.rows;
 }
-export async function getSavedJobs(input: any) {
+export async function getSavedJobs(input: GetSavedJobsInput) {
   const { userId } = input;
   const query = `
     SELECT j.*, c.name as company_name, c.logo_url as company_logo, sj.saved_at

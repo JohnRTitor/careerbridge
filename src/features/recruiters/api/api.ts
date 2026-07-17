@@ -34,4 +34,4 @@ export const updateApplicationStatus = (appId: string, data: UpdateApplicationSt
   });
 
 export const getAnalytics = () => 
-  apiClient<any>("/recruiters/analytics"); // Can be typed later based on backend schema
+  apiClient<Record<string, unknown>>("/recruiters/analytics"); // Can be typed later based on backend schema

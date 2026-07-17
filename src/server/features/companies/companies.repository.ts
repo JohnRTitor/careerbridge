@@ -1,10 +1,24 @@
 import { pool } from "../../app/db";
-import type { ListCompaniesInput, GetCompanyInput, VerifyCompanyInput } from "./companies.schemas";
+import type { 
+  ListCompaniesInput, 
+  GetCompanyInput, 
+  VerifyCompanyInput,
+  CreateCompanyInput,
+  UpdateCompanyInput,
+  DeleteCompanyInput,
+  FollowCompanyInput,
+  UnfollowCompanyInput,
+  GetFollowedCompaniesInput,
+  AddCompanyMemberInput,
+  UpdateCompanyMemberInput,
+  RemoveCompanyMemberInput,
+  GetCompanyMembersInput
+} from "./companies.schemas";
 
 export async function listCompanies(input: ListCompaniesInput & { offset: number }) {
   const { limit = 10, offset, query: queryStr } = input;
   let baseQuery = `SELECT * FROM companies`;
-  const values: any[] = [];
+  const values: unknown[] = [];
   let paramIndex = 1;
 
   if (queryStr) {
@@ -43,7 +57,7 @@ export async function verifyCompany(input: VerifyCompanyInput) {
   return result.rows[0];
 }
 
-export async function createCompany(input: any) {
+export async function createCompany(input: CreateCompanyInput) {
   const { data } = input;
   const query = `
     INSERT INTO companies (name, description, logo_url, website, industry, size, location)
@@ -54,7 +68,7 @@ export async function createCompany(input: any) {
   return result.rows[0];
 }
 
-export async function updateCompany(input: any) {
+export async function updateCompany(input: UpdateCompanyInput) {
   const { companyId, data } = input;
   const query = `
     UPDATE companies SET
@@ -73,7 +87,7 @@ export async function updateCompany(input: any) {
   return result.rows[0];
 }
 
-export async function deleteCompany(input: any) {
+export async function deleteCompany(input: DeleteCompanyInput) {
   const { companyId } = input;
   const query = `DELETE FROM companies WHERE id = $1 RETURNING id;`;
   const result = await pool.query(query, [companyId]);
@@ -81,7 +95,7 @@ export async function deleteCompany(input: any) {
 }
 
 // Followers
-export async function followCompany(input: any) {
+export async function followCompany(input: FollowCompanyInput) {
   const { companyId, userId } = input;
   const query = `
     INSERT INTO company_followers (company_id, user_id)
@@ -93,7 +107,7 @@ export async function followCompany(input: any) {
   return result.rowCount ? result.rowCount > 0 : false;
 }
 
-export async function unfollowCompany(input: any) {
+export async function unfollowCompany(input: UnfollowCompanyInput) {
   const { companyId, userId } = input;
   const query = `
     DELETE FROM company_followers
@@ -104,7 +118,7 @@ export async function unfollowCompany(input: any) {
   return result.rowCount ? result.rowCount > 0 : false;
 }
 
-export async function getFollowedCompanies(input: any) {
+export async function getFollowedCompanies(input: GetFollowedCompaniesInput) {
   const { userId } = input;
   const query = `
     SELECT c.* 
@@ -118,7 +132,7 @@ export async function getFollowedCompanies(input: any) {
 }
 
 // Members
-export async function addCompanyMember(input: any) {
+export async function addCompanyMember(input: AddCompanyMemberInput) {
   const { companyId, data } = input;
   const query = `
     INSERT INTO company_members (company_id, user_id, role)
@@ -129,7 +143,7 @@ export async function addCompanyMember(input: any) {
   return result.rows[0];
 }
 
-export async function updateCompanyMember(input: any) {
+export async function updateCompanyMember(input: UpdateCompanyMemberInput) {
   const { companyId, userId, data } = input;
   const query = `
     UPDATE company_members SET role = COALESCE($3, role)
@@ -140,14 +154,14 @@ export async function updateCompanyMember(input: any) {
   return result.rows[0];
 }
 
-export async function removeCompanyMember(input: any) {
+export async function removeCompanyMember(input: RemoveCompanyMemberInput) {
   const { companyId, userId } = input;
   const query = `DELETE FROM company_members WHERE company_id = $1 AND user_id = $2 RETURNING *;`;
   const result = await pool.query(query, [companyId, userId]);
   return result.rowCount ? result.rowCount > 0 : false;
 }
 
-export async function getCompanyMembers(input: any) {
+export async function getCompanyMembers(input: GetCompanyMembersInput) {
   const { companyId } = input;
   const query = `
     SELECT cm.role, u.id, u.name, u.email, u.image 

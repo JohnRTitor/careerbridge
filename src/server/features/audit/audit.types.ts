@@ -6,7 +6,7 @@ export type LogActionInput = {
   action: string;
   targetType: string;
   targetId?: string;
-  details?: any;
+  details?: Record<string, unknown>;
 };
 
 export type GetLogsInput = z.infer<typeof PaginationQuerySchema>;

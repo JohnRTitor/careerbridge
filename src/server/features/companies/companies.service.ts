@@ -1,6 +1,20 @@
 import { companiesRepository } from "./companies.repository";
 import { NotFoundError } from "../../shared/errors";
-import type { ListCompaniesInput, GetCompanyInput, VerifyCompanyInput } from "./companies.schemas";
+import type { 
+  ListCompaniesInput, 
+  GetCompanyInput, 
+  VerifyCompanyInput,
+  CreateCompanyInput,
+  UpdateCompanyInput,
+  DeleteCompanyInput,
+  FollowCompanyInput,
+  UnfollowCompanyInput,
+  GetFollowedCompaniesInput,
+  AddCompanyMemberInput,
+  UpdateCompanyMemberInput,
+  RemoveCompanyMemberInput,
+  GetCompanyMembersInput
+} from "./companies.schemas";
 
 export async function listCompanies(input: ListCompaniesInput) {
   const { page = 1, limit = 10 } = input;
@@ -30,49 +44,49 @@ export async function verifyCompany(input: VerifyCompanyInput) {
   return company;
 }
 
-export async function createCompany(input: any) {
+export async function createCompany(input: CreateCompanyInput) {
   return companiesRepository.createCompany(input);
 }
 
-export async function updateCompany(input: any) {
+export async function updateCompany(input: UpdateCompanyInput) {
   const result = await companiesRepository.updateCompany(input);
   if (!result) throw new NotFoundError("Company not found");
   return result;
 }
 
-export async function deleteCompany(input: any) {
+export async function deleteCompany(input: DeleteCompanyInput) {
   const success = await companiesRepository.deleteCompany(input);
   if (!success) throw new NotFoundError("Company not found");
 }
 
-export async function followCompany(input: any) {
+export async function followCompany(input: FollowCompanyInput) {
   return companiesRepository.followCompany(input);
 }
 
-export async function unfollowCompany(input: any) {
+export async function unfollowCompany(input: UnfollowCompanyInput) {
   return companiesRepository.unfollowCompany(input);
 }
 
-export async function getFollowedCompanies(input: any) {
+export async function getFollowedCompanies(input: GetFollowedCompaniesInput) {
   return companiesRepository.getFollowedCompanies(input);
 }
 
-export async function addCompanyMember(input: any) {
+export async function addCompanyMember(input: AddCompanyMemberInput) {
   return companiesRepository.addCompanyMember(input);
 }
 
-export async function updateCompanyMember(input: any) {
+export async function updateCompanyMember(input: UpdateCompanyMemberInput) {
   const result = await companiesRepository.updateCompanyMember(input);
   if (!result) throw new NotFoundError("Company member not found");
   return result;
 }
 
-export async function removeCompanyMember(input: any) {
+export async function removeCompanyMember(input: RemoveCompanyMemberInput) {
   const success = await companiesRepository.removeCompanyMember(input);
   if (!success) throw new NotFoundError("Company member not found");
 }
 
-export async function getCompanyMembers(input: any) {
+export async function getCompanyMembers(input: GetCompanyMembersInput) {
   return companiesRepository.getCompanyMembers(input);
 }
 

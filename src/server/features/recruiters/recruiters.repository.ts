@@ -1,5 +1,5 @@
 import { pool } from "../../app/db";
-import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput } from "./recruiters.schemas";
+import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput, GetRecruiterProfileInput, UpsertRecruiterProfileInput } from "./recruiters.schemas";
 
 export async function createJob(input: CreateJobInput) {
   const { recruiterId, data } = input;
@@ -119,7 +119,7 @@ export async function getAnalytics(input: GetAnalyticsInput) {
   };
 }
 
-export async function getRecruiterProfile(input: any) {
+export async function getRecruiterProfile(input: GetRecruiterProfileInput) {
   const { userId } = input;
   const query = `
     SELECT rp.*, c.name as company_name 
@@ -131,7 +131,7 @@ export async function getRecruiterProfile(input: any) {
   return result.rows[0];
 }
 
-export async function upsertRecruiterProfile(input: any) {
+export async function upsertRecruiterProfile(input: UpsertRecruiterProfileInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO recruiter_profiles (user_id, company_id, designation, phone, verified)

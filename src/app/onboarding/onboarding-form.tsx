@@ -20,7 +20,7 @@ export function OnboardingForm({ user }: { user: { name: string; email: string }
     defaultValues: {
       accountType: "candidate" as "candidate" | "recruiter",
       dateOfBirth: undefined as unknown as Date,
-      gender: "" as any,
+      gender: "" as unknown as "male" | "female" | "other" | "prefer_not_to_say",
     },
     validators: {
       onChange: onboardingSchema,

@@ -8,7 +8,26 @@ import type {
   DeleteEducationInput, 
   AddExperienceInput, 
   UpdateExperienceInput, 
-  DeleteExperienceInput 
+  DeleteExperienceInput,
+  AddCertificationInput,
+  UpdateCertificationInput,
+  DeleteCertificationInput,
+  AddProjectInput,
+  UpdateProjectInput,
+  DeleteProjectInput,
+  AddResumeInput,
+  UpdateResumeEntityInput,
+  DeleteResumeInput,
+  AddUserSkillInput,
+  UpdateUserSkillInput,
+  DeleteUserSkillInput,
+  AddUserLanguageInput,
+  UpdateUserLanguageInput,
+  DeleteUserLanguageInput,
+  AddSocialLinkInput,
+  UpdateSocialLinkInput,
+  DeleteSocialLinkInput,
+  UpsertJobPreferenceInput
 } from "./profiles.schemas";
 
 export async function getProfile(input: GetProfileInput) {
@@ -185,7 +204,7 @@ export async function getCertifications(input: GetProfileInput) {
   return result.rows;
 }
 
-export async function addCertification(input: any) {
+export async function addCertification(input: AddCertificationInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO certifications (user_id, name, issuer, issue_date, expiry_date, credential_id, credential_url)
@@ -196,7 +215,7 @@ export async function addCertification(input: any) {
   return result.rows[0];
 }
 
-export async function updateCertification(input: any) {
+export async function updateCertification(input: UpdateCertificationInput) {
   const { certificationId, userId, data } = input;
   const query = `
     UPDATE certifications SET
@@ -213,7 +232,7 @@ export async function updateCertification(input: any) {
   return result.rows[0];
 }
 
-export async function deleteCertification(input: any) {
+export async function deleteCertification(input: DeleteCertificationInput) {
   const { certificationId, userId } = input;
   const query = `DELETE FROM certifications WHERE id = $1 AND user_id = $2 RETURNING id;`;
   const result = await pool.query(query, [certificationId, userId]);
@@ -228,7 +247,7 @@ export async function getProjects(input: GetProfileInput) {
   return result.rows;
 }
 
-export async function addProject(input: any) {
+export async function addProject(input: AddProjectInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO projects (user_id, title, description, repository_url, live_url, start_date, end_date)
@@ -239,7 +258,7 @@ export async function addProject(input: any) {
   return result.rows[0];
 }
 
-export async function updateProject(input: any) {
+export async function updateProject(input: UpdateProjectInput) {
   const { projectId, userId, data } = input;
   const query = `
     UPDATE projects SET
@@ -256,7 +275,7 @@ export async function updateProject(input: any) {
   return result.rows[0];
 }
 
-export async function deleteProject(input: any) {
+export async function deleteProject(input: DeleteProjectInput) {
   const { projectId, userId } = input;
   const query = `DELETE FROM projects WHERE id = $1 AND user_id = $2 RETURNING id;`;
   const result = await pool.query(query, [projectId, userId]);
@@ -271,7 +290,7 @@ export async function getResumes(input: GetProfileInput) {
   return result.rows;
 }
 
-export async function addResume(input: any) {
+export async function addResume(input: AddResumeInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO resumes (user_id, title, file_url, is_default)
@@ -282,7 +301,7 @@ export async function addResume(input: any) {
   return result.rows[0];
 }
 
-export async function updateResumeEntity(input: any) {
+export async function updateResumeEntity(input: UpdateResumeEntityInput) {
   const { resumeId, userId, data } = input;
   const query = `
     UPDATE resumes SET
@@ -295,7 +314,7 @@ export async function updateResumeEntity(input: any) {
   return result.rows[0];
 }
 
-export async function deleteResume(input: any) {
+export async function deleteResume(input: DeleteResumeInput) {
   const { resumeId, userId } = input;
   const query = `DELETE FROM resumes WHERE id = $1 AND user_id = $2 RETURNING id;`;
   const result = await pool.query(query, [resumeId, userId]);
@@ -315,7 +334,7 @@ export async function getUserSkills(input: GetProfileInput) {
   return result.rows;
 }
 
-export async function addUserSkill(input: any) {
+export async function addUserSkill(input: AddUserSkillInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO user_skills (user_id, skill_id, years_of_experience, proficiency)
@@ -329,7 +348,7 @@ export async function addUserSkill(input: any) {
   return result.rows[0];
 }
 
-export async function updateUserSkill(input: any) {
+export async function updateUserSkill(input: UpdateUserSkillInput) {
   const { skillId, userId, data } = input;
   const query = `
     UPDATE user_skills SET
@@ -342,7 +361,7 @@ export async function updateUserSkill(input: any) {
   return result.rows[0];
 }
 
-export async function deleteUserSkill(input: any) {
+export async function deleteUserSkill(input: DeleteUserSkillInput) {
   const { skillId, userId } = input;
   const query = `DELETE FROM user_skills WHERE skill_id = $1 AND user_id = $2 RETURNING skill_id;`;
   const result = await pool.query(query, [skillId, userId]);
@@ -362,7 +381,7 @@ export async function getUserLanguages(input: GetProfileInput) {
   return result.rows;
 }
 
-export async function addUserLanguage(input: any) {
+export async function addUserLanguage(input: AddUserLanguageInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO user_languages (user_id, language_id, proficiency)
@@ -375,7 +394,7 @@ export async function addUserLanguage(input: any) {
   return result.rows[0];
 }
 
-export async function updateUserLanguage(input: any) {
+export async function updateUserLanguage(input: UpdateUserLanguageInput) {
   const { languageId, userId, data } = input;
   const query = `
     UPDATE user_languages SET
@@ -387,7 +406,7 @@ export async function updateUserLanguage(input: any) {
   return result.rows[0];
 }
 
-export async function deleteUserLanguage(input: any) {
+export async function deleteUserLanguage(input: DeleteUserLanguageInput) {
   const { languageId, userId } = input;
   const query = `DELETE FROM user_languages WHERE language_id = $1 AND user_id = $2 RETURNING language_id;`;
   const result = await pool.query(query, [languageId, userId]);
@@ -402,7 +421,7 @@ export async function getSocialLinks(input: GetProfileInput) {
   return result.rows;
 }
 
-export async function addSocialLink(input: any) {
+export async function addSocialLink(input: AddSocialLinkInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO social_links (user_id, platform, url)
@@ -413,7 +432,7 @@ export async function addSocialLink(input: any) {
   return result.rows[0];
 }
 
-export async function updateSocialLink(input: any) {
+export async function updateSocialLink(input: UpdateSocialLinkInput) {
   const { linkId, userId, data } = input;
   const query = `
     UPDATE social_links SET
@@ -426,7 +445,7 @@ export async function updateSocialLink(input: any) {
   return result.rows[0];
 }
 
-export async function deleteSocialLink(input: any) {
+export async function deleteSocialLink(input: DeleteSocialLinkInput) {
   const { linkId, userId } = input;
   const query = `DELETE FROM social_links WHERE id = $1 AND user_id = $2 RETURNING id;`;
   const result = await pool.query(query, [linkId, userId]);
@@ -441,7 +460,7 @@ export async function getJobPreferences(input: GetProfileInput) {
   return result.rows[0];
 }
 
-export async function upsertJobPreferences(input: any) {
+export async function upsertJobPreferences(input: UpsertJobPreferenceInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO job_preferences (

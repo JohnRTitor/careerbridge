@@ -1,7 +1,7 @@
 import { applicationsRepository } from "./applications.repository";
 import { jobsService } from "../jobs/jobs.service";
 import { ConflictError, BadRequestError, NotFoundError } from "../../shared/errors";
-import type { GetUserApplicationsInput, ApplyForJobInput } from "./applications.schemas";
+import type { GetUserApplicationsInput, ApplyForJobInput, WithdrawApplicationInput } from "./applications.schemas";
 
 export async function getUserApplications(input: GetUserApplicationsInput) {
   return applicationsRepository.getUserApplications(input);
@@ -24,7 +24,7 @@ export async function applyForJob(input: ApplyForJobInput) {
   return applicationsRepository.applyForJob(input);
 }
 
-export async function withdrawApplication(input: any) {
+export async function withdrawApplication(input: WithdrawApplicationInput) {
   const success = await applicationsRepository.withdrawApplication(input);
   if (!success) {
     throw new NotFoundError("Application not found");

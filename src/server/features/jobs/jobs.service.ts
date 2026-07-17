@@ -1,6 +1,6 @@
 import { jobsRepository } from "./jobs.repository";
 import { NotFoundError, BadRequestError } from "../../shared/errors";
-import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput } from "./jobs.schemas";
+import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput } from "./jobs.schemas";
 
 export async function searchJobs(input: SearchJobsInput) {
   const { page = 1, limit = 10 } = input;
@@ -51,7 +51,7 @@ export async function getRecommendations(input: GetRecommendationsInput) {
   return jobsRepository.getRecommendations({ ...input, limit: 5 });
 }
 
-export async function getSavedJobs(input: any) {
+export async function getSavedJobs(input: GetSavedJobsInput) {
   return jobsRepository.getSavedJobs(input);
 }
 
