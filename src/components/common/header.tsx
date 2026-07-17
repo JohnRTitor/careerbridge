@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Menu01Icon } from "@hugeicons/core-free-icons";
+import { Menu01Icon, Login01Icon } from "@hugeicons/core-free-icons";
 import { usePermission } from "@/hooks/use-permission";
 
 import { Button } from "@/components/ui/button";
@@ -78,38 +78,45 @@ export default function Header() {
               <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
             </SheetTrigger>
 
-            <SheetContent side="right" className="w-72">
+            <SheetContent side="right" className="flex h-full w-72 flex-col">
               <SheetHeader>
-                <SheetTitle>CareerBridge</SheetTitle>
+                <SheetTitle className="text-2xl font-bold">
+                  CareerBridge
+                </SheetTitle>
               </SheetHeader>
 
-              <nav className="mt-8 flex flex-col gap-2">
-                {menuItems.map((item) => (
-                  <a
-                    key={item.text}
-                    href={item.href}
+              <nav className="mt-8 flex flex-1 flex-col">
+                {/* Top menu items */}
+                <div className="flex flex-col gap-1 text-lg">
+                  {menuItems.map((item) => (
+                    <a
+                      key={item.text}
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className="rounded-lg px-4 py-3 text-gray-700 transition hover:bg-gray-100 hover:text-primary"
+                    >
+                      {item.text}
+                    </a>
+                  ))}
+
+                  {can("job", "create") && (
+                    <Link href="/jobs/post" onClick={() => setOpen(false)}>
+                      <Button className="mt-3 w-full">Post a Job</Button>
+                    </Link>
+                  )}
+                </div>
+
+                {/* Bottom Sign In */}
+                <div className="mt-auto border-t pt-4">
+                  <Link
+                    href="/login"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-4 py-3 text-gray-700 transition hover:bg-gray-100 hover:text-primary"
+                    className="flex items-center gap-3 rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
                   >
-                    {item.text}
-                  </a>
-                ))}
-
-                <hr className="my-5" />
-
-                <Link
-                  href="/login"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
-                >
-                  Sign in
-                </Link>
-
-                {can("job", "create") && (
-                  <Link href="/jobs/post" onClick={() => setOpen(false)}>
-                    <Button className="mt-3 w-full">Post a Job</Button>
+                    <HugeiconsIcon icon={Login01Icon} className="h-6 w-6" />
+                    <span className="text-lg font-bold py-2">Sign in</span>
                   </Link>
-                )}
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
