@@ -1,18 +1,29 @@
-import { apiClient } from "@/lib/api/api-client";
-import type { Company, CompanyFilters } from "./types";
+import { rpcClient } from "@/lib/api/rpc";
+import type { CompanyFilters } from "./types";
 
-export const listCompanies = (filters: CompanyFilters) => {
-  const searchParams = new URLSearchParams();
-  if (filters.q) searchParams.set("q", filters.q);
-  if (filters.industry) searchParams.set("industry", filters.industry);
-  if (filters.location) searchParams.set("location", filters.location);
-  if (filters.page) searchParams.set("page", filters.page.toString());
-  if (filters.limit) searchParams.set("limit", filters.limit.toString());
-
-  const queryString = searchParams.toString();
-  const url = queryString ? `/companies?${queryString}` : `/companies`;
-  return apiClient<{ companies: Company[]; total: number }>(url);
+export const listCompanies = async (filters: CompanyFilters) => {
+  const query = {
+    ...filters,
+    page: filters.page?.toString(),
+    limit: filters.limit?.toString(),
+  };
+  const res = await rpcClient.api.companies.$get({ query });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to fetch companies");
+  }
+  const json = await res.json();
+  return json.data;
 };
 
-export const getCompany = (id: string) => 
-  apiClient<Company>(`/companies/${id}`);
+export const getCompany = async (id: string) => {
+  const res = await rpcClient.api.companies[":id"].$get({
+    param: { id },
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to fetch company");
+  }
+  const json = await res.json();
+  return json.data;
+};

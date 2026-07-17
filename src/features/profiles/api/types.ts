@@ -1,47 +1,27 @@
-export interface Education {
-  id: string;
-  institution: string;
-  degree: string;
-  field_of_study?: string;
-  start_date: string;
-  end_date?: string;
-  description?: string;
-}
+import { z } from "zod";
+import { 
+  UpdateProfileSchema, 
+  ResumeUploadSchema, 
+  EducationSchema, 
+  UpdateEducationSchema,
+  ExperienceSchema,
+  UpdateExperienceSchema
+} from "@server/features/profiles/profiles.schemas";
+import { InferResponseType } from "hono/client";
+import { rpcClient } from "@/lib/api/rpc";
 
-export interface Experience {
-  id: string;
-  title: string;
-  company: string;
-  location?: string;
-  start_date: string;
-  end_date?: string;
-  description?: string;
-}
+type GetProfileRes = InferResponseType<typeof rpcClient.api.users.profile.$get, 200>;
+export type Profile = GetProfileRes extends { data: infer P } ? P : never;
 
-export interface Profile {
-  user_id: string;
-  headline?: string;
-  about?: string;
-  visibility: "public" | "private";
-  portfolio_url?: string;
-  resume_url?: string;
-  education: Education[];
-  experience: Experience[];
-}
+// Infer inner array types
+export type Education = Profile extends { education: (infer E)[] } ? E : never;
+export type Experience = Profile extends { experience: (infer E)[] } ? E : never;
 
-export type UpdateProfilePayload = {
-  headline?: string;
-  about?: string;
-  visibility?: "public" | "private";
-  portfolio_url?: string;
-};
+export type UpdateProfilePayload = z.infer<typeof UpdateProfileSchema>;
+export type ResumeUploadPayload = z.infer<typeof ResumeUploadSchema>;
 
-export type ResumeUploadPayload = {
-  resume_url: string;
-};
+export type AddEducationPayload = z.infer<typeof EducationSchema>;
+export type UpdateEducationPayload = z.infer<typeof UpdateEducationSchema>;
 
-export type AddEducationPayload = Omit<Education, "id">;
-export type UpdateEducationPayload = Partial<AddEducationPayload>;
-
-export type AddExperiencePayload = Omit<Experience, "id">;
-export type UpdateExperiencePayload = Partial<AddExperiencePayload>;
+export type AddExperiencePayload = z.infer<typeof ExperienceSchema>;
+export type UpdateExperiencePayload = z.infer<typeof UpdateExperienceSchema>;

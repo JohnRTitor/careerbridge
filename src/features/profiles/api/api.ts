@@ -1,61 +1,105 @@
-import { apiClient } from "@/lib/api/api-client";
+import { rpcClient } from "@/lib/api/rpc";
 import type { 
-  Profile, 
   UpdateProfilePayload, 
   ResumeUploadPayload,
   AddEducationPayload,
   UpdateEducationPayload,
-  Education,
   AddExperiencePayload,
   UpdateExperiencePayload,
-  Experience
 } from "./types";
 
-export const getProfile = () => 
-  apiClient<Profile>("/users/profile");
+export const getProfile = async () => {
+  const res = await rpcClient.api.users.profile.$get();
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to fetch profile");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const updateProfile = (data: UpdateProfilePayload) => 
-  apiClient<Profile>("/users/profile", {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
+export const updateProfile = async (data: UpdateProfilePayload) => {
+  const res = await rpcClient.api.users.profile.$patch({ json: data });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to update profile");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const updateResume = (data: ResumeUploadPayload) =>
-  apiClient<Profile>("/users/profile/resume", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export const updateResume = async (data: ResumeUploadPayload) => {
+  const res = await rpcClient.api.users.profile.resume.$post({ json: data });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to update resume");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const addEducation = (data: AddEducationPayload) =>
-  apiClient<Education>("/users/profile/education", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export const addEducation = async (data: AddEducationPayload) => {
+  const res = await rpcClient.api.users.profile.education.$post({ json: data });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to add education");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const updateEducation = (id: string, data: UpdateEducationPayload) =>
-  apiClient<Education>(`/users/profile/education/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
+export const updateEducation = async (id: string, data: UpdateEducationPayload) => {
+  const res = await rpcClient.api.users.profile.education[":id"].$patch({
+    param: { id },
+    json: data,
   });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to update education");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const deleteEducation = (id: string) =>
-  apiClient<void>(`/users/profile/education/${id}`, {
-    method: "DELETE",
+export const deleteEducation = async (id: string) => {
+  const res = await rpcClient.api.users.profile.education[":id"].$delete({
+    param: { id },
   });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to delete education");
+  }
+};
 
-export const addExperience = (data: AddExperiencePayload) =>
-  apiClient<Experience>("/users/profile/experience", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export const addExperience = async (data: AddExperiencePayload) => {
+  const res = await rpcClient.api.users.profile.experience.$post({ json: data });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to add experience");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const updateExperience = (id: string, data: UpdateExperiencePayload) =>
-  apiClient<Experience>(`/users/profile/experience/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
+export const updateExperience = async (id: string, data: UpdateExperiencePayload) => {
+  const res = await rpcClient.api.users.profile.experience[":id"].$patch({
+    param: { id },
+    json: data,
   });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to update experience");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const deleteExperience = (id: string) =>
-  apiClient<void>(`/users/profile/experience/${id}`, {
-    method: "DELETE",
+export const deleteExperience = async (id: string) => {
+  const res = await rpcClient.api.users.profile.experience[":id"].$delete({
+    param: { id },
   });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to delete experience");
+  }
+};

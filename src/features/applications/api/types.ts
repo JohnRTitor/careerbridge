@@ -1,22 +1,10 @@
+import { z } from "zod";
+import { ApplyJobSchema } from "@server/features/applications/applications.schemas";
+import { InferResponseType } from "hono/client";
+import { rpcClient } from "@/lib/api/rpc";
 import { Job } from "@/features/jobs/api/types";
 
-export interface Application {
-  id: string;
-  job_id: string;
-  candidate_id: string;
-  status: "pending" | "reviewing" | "shortlisted" | "rejected" | "hired";
-  resume_id?: string;
-  cover_letter?: string;
-  recruiter_notes?: string;
-  reviewed_by?: string;
-  reviewed_at?: string;
-  rating?: number;
-  applied_at: string;
-  updated_at: string;
-  job?: Job; // If backend joins the job details
-}
+type GetUserApplicationsRes = InferResponseType<typeof rpcClient.api.applications.$get, 200>;
+export type Application = GetUserApplicationsRes extends { data: (infer A)[] } ? A : never;
 
-export type ApplyJobPayload = {
-  resume_id?: string;
-  cover_letter?: string;
-};
+export type ApplyJobPayload = z.infer<typeof ApplyJobSchema>;

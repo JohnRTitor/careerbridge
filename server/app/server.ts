@@ -13,17 +13,26 @@ import { recruitersRoutes } from "../features/recruiters/recruiters.routes";
 import { companiesRoutes } from "../features/companies/companies.routes";
 import { adminRoutes } from "../features/admin/admin.routes";
 import { metaRoutes } from "../features/meta/meta.routes";
+import { auth } from "../auth/auth";
 export const app = new Hono().basePath("/api");
 
+// ─── Auth Route ──────────────────────────────────────────────────────────────
+app.on(["POST", "GET"], "/auth/**", (c) => {
+  return auth.handler(c.req.raw);
+});
+
 // ─── Feature Routes ──────────────────────────────────────────────────────────
-app.route("/users", profilesRoutes);
-app.route("/jobs", jobsRoutes);
-app.route("/jobs", jobApplicationsRoutes);
-app.route("/applications", applicationsRoutes);
-app.route("/recruiters", recruitersRoutes);
-app.route("/companies", companiesRoutes);
-app.route("/admin", adminRoutes);
-app.route("/meta", metaRoutes);
+const routes = app
+  .route("/users", profilesRoutes)
+  .route("/jobs", jobsRoutes)
+  .route("/jobs", jobApplicationsRoutes)
+  .route("/applications", applicationsRoutes)
+  .route("/recruiters", recruitersRoutes)
+  .route("/companies", companiesRoutes)
+  .route("/admin", adminRoutes)
+  .route("/meta", metaRoutes);
+
+export type AppType = typeof routes;
 
 // ─── Health check ────────────────────────────────────────────────────────────
 app.get("/health", async (c) => {
