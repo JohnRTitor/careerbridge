@@ -9,8 +9,9 @@ export default async function OnboardingPage() {
     redirect("/login");
   }
 
-  // If the user already has a role set (e.g., they completed onboarding), redirect them.
-  if (session.user.role) {
+  // If the user already has a valid role set (e.g., they completed onboarding), redirect them.
+  // The default role assigned to new users by Better Auth is often "user".
+  if (session.user.role && session.user.role !== "user") {
     redirect("/dashboard");
   }
 

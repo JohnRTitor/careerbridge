@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   BriefcaseIcon,
@@ -10,7 +11,7 @@ import {
   KanbanIcon,
   ListViewIcon,
 } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,88 +19,90 @@ import { useCandidateApplications } from "@/features/applications/api/queries";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import type { Application } from "@/features/applications/api/types";
 
+const formatTimeAgo = (dateStr: string) => {
+  try {
+    return formatDistanceToNow(parseISO(dateStr), { addSuffix: true });
+  } catch {
+    return "recently";
+  }
+};
+
+const ApplicationCard = ({ app }: { app: Application }) => (
+  <Card className="bg-white border border-border shadow-sm hover:shadow-md transition-shadow">
+    <CardContent className="p-4">
+      <div className="flex gap-3">
+        {app.company_logo ? (
+          <div className="size-10 rounded-lg border border-border overflow-hidden shrink-0">
+            <Image
+              src={app.company_logo}
+              alt={app.company_name || ""}
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-xs font-bold text-secondary-foreground shrink-0 uppercase">
+            {app.company_name?.substring(0, 2) || "CP"}
+          </span>
+        )}
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-sm leading-snug truncate">
+            {app.job_title}
+          </h4>
+          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
+            <HugeiconsIcon icon={Building01Icon} className="size-3 shrink-0" />{" "}
+            {app.company_name || "Unknown Company"}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
+        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+          <HugeiconsIcon icon={ClockIcon} className="size-3" />
+          {formatTimeAgo(app.applied_at)}
+        </span>
+        <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-white" })}>View Job</Link>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const KanbanColumn = ({
+  title,
+  apps,
+  badgeClass,
+}: {
+  title: string;
+  apps: Application[];
+  badgeClass: string;
+}) => (
+  <div className="flex flex-col min-w-[280px] w-full max-w-sm shrink-0 bg-slate-50/50 rounded-xl border border-border p-4">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="font-semibold text-sm">{title}</h3>
+      <Badge variant="secondary" className={badgeClass}>
+        {apps.length}
+      </Badge>
+    </div>
+    <div className="flex flex-col gap-3 h-full">
+      {apps.length > 0 ? (
+        apps.map((app) => <ApplicationCard key={app.id} app={app} />)
+      ) : (
+        <div className="flex-1 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center text-xs text-muted-foreground p-6 text-center">
+          No applications in this stage
+        </div>
+      )}
+    </div>
+  </div>
+);
+
 export default function ApplicationsTrackerPage() {
   const { data: applications = [], isLoading } = useCandidateApplications();
   const [view, setView] = useState<"kanban" | "list">("kanban");
-
-  const formatTimeAgo = (dateStr: string) => {
-    try {
-      return formatDistanceToNow(parseISO(dateStr), { addSuffix: true });
-    } catch {
-      return "recently";
-    }
-  };
 
   const reviewing = applications.filter((a) => a.status === "reviewing");
   const interviewing = applications.filter((a) => a.status === "interviewing");
   const offered = applications.filter((a) => a.status === "offered");
   const rejected = applications.filter((a) => a.status === "rejected");
-
-  const ApplicationCard = ({ app }: { app: Application }) => (
-    <Card className="bg-white border border-border shadow-sm hover:shadow-md transition-shadow">
-      <CardContent className="p-4">
-        <div className="flex gap-3">
-          {app.company_logo ? (
-            <div className="size-10 rounded-lg border border-border overflow-hidden shrink-0">
-              <img
-                src={app.company_logo}
-                alt={app.company_name || ""}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-xs font-bold text-secondary-foreground shrink-0 uppercase">
-              {app.company_name?.substring(0, 2) || "CP"}
-            </span>
-          )}
-          <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-sm leading-snug truncate">
-              {app.job_title}
-            </h4>
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
-              <HugeiconsIcon icon={Building01Icon} className="size-3 shrink-0" />{" "}
-              {app.company_name || "Unknown Company"}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
-          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-            <HugeiconsIcon icon={ClockIcon} className="size-3" />
-            {formatTimeAgo(app.applied_at)}
-          </span>
-          <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-white" })}>View Job</Link>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  const KanbanColumn = ({
-    title,
-    apps,
-    badgeClass,
-  }: {
-    title: string;
-    apps: Application[];
-    badgeClass: string;
-  }) => (
-    <div className="flex flex-col min-w-[280px] w-full max-w-sm shrink-0 bg-slate-50/50 rounded-xl border border-border p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-sm">{title}</h3>
-        <Badge variant="secondary" className={badgeClass}>
-          {apps.length}
-        </Badge>
-      </div>
-      <div className="flex flex-col gap-3 h-full">
-        {apps.length > 0 ? (
-          apps.map((app) => <ApplicationCard key={app.id} app={app} />)
-        ) : (
-          <div className="flex-1 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center text-xs text-muted-foreground p-6 text-center">
-            No applications in this stage
-          </div>
-        )}
-      </div>
-    </div>
-  );
 
   if (isLoading) {
     return (
@@ -158,7 +161,7 @@ export default function ApplicationsTrackerPage() {
           </div>
           <h3 className="text-xl font-semibold">No applications found</h3>
           <p className="text-muted-foreground max-w-sm mt-2">
-            You haven't applied to any jobs yet. Start exploring opportunities!
+            You haven&apos;t applied to any jobs yet. Start exploring opportunities!
           </p>
           <Link href="/jobs" className={buttonVariants({ className: "mt-6" })}>Browse Jobs</Link>
         </Card>
