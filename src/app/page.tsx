@@ -273,7 +273,7 @@ export default function Page() {
                     placeholder="Job title or keyword"
                     value={searchTitle}
                     onChange={(e) => setSearchTitle(e.target.value)}
-                    className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                    className="border-0 bg-transparent dark:bg-transparent px-0 shadow-none focus-visible:ring-0"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>
@@ -287,7 +287,7 @@ export default function Page() {
                     placeholder="Location"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                    className="border-0 bg-transparent dark:bg-transparent px-0 shadow-none focus-visible:ring-0"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>

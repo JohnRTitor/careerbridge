@@ -49,7 +49,7 @@ export default function CompanyDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#f8faff] p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+      <div className="flex flex-col min-h-screen bg-background p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
         <Skeleton className="h-8 w-24 mb-4" />
         <Skeleton className="h-[250px] w-full rounded-2xl" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
@@ -70,7 +70,7 @@ export default function CompanyDetailsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8faff] pb-16">
+    <div className="flex flex-col min-h-screen bg-background pb-16">
       <div className="bg-background border-b border-border pt-8 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <button 

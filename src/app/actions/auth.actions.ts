@@ -3,51 +3,7 @@
 import { auth } from "@server/auth/auth";
 import { adminService } from "@server/features/admin/admin.service";
 import { headers } from "next/headers";
-import { LoginInput, RegisterInput } from "@/lib/zod-schemas";
 
-export async function loginAction(data: LoginInput) {
-  try {
-    // In server actions with better-auth, we can pass headers to automatically set cookies.
-    const response = await auth.api.signInEmail({
-      body: {
-        email: data.email,
-        password: data.password,
-      },
-      headers: await headers(),
-    });
-
-    if (!response?.user) {
-      return { error: "Invalid credentials" };
-    }
-
-    return { success: true, user: response.user };
-  } catch (error: unknown) {
-    const err = error as Error;
-    return { error: err.message || "An error occurred during login" };
-  }
-}
-
-export async function registerAction(data: RegisterInput) {
-  try {
-    const response = await auth.api.signUpEmail({
-      body: {
-        email: data.email,
-        password: data.password,
-        name: data.fullName,
-      },
-      headers: await headers(),
-    });
-
-    if (!response?.user) {
-      return { error: "Failed to create user" };
-    }
-
-    return { success: true, user: response.user };
-  } catch (error: unknown) {
-    const err = error as Error;
-    return { error: err.message || "An error occurred during registration" };
-  }
-}
 
 import { pool } from "@server/app/db";
 import { OnboardingInput } from "@/lib/zod-schemas";

@@ -19,7 +19,7 @@ export default function CandidateProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#f8faff] p-4 sm:p-8 space-y-6">
+      <div className="flex min-h-screen flex-col bg-background p-4 sm:p-8 space-y-6">
         <Skeleton className="h-48 w-full rounded-2xl" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
@@ -51,7 +51,7 @@ export default function CandidateProfilePage() {
   if (!profile) return null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8faff]">
+    <div className="flex min-h-screen flex-col bg-background">
       <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
         <div className="space-y-6">
           {/* Header Section */}

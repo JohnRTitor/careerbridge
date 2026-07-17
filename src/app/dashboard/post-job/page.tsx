@@ -42,7 +42,7 @@ export default function PostJobPage() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8faff] py-12">
+    <div className="flex min-h-screen flex-col bg-background py-12">
       <main className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <Link 
           href="/dashboard"

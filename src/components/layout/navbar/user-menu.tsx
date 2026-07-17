@@ -25,7 +25,7 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
-  const profileUrl = `/u/${user.name || user.id}`;
+  const profileUrl = `/u/${user.id}`;
 
   return (
     <DropdownMenu>

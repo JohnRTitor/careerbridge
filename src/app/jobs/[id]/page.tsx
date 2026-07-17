@@ -63,7 +63,7 @@ export default function JobDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#f8faff] p-4 sm:p-8 space-y-6 max-w-5xl mx-auto w-full">
+      <div className="flex flex-col min-h-screen bg-background p-4 sm:p-8 space-y-6 max-w-5xl mx-auto w-full">
         <Skeleton className="h-8 w-24 mb-4" />
         <div className="bg-background rounded-2xl p-6 border border-border">
           <div className="flex items-start gap-6">
@@ -104,7 +104,7 @@ export default function JobDetailsPage() {
   const isCandidate = can("application", "create");
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8faff] pb-16">
+    <div className="flex flex-col min-h-screen bg-background pb-16">
       {/* Header Section */}
       <div className="bg-background border-b border-border py-8">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">

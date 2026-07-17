@@ -6,7 +6,7 @@ import { MailIcon, LockIcon, UserIcon, ArrowRightIcon, Tick01Icon } from "@hugei
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
 import { registerSchema } from "@/lib/zod-schemas";
-import { registerAction } from "@/app/actions/auth.actions";
+import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -26,10 +26,14 @@ export default function SignUpPage() {
     },
     onSubmit: async ({ value }) => {
       setLoading(true);
-      const result = await registerAction(value);
+      const { data, error } = await authClient.signUp.email({
+        email: value.email,
+        password: value.password,
+        name: value.fullName,
+      });
 
-      if (result.error) {
-        toast.error(result.error);
+      if (error) {
+        toast.error(error.message || "An error occurred during registration");
         setLoading(false);
         return;
       }
@@ -40,14 +44,14 @@ export default function SignUpPage() {
   });
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center bg-linear-to-b from-[#e0efff] via-[#f0f7ff] to-background px-4 py-12"
-      style={{
-        backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to bottom, #e0efff, #f0f7ff, #ffffff)`,
-        backgroundSize: "24px 24px, 100% 100%",
-      }}
-    >
-      <div className="w-full max-w-md space-y-6">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
+      <div 
+        className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
+        style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
+      
+      <div className="relative z-10 w-full max-w-md space-y-6">
         <div className="flex flex-col items-center text-center">
           <Link href="/" className="flex items-center gap-1.5 mb-2">
             <Image

@@ -64,7 +64,7 @@ function CompaniesSearchContent() {
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-[#f8faff]">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-background">
       <div className="bg-primary px-4 py-12 sm:py-16 sm:px-6 lg:px-8 border-b border-primary/20">
         <div className="mx-auto max-w-4xl space-y-6 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
