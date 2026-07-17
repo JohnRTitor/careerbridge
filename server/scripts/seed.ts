@@ -1,34 +1,67 @@
 import { faker } from "@faker-js/faker";
 import { pool } from "../app/db";
 import { randomUUID as uuidv4 } from "node:crypto";
+import { JOB_TYPES, WORK_MODES, VISIBILITIES, randomDate, batchInsert } from "./seed-utils";
 
 faker.seed(12345);
 
-const TARGETS = {
-  CANDIDATES: 500,
-  EMPLOYERS: 150,
-  COMPANIES: 100,
-  JOBS: 2500,
-  APPLICATIONS: 10000,
+// --- Configuration ---
+export interface SeedConfig {
+  candidates: number;
+  employers: number;
+  companies: number;
+  jobs: number;
+  applications: number;
+}
+
+export const SeedProfiles: Record<string, SeedConfig> = {
+  minimal: {
+    candidates: 30,
+    employers: 10,
+    companies: 15,
+    jobs: 50,
+    applications: 200,
+  },
+  standard: {
+    candidates: 500,
+    employers: 100,
+    companies: 100,
+    jobs: 2500,
+    applications: 10000,
+  },
+  large: {
+    candidates: 1500,
+    employers: 250,
+    companies: 500,
+    jobs: 15000,
+    applications: 50000,
+  },
 };
 
-import { JOB_TYPES, WORK_MODES, VISIBILITIES, randomDate, batchInsert } from "./seed-utils";
+// --- State ---
+interface SeedState {
+  skillIds: string[];
+  languageIds: string[];
+  companyIds: string[];
+  candidateIds: string[];
+  employerIds: string[];
+  jobIds: string[];
+  candidateResumes: Record<string, string[]>;
+  baseDate: Date;
+}
 
-// --- Data Stores ---
-const skillIds: string[] = [];
-const languageIds: string[] = [];
-const companyIds: string[] = [];
-const candidateIds: string[] = [];
-const employerIds: string[] = [];
-const jobIds: string[] = [];
-const candidateResumes: Record<string, string[]> = {};
-let baseDate = new Date();
-baseDate.setFullYear(baseDate.getFullYear() - 3); // Seed over the last 3 years
+// --- CLI Parsing ---
+function getMode(): string {
+  const modeArg = process.argv.find((arg) => arg.startsWith("--mode="));
+  if (modeArg) {
+    return modeArg.split("=")[1];
+  }
+  return "standard";
+}
 
 // --- Modules ---
 
-async function createSkillsAndLanguages() {
-  console.log("Generating Skills & Languages...");
+async function createSkillsAndLanguages(config: SeedConfig, state: SeedState) {
   const skills = [
     "Rust", "Go", "TypeScript", "Java", "Kotlin", "Python", "C#", "C++", "Swift",
     "React", "Next.js", "Vue", "Angular", "Tailwind", "Svelte",
@@ -40,31 +73,30 @@ async function createSkillsAndLanguages() {
     "Cybersecurity", "Blockchain", "Solidity"
   ];
 
-  const skillData = skills.map(s => {
+  const skillData = skills.map((s) => {
     const id = uuidv4();
-    skillIds.push(id);
+    state.skillIds.push(id);
     return [id, s];
   });
   await batchInsert("skills", ["id", "name"], skillData, "DO NOTHING");
 
   const languages = ["English", "Spanish", "French", "German", "Mandarin", "Japanese", "Hindi", "Arabic", "Portuguese", "Russian"];
-  const langData = languages.map(l => {
+  const langData = languages.map((l) => {
     const id = uuidv4();
-    languageIds.push(id);
+    state.languageIds.push(id);
     return [id, l];
   });
   await batchInsert("languages", ["id", "name"], langData, "DO NOTHING");
 }
 
-async function createCompanies() {
-  console.log(`Generating ${TARGETS.COMPANIES} Companies...`);
+async function createCompanies(config: SeedConfig, state: SeedState) {
   const industries = ["Technology", "Healthcare", "Fintech", "E-commerce", "Education", "Manufacturing", "Gaming", "Cybersecurity", "Consulting", "Biotech", "AI"];
   
   const companyData = [];
-  for (let i = 0; i < TARGETS.COMPANIES; i++) {
+  for (let i = 0; i < config.companies; i++) {
     const id = uuidv4();
-    companyIds.push(id);
-    const createdAt = randomDate(baseDate, new Date());
+    state.companyIds.push(id);
+    const createdAt = randomDate(state.baseDate, new Date());
     companyData.push([
       id,
       faker.company.name(),
@@ -82,9 +114,7 @@ async function createCompanies() {
   await batchInsert("companies", ["id", "name", "description", "logo_url", "website", "industry", "size", "location", "is_verified", "created_at", "updated_at"], companyData);
 }
 
-async function createUsers() {
-  console.log(`Generating ${TARGETS.CANDIDATES} Candidates and ${TARGETS.EMPLOYERS} Employers...`);
-  
+async function createUsers(config: SeedConfig, state: SeedState) {
   const userData = [];
   const profileData = [];
   const educationData = [];
@@ -100,17 +130,17 @@ async function createUsers() {
   const companyMembersData = [];
   const followersData = [];
 
-  const totalUsers = TARGETS.CANDIDATES + TARGETS.EMPLOYERS;
+  const totalUsers = config.candidates + config.employers;
   
   for (let i = 0; i < totalUsers; i++) {
     const id = uuidv4();
-    const isCandidate = i < TARGETS.CANDIDATES;
-    if (isCandidate) candidateIds.push(id);
-    else employerIds.push(id);
+    const isCandidate = i < config.candidates;
+    if (isCandidate) state.candidateIds.push(id);
+    else state.employerIds.push(id);
 
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
-    const createdAt = randomDate(baseDate, new Date());
+    const createdAt = randomDate(state.baseDate, new Date());
     
     // User Record
     userData.push([
@@ -191,13 +221,13 @@ async function createUsers() {
       }
 
       // Skills (3-10)
-      const userSkills = faker.helpers.arrayElements(skillIds, faker.number.int({ min: 3, max: 10 }));
+      const userSkills = faker.helpers.arrayElements(state.skillIds, faker.number.int({ min: 3, max: 10 }));
       for (const skillId of userSkills) {
         userSkillsData.push([id, skillId, faker.number.int({ min: 1, max: 10 }), faker.number.int({ min: 1, max: 5 })]);
       }
 
       // Languages (1-3)
-      const userLangs = faker.helpers.arrayElements(languageIds, faker.number.int({ min: 1, max: 3 }));
+      const userLangs = faker.helpers.arrayElements(state.languageIds, faker.number.int({ min: 1, max: 3 }));
       for (const langId of userLangs) {
         userLangsData.push([id, langId, faker.helpers.arrayElement(["Beginner", "Intermediate", "Advanced", "Native"])]);
       }
@@ -215,10 +245,10 @@ async function createUsers() {
       // Resumes (1-3) - 95% of candidates have resumes, 5% edge case no resume
       if (faker.datatype.boolean(0.95)) {
         const numResumes = faker.number.int({ min: 1, max: 3 });
-        candidateResumes[id] = [];
+        state.candidateResumes[id] = [];
         for (let j = 0; j < numResumes; j++) {
           const resId = uuidv4();
-          candidateResumes[id].push(resId);
+          state.candidateResumes[id].push(resId);
           resumesData.push([
             resId, id, `${firstName}'s Resume v${j+1}`, faker.internet.url(), j === 0, createdAt
           ]);
@@ -227,14 +257,14 @@ async function createUsers() {
 
       // Follows Companies
       const numFollows = faker.number.int({ min: 0, max: 5 });
-      const followedCompanies = faker.helpers.arrayElements(companyIds, numFollows);
+      const followedCompanies = faker.helpers.arrayElements(state.companyIds, numFollows);
       for (const compId of followedCompanies) {
         followersData.push([id, compId, createdAt]);
       }
 
     } else {
       // Employer Profile
-      const compId = faker.helpers.arrayElement(companyIds);
+      const compId = faker.helpers.arrayElement(state.companyIds);
       recruiterProfilesData.push([
         id, compId, faker.person.jobTitle(), faker.phone.number(), faker.datatype.boolean(0.8), createdAt
       ]);
@@ -249,7 +279,6 @@ async function createUsers() {
   await batchInsert("certifications", ["id", "user_id", "name", "issuer", "issue_date", "expiry_date", "credential_id", "credential_url", "created_at"], certificationsData);
   await batchInsert("projects", ["id", "user_id", "title", "description", "repository_url", "live_url", "start_date", "end_date", "created_at"], projectsData);
   
-  // Handle DO NOTHING for composite primary keys just in case faker picked same skill twice
   await batchInsert("user_skills", ["user_id", "skill_id", "years_of_experience", "proficiency"], userSkillsData, "(user_id, skill_id) DO NOTHING");
   await batchInsert("user_languages", ["user_id", "language_id", "proficiency"], userLangsData, "(user_id, language_id) DO NOTHING");
   
@@ -261,16 +290,14 @@ async function createUsers() {
   await batchInsert("company_followers", ["user_id", "company_id", "followed_at"], followersData, "(user_id, company_id) DO NOTHING");
 }
 
-async function createJobs() {
-  console.log(`Generating ${TARGETS.JOBS} Jobs...`);
+async function createJobs(config: SeedConfig, state: SeedState) {
   const jobsData = [];
   
-  for (let i = 0; i < TARGETS.JOBS; i++) {
+  for (let i = 0; i < config.jobs; i++) {
     const id = uuidv4();
-    jobIds.push(id);
-    const createdAt = randomDate(baseDate, new Date());
+    state.jobIds.push(id);
+    const createdAt = randomDate(state.baseDate, new Date());
     
-    // Mix of realistic distributions
     const isDraft = faker.datatype.boolean(0.05); // 5% draft
     const isClosed = faker.datatype.boolean(0.15); // 15% closed
     const status = isDraft ? "draft" : (isClosed ? "closed" : "open");
@@ -282,8 +309,8 @@ async function createJobs() {
       id,
       faker.person.jobTitle(),
       faker.lorem.paragraphs(4) + "\n\nRequirements:\n- " + faker.lorem.sentences(3) + "\n\nBenefits:\n- " + faker.lorem.sentences(2),
-      faker.helpers.arrayElement(employerIds), // created_by
-      faker.datatype.boolean(0.95) ? faker.helpers.arrayElement(companyIds) : null, // company_id (5% edge case no company)
+      faker.helpers.arrayElement(state.employerIds), // created_by
+      faker.datatype.boolean(0.95) ? faker.helpers.arrayElement(state.companyIds) : null, // company_id (5% edge case no company)
       faker.location.city(),
       faker.helpers.arrayElement(JOB_TYPES),
       status,
@@ -305,41 +332,37 @@ async function createJobs() {
   await batchInsert("jobs", ["id", "title", "description", "created_by", "company_id", "location", "type", "status", "work_mode", "minimum_salary", "maximum_salary", "currency", "experience_min", "experience_max", "education_level", "application_deadline", "vacancies", "is_featured", "created_at", "updated_at"], jobsData);
 }
 
-async function createApplications() {
-  console.log(`Generating ${TARGETS.APPLICATIONS} Applications...`);
+async function createApplications(config: SeedConfig, state: SeedState) {
   const appsData = [];
   const savedJobsData = [];
   const auditLogsData = [];
 
-  // Track applied jobs per candidate to avoid unique constraint violations
   const candidateApplications = new Map<string, Set<string>>();
 
-  for (let i = 0; i < TARGETS.APPLICATIONS; i++) {
-    const candidateId = faker.helpers.arrayElement(candidateIds);
-    const jobId = faker.helpers.arrayElement(jobIds);
+  for (let i = 0; i < config.applications; i++) {
+    const candidateId = faker.helpers.arrayElement(state.candidateIds);
+    const jobId = faker.helpers.arrayElement(state.jobIds);
 
     if (!candidateApplications.has(candidateId)) {
       candidateApplications.set(candidateId, new Set());
     }
     const appliedJobs = candidateApplications.get(candidateId)!;
 
-    if (appliedJobs.has(jobId)) continue; // skip duplicates
+    if (appliedJobs.has(jobId)) continue;
     appliedJobs.add(jobId);
 
-    const createdAt = randomDate(baseDate, new Date());
+    const createdAt = randomDate(state.baseDate, new Date());
     
-    // Funnel distribution
     const rand = Math.random();
     let status = "pending";
     if (rand > 0.98) status = "hired"; // 2%
     else if (rand > 0.90) status = "rejected"; // 8%
     else if (rand > 0.80) status = "shortlisted"; // 10%
     else if (rand > 0.55) status = "reviewing"; // 25%
-    // 55% pending
 
-    const candidateRes = candidateResumes[candidateId] || [];
+    const candidateRes = state.candidateResumes[candidateId] || [];
     const resumeId = candidateRes.length > 0 ? faker.helpers.arrayElement(candidateRes) : null;
-    const reviewedBy = status !== "pending" ? faker.helpers.arrayElement(employerIds) : null;
+    const reviewedBy = status !== "pending" ? faker.helpers.arrayElement(state.employerIds) : null;
 
     appsData.push([
       uuidv4(),
@@ -356,13 +379,11 @@ async function createApplications() {
       createdAt
     ]);
 
-    // Also simulate saving some jobs
     if (faker.datatype.boolean(0.2)) {
-      const savedJobId = faker.helpers.arrayElement(jobIds);
-      savedJobsData.push([candidateId, savedJobId, randomDate(baseDate, new Date())]);
+      const savedJobId = faker.helpers.arrayElement(state.jobIds);
+      savedJobsData.push([candidateId, savedJobId, randomDate(state.baseDate, new Date())]);
     }
 
-    // Occasional audit log
     if (faker.datatype.boolean(0.05)) {
       auditLogsData.push([
         uuidv4(),
@@ -395,15 +416,50 @@ async function verifyCounts() {
 }
 
 async function seed() {
-  console.log("🌱 Starting database seeding...");
+  const mode = getMode();
+  const config = SeedProfiles[mode];
+
+  if (!config) {
+    console.error(`❌ Invalid mode: ${mode}. Available modes: ${Object.keys(SeedProfiles).join(", ")}`);
+    process.exit(1);
+  }
+
+  let baseDate = new Date();
+  baseDate.setFullYear(baseDate.getFullYear() - 3);
+
+  const state: SeedState = {
+    skillIds: [],
+    languageIds: [],
+    companyIds: [],
+    candidateIds: [],
+    employerIds: [],
+    jobIds: [],
+    candidateResumes: {},
+    baseDate,
+  };
+
+  console.log(`🌱 Starting database seeding...`);
+  console.log(`📦 Mode: ${mode.toUpperCase()}`);
+  console.log(`- Candidates: ${config.candidates}`);
+  console.log(`- Employers: ${config.employers}`);
+  console.log(`- Companies: ${config.companies}`);
+  console.log(`- Jobs: ${config.jobs}`);
+  console.log(`- Applications: ${config.applications}\n`);
+
   const startTime = Date.now();
 
   try {
-    await createSkillsAndLanguages();
-    await createCompanies();
-    await createUsers();
-    await createJobs();
-    await createApplications();
+    console.log("Generating Skills & Languages...");
+    await createSkillsAndLanguages(config, state);
+    console.log(`Generating ${config.companies} Companies...`);
+    await createCompanies(config, state);
+    console.log(`Generating ${config.candidates} Candidates and ${config.employers} Employers...`);
+    await createUsers(config, state);
+    console.log(`Generating ${config.jobs} Jobs...`);
+    await createJobs(config, state);
+    console.log(`Generating ${config.applications} Applications...`);
+    await createApplications(config, state);
+    
     await verifyCounts();
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);

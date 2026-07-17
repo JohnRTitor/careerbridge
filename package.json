@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:reset": "tsx --env-file=.env server/scripts/reset-db.ts",
     "db:seed": "tsx --env-file=.env server/scripts/seed.ts",
+    "seed": "tsx --env-file=.env server/scripts/seed.ts",
     "db:setup": "pnpm db:reset && pnpm db:seed",
     "seed:candidate": "tsx --env-file=.env server/scripts/seed-candidate.ts",
     "seed:recruiter": "tsx --env-file=.env server/scripts/seed-recruiter.ts"
