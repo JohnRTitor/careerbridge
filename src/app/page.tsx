@@ -3,7 +3,28 @@
 import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { BriefcaseIcon, MenuIcon, Cancel01Icon, SearchIcon, Location01Icon, ClockIcon, BookmarkIcon, CodeIcon, PenToolIcon, MegaphoneIcon, ChartBarLineIcon, StethoscopeIcon, GraduationCapIcon, Building01Icon, HeadphonesIcon, UserAdd01Icon, SentIcon, ArrowUpRightIcon, Alert01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
+import {
+  BriefcaseIcon,
+  MenuIcon,
+  Cancel01Icon,
+  SearchIcon,
+  Location01Icon,
+  ClockIcon,
+  BookmarkIcon,
+  CodeIcon,
+  PenToolIcon,
+  MegaphoneIcon,
+  ChartBarLineIcon,
+  StethoscopeIcon,
+  GraduationCapIcon,
+  Building01Icon,
+  HeadphonesIcon,
+  UserAdd01Icon,
+  SentIcon,
+  ArrowUpRightIcon,
+  Alert01Icon,
+  Tick01Icon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -228,78 +249,6 @@ export default function Page() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-1.5">
-            <Image
-              src="/logo.svg"
-              alt="CareerBridge Logo"
-              width={80}
-              height={80}
-              priority
-              className="h-20 w-20 object-contain"
-            />
-            <span className="text-xl font-bold tracking-tight">
-              CareerBridge
-            </span>
-          </a>
-
-          {/* Navigation */}
-          <nav className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Right Buttons */}
-          <div className="hidden items-center gap-2 md:flex">
-            <Button variant="ghost">Sign in</Button>
-            <Button>Post a Job</Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="flex size-10 items-center justify-center rounded-lg text-foreground md:hidden"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            {open ? <HugeiconsIcon icon={Cancel01Icon} className="size-5" /> : <HugeiconsIcon icon={MenuIcon} className="size-5" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {open && (
-          <div className="border-t border-border bg-background md:hidden">
-            <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
-
-              <div className="mt-2 flex flex-col gap-2">
-                <Button variant="outline">Sign in</Button>
-                <Button>Post a Job</Button>
-              </div>
-            </nav>
-          </div>
-        )}
-      </header>
-
       <main className="flex-1">
         {/* Hero Section with Light Ice-Blue Gradient and Subtle Dot Grid */}
         <section
@@ -329,7 +278,10 @@ export default function Page() {
               {/* Functional Search Container */}
               <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
-                  <HugeiconsIcon icon={SearchIcon} className="size-5 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon
+                    icon={SearchIcon}
+                    className="size-5 shrink-0 text-muted-foreground"
+                  />
                   <Input
                     placeholder="Job title or keyword"
                     value={searchTitle}
@@ -339,7 +291,10 @@ export default function Page() {
                 </div>
                 <div className="hidden h-8 w-px bg-border sm:block" />
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
-                  <HugeiconsIcon icon={Location01Icon} className="size-5 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon
+                    icon={Location01Icon}
+                    className="size-5 shrink-0 text-muted-foreground"
+                  />
                   <Input
                     placeholder="Location"
                     value={searchLocation}
@@ -364,9 +319,15 @@ export default function Page() {
                     }`}
                   >
                     {searchMessage.type === "success" ? (
-                      <HugeiconsIcon icon={Tick01Icon} className="size-4 text-emerald-600 shrink-0" />
+                      <HugeiconsIcon
+                        icon={Tick01Icon}
+                        className="size-4 text-emerald-600 shrink-0"
+                      />
                     ) : (
-                      <HugeiconsIcon icon={Alert01Icon} className="size-4 text-rose-600 shrink-0" />
+                      <HugeiconsIcon
+                        icon={Alert01Icon}
+                        className="size-4 text-rose-600 shrink-0"
+                      />
                     )}
                     <span>{searchMessage.text}</span>
                     <button
@@ -480,7 +441,10 @@ export default function Page() {
                           className="text-muted-foreground transition-colors hover:text-primary"
                           aria-label="Save job"
                         >
-                          <HugeiconsIcon icon={BookmarkIcon} className="size-5" />
+                          <HugeiconsIcon
+                            icon={BookmarkIcon}
+                            className="size-5"
+                          />
                         </button>
                       </div>
 
@@ -495,7 +459,10 @@ export default function Page() {
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <HugeiconsIcon icon={Location01Icon} className="size-4" />
+                          <HugeiconsIcon
+                            icon={Location01Icon}
+                            className="size-4"
+                          />
                           {job.location}
                         </span>
                         <span className="flex items-center gap-1">
@@ -534,14 +501,17 @@ export default function Page() {
             ) : (
               /* No Results State Layout */
               <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
-                <HugeiconsIcon icon={Alert01Icon} className="size-12 text-muted-foreground stroke-1 mb-4" />
+                <HugeiconsIcon
+                  icon={Alert01Icon}
+                  className="size-12 text-muted-foreground stroke-1 mb-4"
+                />
                 <h3 className="text-lg font-semibold text-foreground">
                   No matches listed
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                  We couldn&apos;t find anything matching your exact text. Double
-                  check spelling or try looking with empty parameters to view
-                  everything.
+                  We couldn&apos;t find anything matching your exact text.
+                  Double check spelling or try looking with empty parameters to
+                  view everything.
                 </p>
                 <Button
                   className="mt-6"
@@ -632,7 +602,10 @@ export default function Page() {
                     </p>
                   </div>
                   <div className="flex flex-col items-end">
-                    <HugeiconsIcon icon={ArrowUpRightIcon} className="size-5 text-muted-foreground transition-colors group-hover:text-primary" />
+                    <HugeiconsIcon
+                      icon={ArrowUpRightIcon}
+                      className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
+                    />
                     <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
                       {company.openings} jobs
                     </span>
@@ -643,94 +616,6 @@ export default function Page() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border bg-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          {/* CTA Box */}
-          <div className="flex flex-col items-center gap-6 rounded-3xl bg-[#f0f7ff] border border-primary/10 py-14 my-8 text-center">
-            <h2 className="max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-              Ready to find your next opportunity?
-            </h2>
-
-            <p className="max-w-xl text-pretty text-muted-foreground">
-              Create a free account and get matched with roles built for you.
-            </p>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button size="lg">Get Started</Button>
-              <Button size="lg" variant="outline" className="bg-white">
-                Post a Job
-              </Button>
-            </div>
-          </div>
-
-          {/* Footer Content Links */}
-          <div className="grid gap-10 py-14 md:grid-cols-4">
-            {/* Logo Column */}
-            <div>
-              <a href="#" className="flex items-center gap-1.5">
-                <Image
-                  src="/logo.svg"
-                  alt="CareerBridge Logo"
-                  width={80}
-                  height={80}
-                  className="h-20 w-20 object-contain"
-                />
-                <span className="text-xl font-bold tracking-tight">
-                  CareerBridge
-                </span>
-              </a>
-
-              <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                The modern job portal helping people and companies grow
-                together.
-              </p>
-            </div>
-
-            {/* Footer Links Column Maps */}
-            {footerLinks.map((column) => (
-              <div key={column.title}>
-                <h3 className="text-sm font-semibold">{column.title}</h3>
-
-                <ul className="mt-4 flex flex-col gap-3">
-                  {column.links.map((link) => (
-                    <li key={`${column.title}-${link}`}>
-                      <a
-                        href="#"
-                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom Legal Footer */}
-          <div className="flex flex-col items-center justify-between gap-3 border-t border-border py-6 text-sm text-muted-foreground sm:flex-row">
-            <p>
-              © {new Date().getFullYear()} CareerBridge. All rights reserved.
-            </p>
-
-            <div className="flex gap-6">
-              <a href="#" className="transition-colors hover:text-foreground">
-                Privacy
-              </a>
-
-              <a href="#" className="transition-colors hover:text-foreground">
-                Terms
-              </a>
-
-              <a href="#" className="transition-colors hover:text-foreground">
-                Cookies
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

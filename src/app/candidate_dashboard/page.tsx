@@ -1,10 +1,17 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { BriefcaseIcon, MenuIcon, Cancel01Icon, ClockIcon, BookmarkIcon, Building01Icon, File01Icon, CalendarIcon, Tick01Icon, TrendingUp, Logout01Icon } from "@hugeicons/core-free-icons";
+import {
+  BriefcaseIcon,
+  ClockIcon,
+  BookmarkIcon,
+  Building01Icon,
+  File01Icon,
+  CalendarIcon,
+  Tick01Icon,
+  TrendingUp,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -85,8 +92,7 @@ const candidateStats = [
 
 export default function CandidateDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [applications] =
-    useState<Application[]>(initialApplications);
+  const [applications] = useState<Application[]>(initialApplications);
 
   const getStatusBadge = (status: Application["status"]) => {
     switch (status) {
@@ -131,57 +137,6 @@ export default function CandidateDashboard() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f8faff]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <a href="#" className="flex items-center gap-1.5">
-            <Image
-              src="/logo.svg"
-              alt="CareerBridge Logo"
-              width={80}
-              height={80}
-              priority
-              className="h-20 w-20 object-contain"
-            />
-            <span className="text-xl font-bold tracking-tight">
-              CareerBridge
-            </span>
-          </a>
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              Find Jobs
-            </Link>
-            <span className="text-sm font-semibold text-primary">
-              Candidate Dashboard
-            </span>
-          </nav>
-          <div className="hidden items-center gap-4 md:flex">
-            <div className="flex items-center gap-2 rounded-full bg-accent px-3 py-1.5 text-sm font-medium">
-              <span className="flex size-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                JD
-              </span>
-              <span>Jane Doe</span>
-            </div>
-            <Button variant="ghost" size="icon">
-              <HugeiconsIcon icon={Logout01Icon} className="size-4" />
-            </Button>
-          </div>
-          <button
-            className="flex size-10 items-center justify-center rounded-lg text-foreground md:hidden"
-            onClick={() => setMobileMenuOpen((v) => !v)}
-          >
-            {mobileMenuOpen ? (
-              <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
-            ) : (
-              <HugeiconsIcon icon={MenuIcon} className="size-5" />
-            )}
-          </button>
-        </div>
-      </header>
-
       {/* Main Dashboard Space */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         {/* Ice Blue welcome Banner */}
@@ -203,7 +158,8 @@ export default function CandidateDashboard() {
               </p>
             </div>
             <Button className="gap-2 shrink-0">
-              <HugeiconsIcon icon={File01Icon} className="size-4" /> Update Resume
+              <HugeiconsIcon icon={File01Icon} className="size-4" /> Update
+              Resume
             </Button>
           </div>
         </div>
@@ -262,12 +218,19 @@ export default function CandidateDashboard() {
                           {app.title}
                         </h3>
                         <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                          <HugeiconsIcon icon={Building01Icon} className="size-3.5" /> {app.company} ·{" "}
-                          {app.location}
+                          <HugeiconsIcon
+                            icon={Building01Icon}
+                            className="size-3.5"
+                          />{" "}
+                          {app.company} · {app.location}
                         </p>
                         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mt-3">
                           <span className="flex items-center gap-1">
-                            <HugeiconsIcon icon={ClockIcon} className="size-3.5" /> {app.appliedDate}
+                            <HugeiconsIcon
+                              icon={ClockIcon}
+                              className="size-3.5"
+                            />{" "}
+                            {app.appliedDate}
                           </span>
                           <span>•</span>
                           <span>{app.salary}</span>
@@ -302,8 +265,11 @@ export default function CandidateDashboard() {
             <Card className="bg-white border border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-bold flex items-center gap-2">
-                  <HugeiconsIcon icon={CalendarIcon} className="size-4 text-primary" /> Upcoming
-                  Interviews
+                  <HugeiconsIcon
+                    icon={CalendarIcon}
+                    className="size-4 text-primary"
+                  />{" "}
+                  Upcoming Interviews
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -341,7 +307,8 @@ export default function CandidateDashboard() {
             <Card className="bg-white border border-border overflow-hidden">
               <CardContent className="p-6 bg-gradient-to-b from-[#f0f7ff] to-white">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
-                  <HugeiconsIcon icon={TrendingUp} className="size-4" /> Profile Discovery
+                  <HugeiconsIcon icon={TrendingUp} className="size-4" /> Profile
+                  Discovery
                 </div>
                 <h3 className="font-bold text-lg mt-2">
                   Appearing in Searches

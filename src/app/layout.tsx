@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import Providers from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
+import Footer from "@/components/common/footer";
+import Header from "@/components/common/header";
+
 const publicSansHeading = Public_Sans({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -41,7 +44,9 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
+        <Header />
         <Providers>{children}</Providers>
+        <Footer />
         <Toaster />
       </body>
     </html>
