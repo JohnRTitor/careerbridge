@@ -52,6 +52,14 @@ This project is built using modern web technologies:
 
 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Database Scripts
+
+- **`pnpm db:reset`**: Drops the entire public schema and rebuilds it using `schema.sql`. (Warning: Destructive)
+- **`pnpm db:seed`**: Bulk inserts a large set of realistic mock data (thousands of candidates, employers, jobs, and applications) for system-wide testing.
+- **`pnpm db:setup`**: Runs `db:reset` followed immediately by `db:seed`.
+- **`pnpm seed:candidate --user=<id>`**: Populates realistic scenario data for a specific candidate ID. Generates missing profile information, creates applications to open jobs, and populates the activity timeline. Useful for testing the candidate dashboard. Options: `--applications=<num>`, `--seed=<num>`, `--dry-run`.
+- **`pnpm seed:recruiter --user=<id>`**: Populates realistic scenario data for a specific employer/recruiter ID. Generates jobs, applicants, and recruiter activity for their ATS view. Useful for testing the recruiter dashboard. Options: `--jobs=<num>`, `--applications=<num>`, `--seed=<num>`, `--dry-run`.
+
 ## Development Checklist
 
 ### Core Infrastructure
@@ -96,6 +104,7 @@ This project is built using modern web technologies:
 ## API Routes Task List
 
 ### User Profile Management
+
 - [ ] `GET /api/users/profile` - Get current user profile
 - [ ] `PUT /api/users/profile` - Update user profile (personal info, visibility)
 - [ ] `POST /api/users/profile/education` - Add education entry
@@ -107,6 +116,7 @@ This project is built using modern web technologies:
 - [ ] `POST /api/users/profile/resume` - Upload resume/portfolio
 
 ### Job Search & Application System
+
 - [ ] `GET /api/jobs` - Search jobs (with filters, sorting, pagination)
 - [ ] `GET /api/jobs/:id` - Get specific job details
 - [ ] `GET /api/jobs/recommendations` - Get personalized job recommendations
@@ -116,6 +126,7 @@ This project is built using modern web technologies:
 - [ ] `GET /api/applications` - Get user's job applications and statuses
 
 ### Recruiter Dashboard & ATS
+
 - [ ] `POST /api/recruiters/jobs` - Create a new job posting
 - [ ] `PUT /api/recruiters/jobs/:id` - Update an existing job posting
 - [ ] `DELETE /api/recruiters/jobs/:id` - Delete a job posting
@@ -124,6 +135,7 @@ This project is built using modern web technologies:
 - [ ] `GET /api/recruiters/analytics` - Get recruitment analytics dashboard data
 
 ### Administration & Governance
+
 - [ ] `GET /api/admin/users` - List all users (with filtering)
 - [ ] `PUT /api/admin/users/:id/role` - Change user role
 - [ ] `PUT /api/admin/users/:id/status` - Suspend/ban/activate user
