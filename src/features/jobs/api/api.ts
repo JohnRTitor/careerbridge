@@ -8,6 +8,7 @@ export const searchJobs = async (filters: JobFilters) => {
     page: filters.page?.toString(),
     limit: filters.limit?.toString(),
     companyId: filters.companyId,
+    is_featured: filters.is_featured !== undefined ? String(filters.is_featured) : undefined,
   };
   const res = await rpcClient.api.jobs.$get({ query });
   if (!res.ok) {

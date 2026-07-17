@@ -16,6 +16,12 @@ export const companyDetailQueryOptions = (id: string) => queryOptions({
 export const useCompanies = (filters: CompanyFilters) => 
   useQuery(companiesQueryOptions(filters));
 
+export const usePopularCompanies = () =>
+  useQuery({
+    ...companiesQueryOptions({ limit: 6, page: 1 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
 export const useCompany = (id: string) => 
   useQuery(companyDetailQueryOptions(id));
 
