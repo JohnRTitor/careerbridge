@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MailIcon, LockIcon, ArrowRightIcon, Shield02Icon, Building01Icon, UserIcon } from "@hugeicons/core-free-icons";
+import { MailIcon, LockIcon, ArrowRightIcon, Shield02Icon } from "@hugeicons/core-free-icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
 import { loginSchema } from "@/lib/zod-schemas";
@@ -13,7 +13,6 @@ import Link from "next/link";
 
 export default function SignInPage() {
   const router = useRouter();
-  const [role, setRole] = useState<"candidate" | "recruiter">("candidate");
   const [loading, setLoading] = useState(false);
 
   const form = useAppForm({
@@ -39,11 +38,12 @@ export default function SignInPage() {
 
       toast.success("Login successful!");
       
-      const userRole = data?.user?.role || "candidate";
-      if (userRole === "admin") router.push("/dashboard");
-      else if (userRole === "recruiter") router.push("/dashboard");
-      else if (userRole === "candidate") router.push("/dashboard");
-      else router.push("/onboarding");
+      const userRole = data?.user?.role;
+      if (!userRole) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     },
   });
 
@@ -75,34 +75,11 @@ export default function SignInPage() {
             Welcome Back
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
-            Access your unified dashboard architecture parameters
+            Access your CareerBridge account
           </p>
         </div>
 
         <Card className="bg-white border-border shadow-md rounded-2xl overflow-hidden">
-          {/* Dynamic Switcher Tab */}
-          <div className="grid grid-cols-2 border-b border-border bg-slate-50/50 p-1">
-            <button
-              onClick={() => setRole("candidate")}
-              className={`flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-xl transition-all ${
-                role === "candidate"
-                  ? "bg-white text-primary shadow-xs border border-border"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <HugeiconsIcon icon={UserIcon} className="size-3.5" /> Candidate
-            </button>
-            <button
-              onClick={() => setRole("recruiter")}
-              className={`flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-xl transition-all ${
-                role === "recruiter"
-                  ? "bg-white text-primary shadow-xs border border-border"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <HugeiconsIcon icon={Building01Icon} className="size-3.5" /> Employer
-            </button>
-          </div>
 
           <CardContent className="p-6 sm:p-8">
             <form
@@ -121,11 +98,7 @@ export default function SignInPage() {
                     label="Email Address"
                     labelClassName="text-xs font-semibold text-muted-foreground"
                     startIcon={<HugeiconsIcon icon={MailIcon} className="size-4 text-muted-foreground" />}
-                    placeholder={
-                      role === "candidate"
-                        ? "jane.doe@example.com"
-                        : "recruiting@northwind.com"
-                    }
+                    placeholder="name@example.com"
                   />
                 )}
               </form.AppField>
@@ -162,7 +135,7 @@ export default function SignInPage() {
                   className="w-full gap-2 h-11 mt-2 text-sm"
                   disabled={loading}
                 >
-                  {loading ? "Signing In..." : `Sign In as ${role === "candidate" ? "Candidate" : "Employer"}`}
+                  {loading ? "Signing In..." : "Sign In"}
                   {!loading && <HugeiconsIcon icon={ArrowRightIcon} className="size-4" />}
                 </form.SubmitButton>
               </form.AppForm>
