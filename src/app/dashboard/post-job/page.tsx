@@ -34,7 +34,7 @@ export default function PostJobPage() {
           company_id: profile?.company_id || undefined,
         });
         toast.success("Job posted successfully!");
-        router.push("/recruiter-dashboard");
+        router.push("/dashboard");
       } catch (error) {
         toast.error("Failed to post job. Please try again.");
       }
@@ -45,7 +45,7 @@ export default function PostJobPage() {
     <div className="flex min-h-screen flex-col bg-[#f8faff] py-12">
       <main className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <Link 
-          href="/recruiter-dashboard"
+          href="/dashboard"
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
         >
           <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
@@ -174,7 +174,7 @@ export default function PostJobPage() {
               </form.AppField>
 
               <div className="pt-6 border-t border-border flex justify-end gap-3">
-                <Link href="/recruiter-dashboard" className={buttonVariants({ variant: "outline", size: "lg" })}>
+                <Link href="/dashboard" className={buttonVariants({ variant: "outline", size: "lg" })}>
                   Cancel
                 </Link>
                 <form.AppForm>

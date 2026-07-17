@@ -195,7 +195,7 @@ export default function FindJobsPage() {
               Find Jobs
             </span>
             <a
-              href="/candidate-dashboard"
+              href="/dashboard"
               className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Dashboard

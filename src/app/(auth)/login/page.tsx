@@ -40,9 +40,9 @@ export default function SignInPage() {
       toast.success("Login successful!");
       
       const userRole = data?.user?.role || "candidate";
-      if (userRole === "admin") router.push("/admin");
-      else if (userRole === "recruiter") router.push("/recruiter-dashboard");
-      else if (userRole === "candidate") router.push("/candidate-dashboard");
+      if (userRole === "admin") router.push("/dashboard");
+      else if (userRole === "recruiter") router.push("/dashboard");
+      else if (userRole === "candidate") router.push("/dashboard");
       else router.push("/onboarding");
     },
   });

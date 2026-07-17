@@ -4,9 +4,8 @@ export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   if (
+    !pathname.startsWith("/dashboard") &&
     !pathname.startsWith("/admin") &&
-    !pathname.startsWith("/candidate") &&
-    !pathname.startsWith("/recruiter") &&
     !pathname.startsWith("/onboarding")
   ) {
     return NextResponse.next();
@@ -39,17 +38,12 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 
-  if (pathname.startsWith("/recruiter") && role !== "recruiter" && role !== "admin") {
-    return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
-
-  if (pathname.startsWith("/candidate") && role !== "candidate" && role !== "admin") {
-    return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
+  // Notice: /dashboard handles its own role-based rendering inside its page component,
+  // so we don't need to block /dashboard based on specific roles, only that they are logged in.
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/recruiter/:path*", "/candidate/:path*", "/onboarding/:path*"],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/onboarding/:path*"],
 };

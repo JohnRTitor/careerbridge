@@ -137,7 +137,7 @@ export default function CandidateDashboard() {
                 Your profile is {profileStrength}% complete. {profileStrength < 100 ? "Complete your profile to stand out!" : "Companies are looking for you."}
               </p>
             </div>
-            <Link href="/candidate-dashboard/profile" className={buttonVariants({ variant: "default", className: "gap-2 shrink-0" })}>
+            <Link href="/dashboard/profile" className={buttonVariants({ variant: "default", className: "gap-2 shrink-0" })}>
               <HugeiconsIcon icon={File01Icon} className="size-4" /> Update Profile
             </Link>
           </div>
@@ -176,7 +176,7 @@ export default function CandidateDashboard() {
               <h2 className="text-xl font-bold tracking-tight text-foreground">
                 Recent Applications
               </h2>
-              <Link href="/candidate-dashboard/applications" className={buttonVariants({ variant: "outline", size: "sm", className: "bg-white" })}>
+              <Link href="/dashboard/applications" className={buttonVariants({ variant: "outline", size: "sm", className: "bg-white" })}>
                 View All ({applications.length})
               </Link>
             </div>
@@ -286,7 +286,7 @@ export default function CandidateDashboard() {
                   />{" "}
                   Saved Jobs
                 </CardTitle>
-                <Link href="/candidate-dashboard/saved-jobs" className="text-xs text-primary font-medium hover:underline">
+                <Link href="/dashboard/saved-jobs" className="text-xs text-primary font-medium hover:underline">
                   View all
                 </Link>
               </CardHeader>

@@ -135,7 +135,7 @@ export default function RecruiterDashboard() {
               </p>
             </div>
             <Link
-              href="/recruiter-dashboard/post-job"
+              href="/dashboard/post-job"
               className={buttonVariants({
                 variant: "default",
                 className: "gap-2 shrink-0",
