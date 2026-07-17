@@ -20,7 +20,7 @@ export const useCompany = (id: string) =>
   useQuery(companyDetailQueryOptions(id));
 
 export const followedCompaniesQueryOptions = () => queryOptions({
-  queryKey: companyKeys.all.concat(["followed"]),
+  queryKey: [...companyKeys.all, "followed"],
   queryFn: () => api.getFollowedCompanies(),
 });
 

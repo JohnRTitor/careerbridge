@@ -8,7 +8,7 @@ export const useCreateSkill = () => {
   return useMutation({
     mutationFn: api.createSkill,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: metaKeys.all.concat(["skills"]) });
+      queryClient.invalidateQueries({ queryKey: [...metaKeys.all, "skills"] });
     },
   });
 };
@@ -18,7 +18,7 @@ export const useCreateLanguage = () => {
   return useMutation({
     mutationFn: api.createLanguage,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: metaKeys.all.concat(["languages"]) });
+      queryClient.invalidateQueries({ queryKey: [...metaKeys.all, "languages"] });
     },
   });
 };

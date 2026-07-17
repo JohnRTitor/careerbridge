@@ -6,7 +6,11 @@ import type {
 } from "./types";
 
 export const searchSkills = async (params: SearchMetaPayload) => {
-  const res = await rpcClient.api.meta.skills.$get({ query: params });
+  const query = {
+    ...params,
+    limit: params.limit?.toString(),
+  };
+  const res = await rpcClient.api.meta.skills.$get({ query: query as any });
   if (!res.ok) {
     const error = await res.json();
     throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to fetch skills");
@@ -26,7 +30,11 @@ export const createSkill = async (data: CreateSkillPayload) => {
 };
 
 export const searchLanguages = async (params: SearchMetaPayload) => {
-  const res = await rpcClient.api.meta.languages.$get({ query: params });
+  const query = {
+    ...params,
+    limit: params.limit?.toString(),
+  };
+  const res = await rpcClient.api.meta.languages.$get({ query: query as any });
   if (!res.ok) {
     const error = await res.json();
     throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to fetch languages");

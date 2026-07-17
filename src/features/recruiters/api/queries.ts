@@ -19,7 +19,7 @@ export const useRecruiterAnalytics = () =>
   useQuery(recruiterAnalyticsQueryOptions());
 
 export const recruiterProfileQueryOptions = () => queryOptions({
-  queryKey: recruiterKeys.all.concat(["profile"]),
+  queryKey: [...recruiterKeys.all, "profile"],
   queryFn: api.getRecruiterProfile,
 });
 

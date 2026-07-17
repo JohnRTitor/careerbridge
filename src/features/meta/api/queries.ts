@@ -5,12 +5,12 @@ import { SearchMetaPayload } from "./types";
 
 export const skillsQueryOptions = (query?: string) => queryOptions({
   queryKey: metaKeys.skills(query),
-  queryFn: () => api.searchSkills({ query }),
+  queryFn: () => api.searchSkills({ query, limit: 50 }),
 });
 
 export const languagesQueryOptions = (query?: string) => queryOptions({
   queryKey: metaKeys.languages(query),
-  queryFn: () => api.searchLanguages({ query }),
+  queryFn: () => api.searchLanguages({ query, limit: 50 }),
 });
 
 export const useSkills = (query?: string) => useQuery(skillsQueryOptions(query));
