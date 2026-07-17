@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -539,7 +540,7 @@ export default function Page() {
               Array.from({ length: 6 }).map((_, i) => <CompanyCardSkeleton key={i} />)
             ) : popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
               popularCompaniesData.companies.map((company) => (
-                <div key={company.id}>
+                <Link key={company.id} href={`/companies/${company.id}`} className="block">
                   <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">
                     {company.logo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -565,7 +566,7 @@ export default function Page() {
                       </span>
                     </div>
                   </Card>
-                </div>
+                </Link>
               ))
             ) : (
               <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-white shadow-sm">

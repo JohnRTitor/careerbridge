@@ -57,6 +57,12 @@ function CompaniesSearchContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const createPageUrl = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-[#f8faff]">
       <div className="bg-primary px-4 py-12 sm:py-16 sm:px-6 lg:px-8 border-b border-primary/20">
@@ -132,7 +138,7 @@ function CompaniesSearchContent() {
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious 
-                      href="#" 
+                      href={page > 1 ? createPageUrl(page - 1) : "#"}
                       onClick={(e) => { e.preventDefault(); if (page > 1) handlePageChange(page - 1); }} 
                       className={page === 1 ? "pointer-events-none opacity-50" : ""}
                     />
@@ -144,7 +150,7 @@ function CompaniesSearchContent() {
                         <PaginationEllipsis />
                       ) : (
                         <PaginationLink 
-                          href="#"
+                          href={createPageUrl(p as number)}
                           isActive={page === p}
                           onClick={(e) => { e.preventDefault(); handlePageChange(p as number); }}
                         >
@@ -156,7 +162,7 @@ function CompaniesSearchContent() {
 
                   <PaginationItem>
                     <PaginationNext 
-                      href="#" 
+                      href={page < data.pagination.totalPages ? createPageUrl(page + 1) : "#"}
                       onClick={(e) => { e.preventDefault(); if (page < data.pagination.totalPages) handlePageChange(page + 1); }} 
                       className={page === data.pagination.totalPages ? "pointer-events-none opacity-50" : ""}
                     />

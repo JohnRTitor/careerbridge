@@ -111,12 +111,11 @@ export default function SignInPage() {
                       <label htmlFor={field.name} className="text-xs font-semibold text-muted-foreground">
                         Password
                       </label>
-                      <Link
-                        href="#"
-                        className="text-[11px] font-medium text-primary hover:underline"
+                      <span
+                        className="text-[11px] font-medium text-muted-foreground"
                       >
                         Forgot?
-                      </Link>
+                      </span>
                     </div>
                     <field.PasswordField
                       field={field}

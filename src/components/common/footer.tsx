@@ -6,14 +6,12 @@ import Link from "next/link";
 const candidateLinks = [
   { title: "Browse Jobs", href: "/jobs" },
   { title: "Browse Categories", href: "/categories" },
-  { title: "Candidate Dashboard", href: "/candidate/dashboard" },
-  { title: "Job Alerts", href: "/job-alerts" },
+  { title: "Candidate Dashboard", href: "/dashboard" },
 ];
 
 const employerLinks = [
-  { title: "Post a Job", href: "/post-job" },
-  { title: "Browse Candidates", href: "/candidates" },
-  { title: "Employer Dashboard", href: "/employer/dashboard" },
+  { title: "Post a Job", href: "/dashboard/post-job" },
+  { title: "Employer Dashboard", href: "/dashboard" },
   { title: "Pricing", href: "/pricing" },
 ];
 

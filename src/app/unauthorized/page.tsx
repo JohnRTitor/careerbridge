@@ -17,11 +17,11 @@ export default function UnauthorizedPage() {
             If you believe this is an error, please contact support or try logging in with an account that has the required permissions.
           </p>
           <div className="flex justify-center space-x-4 pt-4">
-            <Button render={<Link href="/" />} variant="outline">
-              Return Home
+            <Button asChild variant="outline">
+              <Link href="/">Return Home</Link>
             </Button>
-            <Button render={<Link href="/login" />}>
-              Sign In
+            <Button asChild>
+              <Link href="/login">Sign In</Link>
             </Button>
           </div>
         </CardContent>

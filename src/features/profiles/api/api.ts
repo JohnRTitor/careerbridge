@@ -32,6 +32,16 @@ export const getProfile = async () => {
   return json.data;
 };
 
+export const getPublicProfile = async (userId: string) => {
+  const res = await rpcClient.api.u[":userId"].$get({ param: { userId } });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch public profile");
+  }
+  const json = await res.json();
+  return json.data;
+};
+
 export const updateProfile = async (data: UpdateProfilePayload) => {
   const res = await rpcClient.api.users.profile.$patch({ json: data });
   if (!res.ok) {

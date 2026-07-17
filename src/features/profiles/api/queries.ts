@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { profileKeys } from "./query-keys";
-import { getProfile, getResumes, getJobPreferences } from "./api";
+import { getProfile, getResumes, getJobPreferences, getPublicProfile } from "./api";
 
 export const profileQueryOptions = () => queryOptions({
   queryKey: profileKeys.profile(),
@@ -22,3 +22,10 @@ export const jobPreferencesQueryOptions = () => queryOptions({
 });
 
 export const useJobPreferences = () => useQuery(jobPreferencesQueryOptions());
+
+export const publicProfileQueryOptions = (userId: string) => queryOptions({
+  queryKey: ["publicProfile", userId],
+  queryFn: () => getPublicProfile(userId),
+});
+
+export const usePublicProfile = (userId: string) => useQuery(publicProfileQueryOptions(userId));

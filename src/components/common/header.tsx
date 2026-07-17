@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sheet";
 
 const menuItems = [
-  { href: "#find-jobs", text: "Find Jobs" },
+  { href: "#jobs", text: "Find Jobs" },
   { href: "#categories", text: "Categories" },
   { href: "#companies", text: "Companies" },
   { href: "#how-it-works", text: "How it Works" },
@@ -89,7 +89,7 @@ export default function Header() {
           )}
 
           {can("job", "create") && (
-            <Link href="/jobs/post">
+            <Link href="/dashboard/post-job">
               <Button>Post a Job</Button>
             </Link>
           )}
@@ -141,7 +141,7 @@ export default function Header() {
                   ))}
 
                   {can("job", "create") && (
-                    <Link href="/jobs/post" onClick={() => setOpen(false)}>
+                    <Link href="/dashboard/post-job" onClick={() => setOpen(false)}>
                       <Button className="mt-3 w-full">Post a Job</Button>
                     </Link>
                   )}

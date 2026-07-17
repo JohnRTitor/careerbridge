@@ -7,6 +7,7 @@ import { AppError } from "../shared/errors";
 import { pool } from "./db";
 
 import { profilesRoutes } from "../features/profiles/profiles.routes";
+import { publicProfilesRoutes } from "../features/profiles/public-profiles.routes";
 import { jobsRoutes } from "../features/jobs/jobs.routes";
 import {
   applicationsRoutes,
@@ -29,6 +30,7 @@ app.on(["POST", "GET"], "/auth/*", (c) => {
 // ─── Feature Routes ──────────────────────────────────────────────────────────
 const routes = app
   .route("/users", profilesRoutes)
+  .route("/u", publicProfilesRoutes)
   .route("/jobs", jobsRoutes)
   .route("/jobs", jobApplicationsRoutes)
   .route("/applications", applicationsRoutes)

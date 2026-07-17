@@ -59,6 +59,47 @@ export async function getProfile(input: GetProfileInput) {
   };
 }
 
+export async function getPublicProfile(input: GetProfileInput) {
+  const { userId } = input;
+  const profile = await profilesRepository.getProfile({ userId });
+  
+  if (!profile) {
+    throw new NotFoundError("Profile not found");
+  }
+  
+  if (profile.visibility === "private") {
+    return {
+      user_id: profile.user_id,
+      name: profile.name,
+      image: profile.image,
+      visibility: profile.visibility,
+      is_private: true
+    };
+  }
+
+  const education = await profilesRepository.getEducation({ userId });
+  const experience = await profilesRepository.getExperience({ userId });
+  const certifications = await profilesRepository.getCertifications({ userId });
+  const projects = await profilesRepository.getProjects({ userId });
+  const skills = await profilesRepository.getUserSkills({ userId });
+  const languages = await profilesRepository.getUserLanguages({ userId });
+  const social_links = await profilesRepository.getSocialLinks({ userId });
+  
+  const { email, ...safeProfile } = profile;
+
+  return { 
+    ...safeProfile, 
+    is_private: false,
+    education, 
+    experience,
+    certifications,
+    projects,
+    skills,
+    languages,
+    social_links
+  };
+}
+
 export async function updateProfile(input: UpdateProfileInput) {
   return profilesRepository.upsertProfile(input);
 }
@@ -188,6 +229,7 @@ export async function upsertJobPreferences(input: UpsertJobPreferenceInput) {
 
 export const profilesService = {
   getProfile,
+  getPublicProfile,
   updateProfile,
   updateResume,
   addEducation,

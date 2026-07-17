@@ -25,6 +25,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
     defaultValues: {
       headline: profile.headline || "",
       portfolio_url: profile.portfolio_url || "",
+      visibility: profile.visibility || "public",
     },
     onSubmit: async ({ value }) => {
       await updateProfile.mutateAsync(value);
@@ -111,6 +112,19 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
                   label="Portfolio URL"
                   placeholder="https://yourportfolio.com"
                   type="url"
+                />
+              )}
+            </form.AppField>
+
+            <form.AppField name="visibility">
+              {(field) => (
+                <field.NativeSelectField
+                  field={field}
+                  label="Profile Visibility"
+                  options={[
+                    { label: "Public", value: "public" },
+                    { label: "Private", value: "private" },
+                  ]}
                 />
               )}
             </form.AppField>
