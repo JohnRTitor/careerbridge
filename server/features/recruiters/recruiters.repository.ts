@@ -4,7 +4,7 @@ import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsIn
 export async function createJob(input: CreateJobInput) {
   const { recruiterId, data } = input;
   const query = `
-    INSERT INTO jobs (title, description, recruiter_id, company_id, location, type, salary_range, status)
+    INSERT INTO jobs (title, description, created_by, company_id, location, type, salary_range, status)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *;
   `;
@@ -33,7 +33,7 @@ export async function updateJob(input: UpdateJobInput) {
       salary_range = COALESCE($8, salary_range),
       status = COALESCE($9, status),
       updated_at = now()
-    WHERE id = $1 AND recruiter_id = $2
+    WHERE id = $1 AND created_by = $2
     RETURNING *;
   `;
   const result = await pool.query(query, [
@@ -52,7 +52,7 @@ export async function updateJob(input: UpdateJobInput) {
 
 export async function deleteJob(input: DeleteJobInput) {
   const { jobId, recruiterId } = input;
-  const query = `DELETE FROM jobs WHERE id = $1 AND recruiter_id = $2 RETURNING id;`;
+  const query = `DELETE FROM jobs WHERE id = $1 AND created_by = $2 RETURNING id;`;
   const result = await pool.query(query, [jobId, recruiterId]);
   return result.rowCount ? result.rowCount > 0 : false;
 }
@@ -60,7 +60,7 @@ export async function deleteJob(input: DeleteJobInput) {
 export async function getJobApplicants(input: GetJobApplicantsInput) {
   const { jobId, recruiterId } = input;
   // Verify recruiter owns job
-  const jobCheck = await pool.query(`SELECT id FROM jobs WHERE id = $1 AND recruiter_id = $2`, [jobId, recruiterId]);
+  const jobCheck = await pool.query(`SELECT id FROM jobs WHERE id = $1 AND created_by = $2`, [jobId, recruiterId]);
   if (jobCheck.rowCount === 0) return null;
 
   const query = `
@@ -82,7 +82,7 @@ export async function updateApplicationStatus(input: UpdateApplicationStatusInpu
   const jobCheck = await pool.query(`
     SELECT j.id FROM jobs j
     JOIN applications a ON a.job_id = j.id
-    WHERE a.id = $1 AND j.recruiter_id = $2
+    WHERE a.id = $1 AND j.created_by = $2
   `, [applicationId, recruiterId]);
   
   if (jobCheck.rowCount === 0) return null;
@@ -99,12 +99,12 @@ export async function updateApplicationStatus(input: UpdateApplicationStatusInpu
 
 export async function getAnalytics(input: GetAnalyticsInput) {
   const { recruiterId } = input;
-  const jobsQuery = `SELECT COUNT(*) as total_jobs FROM jobs WHERE recruiter_id = $1`;
+  const jobsQuery = `SELECT COUNT(*) as total_jobs FROM jobs WHERE created_by = $1`;
   const appsQuery = `
     SELECT a.status, COUNT(*) as count 
     FROM applications a
     JOIN jobs j ON a.job_id = j.id
-    WHERE j.recruiter_id = $1
+    WHERE j.created_by = $1
     GROUP BY a.status
   `;
   
@@ -150,14 +150,14 @@ export async function getRecruiterJobs(input: GetRecruiterJobsInput) {
   const { recruiterId, page = 1, limit = 10 } = input;
   const offset = (page - 1) * limit;
 
-  const countResult = await pool.query(`SELECT COUNT(*) FROM jobs WHERE recruiter_id = $1`, [recruiterId]);
+  const countResult = await pool.query(`SELECT COUNT(*) FROM jobs WHERE created_by = $1`, [recruiterId]);
   const total = parseInt(countResult.rows[0].count, 10);
 
   const query = `
     SELECT j.*, c.name as company_name, c.logo_url as company_logo
     FROM jobs j
     LEFT JOIN companies c ON j.company_id = c.id
-    WHERE j.recruiter_id = $1
+    WHERE j.created_by = $1
     ORDER BY j.created_at DESC
     LIMIT $2 OFFSET $3
   `;
@@ -182,18 +182,18 @@ export async function getRecruiterApplications(input: GetRecruiterApplicationsIn
     SELECT COUNT(a.id) 
     FROM applications a
     JOIN jobs j ON a.job_id = j.id
-    WHERE j.recruiter_id = $1
+    WHERE j.created_by = $1
   `;
   const countResult = await pool.query(countQuery, [recruiterId]);
   const total = parseInt(countResult.rows[0].count, 10);
 
   const query = `
-    SELECT a.*, j.title as job_title, u.name as candidate_name, u.email as candidate_email, p.headline as candidate_headline, p.experience as candidate_experience
+    SELECT a.*, j.title as job_title, u.name as candidate_name, u.email as candidate_email, p.headline as candidate_headline, p.years_of_experience as candidate_experience
     FROM applications a
     JOIN jobs j ON a.job_id = j.id
     JOIN "user" u ON a.candidate_id = u.id
     LEFT JOIN user_profile p ON u.id = p.user_id
-    WHERE j.recruiter_id = $1
+    WHERE j.created_by = $1
     ORDER BY a.applied_at DESC
     LIMIT $2 OFFSET $3
   `;

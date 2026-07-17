@@ -40,8 +40,8 @@ export const recruitersRoutes = app
     sValidator("json", UpdateJobSchema),
     requirePermission("job", "update"),
     requireOwnership(
-      (c) => pool.query<{ recruiter_id: string }>("SELECT recruiter_id FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
-      (user, job) => job?.recruiter_id === user.id
+      (c) => pool.query<{ created_by: string }>("SELECT created_by FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
+      (user, job) => job?.created_by === user.id
     ),
     async (c) => {
       const user = c.get("user");
@@ -60,8 +60,8 @@ export const recruitersRoutes = app
     sValidator("param", UuidParamSchema),
     requirePermission("job", "delete"),
     requireOwnership(
-      (c) => pool.query<{ recruiter_id: string }>("SELECT recruiter_id FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
-      (user, job) => job?.recruiter_id === user.id
+      (c) => pool.query<{ created_by: string }>("SELECT created_by FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
+      (user, job) => job?.created_by === user.id
     ),
     async (c) => {
       const user = c.get("user");
@@ -95,13 +95,13 @@ export const recruitersRoutes = app
     sValidator("json", UpdateApplicationStatusSchema),
     requirePermission("application", "review"),
     requireOwnership(
-      (c) => pool.query<{ recruiter_id: string }>(
-        `SELECT jobs.recruiter_id FROM applications 
+      (c) => pool.query<{ created_by: string }>(
+        `SELECT jobs.created_by FROM applications 
          JOIN jobs ON applications.job_id = jobs.id 
          WHERE applications.id = $1`, 
         [c.req.param("id")]
       ).then((r) => r.rows[0]),
-      (user, data) => data?.recruiter_id === user.id
+      (user, data) => data?.created_by === user.id
     ),
     async (c) => {
       const user = c.get("user");
