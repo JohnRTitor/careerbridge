@@ -2,16 +2,16 @@ import { pool } from "../../app/db";
 import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput } from "./jobs.schemas";
 
 export async function searchJobs(input: SearchJobsInput & { limit: number; offset: number }) {
-  const { query: queryStr, location, type, limit, offset } = input;
+  const { query: queryStr, location, type, is_featured, status = 'open', limit, offset } = input;
   let baseQuery = `
     SELECT j.*, c.name as company_name, c.logo_url as company_logo
     FROM jobs j
     LEFT JOIN companies c ON j.company_id = c.id
-    WHERE j.status = 'open'
+    WHERE j.status = $1
   `;
   
-  const values: unknown[] = [];
-  let paramIndex = 1;
+  const values: unknown[] = [status];
+  let paramIndex = 2;
 
   if (queryStr) {
     baseQuery += ` AND (j.title ILIKE $${paramIndex} OR j.description ILIKE $${paramIndex})`;
@@ -28,6 +28,12 @@ export async function searchJobs(input: SearchJobsInput & { limit: number; offse
   if (type) {
     baseQuery += ` AND j.type = $${paramIndex}`;
     values.push(type);
+    paramIndex++;
+  }
+
+  if (is_featured !== undefined) {
+    baseQuery += ` AND j.is_featured = $${paramIndex}`;
+    values.push(is_featured);
     paramIndex++;
   }
 

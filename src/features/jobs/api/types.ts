@@ -22,6 +22,7 @@ export type Job = {
   company_name: string | null;
   company_logo: string | null;
   company_description?: string | null;
+  is_featured?: boolean;
 };
 
 export type SavedJob = Job & {

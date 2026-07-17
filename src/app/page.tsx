@@ -1,7 +1,6 @@
-// app/page.tsx
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   BriefcaseIcon,
@@ -29,13 +28,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { formatDistanceToNow } from "date-fns";
 
-const navLinks = [
-  { label: "Find Jobs", href: "#jobs" },
-  { label: "Categories", href: "#categories" },
-  { label: "Companies", href: "#companies" },
-  { label: "How it Works", href: "#how-it-works" },
-];
+import { useHomepageStats, useJobCategories } from "@/features/stats/api/queries";
+import { useFeaturedJobs, useJobs } from "@/features/jobs/api/queries";
+import { usePopularCompanies } from "@/features/companies/api/queries";
+import { JobCardSkeleton, CategoryCardSkeleton, CompanyCardSkeleton, StatSkeleton } from "@/components/common/skeletons";
+import type { Job } from "@/features/jobs/api/types";
 
 const popularSearches = [
   "Product Designer",
@@ -44,90 +43,17 @@ const popularSearches = [
   "Marketing",
 ];
 
-const categories = [
-  { name: "Engineering", jobs: 1240, icon: CodeIcon },
-  { name: "Design", jobs: 680, icon: PenToolIcon },
-  { name: "Marketing", jobs: 540, icon: MegaphoneIcon },
-  { name: "Finance", jobs: 420, icon: ChartBarLineIcon },
-  { name: "Healthcare", jobs: 910, icon: StethoscopeIcon },
-  { name: "Education", jobs: 350, icon: GraduationCapIcon },
-  { name: "Real Estate", jobs: 210, icon: Building01Icon },
-  { name: "Support", jobs: 470, icon: HeadphonesIcon },
-];
-
-type Job = {
-  title: string;
-  company: string;
-  logo: string;
-  location: string;
-  type: string;
-  salary: string;
-  tags: string[];
-  posted: string;
+const categoryIcons: Record<string, any> = {
+  "Engineering": CodeIcon,
+  "Technology": CodeIcon,
+  "Design": PenToolIcon,
+  "Marketing": MegaphoneIcon,
+  "Finance": ChartBarLineIcon,
+  "Healthcare": StethoscopeIcon,
+  "Education": GraduationCapIcon,
+  "Real Estate": Building01Icon,
+  "Support": HeadphonesIcon,
 };
-
-const initialJobs: Job[] = [
-  {
-    title: "Senior Frontend Engineer",
-    company: "Northwind Labs",
-    logo: "NL",
-    location: "Remote · US",
-    type: "Full-time",
-    salary: "$130k – $160k",
-    tags: ["React", "TypeScript", "Next.js"],
-    posted: "2d ago",
-  },
-  {
-    title: "Product Designer",
-    company: "Fable Studio",
-    logo: "FS",
-    location: "New York, NY",
-    type: "Full-time",
-    salary: "$95k – $120k",
-    tags: ["Figma", "UI/UX", "Design Systems"],
-    posted: "1d ago",
-  },
-  {
-    title: "Data Analyst",
-    company: "Quanta Finance",
-    logo: "QF",
-    location: "London, UK",
-    type: "Hybrid",
-    salary: "£55k – £70k",
-    tags: ["SQL", "Python", "Tableau"],
-    posted: "3d ago",
-  },
-  {
-    title: "Marketing Manager",
-    company: "Bloom & Co.",
-    logo: "BC",
-    location: "Remote · EU",
-    type: "Full-time",
-    salary: "€60k – €80k",
-    tags: ["SEO", "Content", "Growth"],
-    posted: "5h ago",
-  },
-  {
-    title: "Backend Engineer",
-    company: "CloudPeak",
-    logo: "CP",
-    location: "San Francisco, CA",
-    type: "Full-time",
-    salary: "$140k – $175k",
-    tags: ["Node.js", "PostgreSQL", "AWS"],
-    posted: "4d ago",
-  },
-  {
-    title: "Customer Success Lead",
-    company: "Helio",
-    logo: "HL",
-    location: "Austin, TX",
-    type: "Full-time",
-    salary: "$80k – $100k",
-    tags: ["SaaS", "CRM", "Retention"],
-    posted: "6h ago",
-  },
-];
 
 const steps = [
   {
@@ -150,49 +76,14 @@ const steps = [
   },
 ];
 
-const stats = [
-  { value: "50k+", label: "Active jobs" },
-  { value: "12k+", label: "Companies" },
-  { value: "3M+", label: "Job seekers" },
-  { value: "92%", label: "Hire success" },
-];
-
-const companies = [
-  { name: "Northwind Labs", logo: "NL", industry: "Technology", openings: 42 },
-  { name: "Fable Studio", logo: "FS", industry: "Design", openings: 18 },
-  { name: "Quanta Finance", logo: "QF", industry: "Finance", openings: 27 },
-  { name: "CloudPeak", logo: "CP", industry: "Cloud", openings: 55 },
-  { name: "Bloom & Co.", logo: "BC", industry: "Marketing", openings: 12 },
-  { name: "Helio", logo: "HL", industry: "SaaS", openings: 31 },
-];
-
-const footerLinks = [
-  {
-    title: "For Candidates",
-    links: [
-      "Browse Jobs",
-      "Browse Categories",
-      "Candidate Dashboard",
-      "Job Alerts",
-    ],
-  },
-  {
-    title: "For Employers",
-    links: ["Post a Job", "Browse Candidates", "Employer Dashboard", "Pricing"],
-  },
-  {
-    title: "Company",
-    links: ["About Us", "Careers", "Blog", "Contact"],
-  },
-];
-
 export default function Page() {
-  const [open, setOpen] = useState(false);
-
   // Search states
   const [searchTitle, setSearchTitle] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(initialJobs);
+  
+  // Applied search states (to pass to useJobs)
+  const [appliedSearch, setAppliedSearch] = useState<{ query: string; location: string } | null>(null);
+
   const [searchMessage, setSearchMessage] = useState<{
     type: "success" | "error" | null;
     text: string;
@@ -201,56 +92,148 @@ export default function Page() {
     text: "",
   });
 
-  const handleSearch = () => {
-    // Trim and switch to lowercase for precise matching
-    const queryTitle = searchTitle.trim().toLowerCase();
-    const queryLocation = searchLocation.trim().toLowerCase();
+  // Data Hooks
+  const { data: statsData, isLoading: isLoadingStats } = useHomepageStats();
+  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+  const { data: featuredJobsData, isLoading: isLoadingFeatured } = useFeaturedJobs();
+  const { data: popularCompaniesData, isLoading: isLoadingCompanies } = usePopularCompanies();
+  
+  // Search Hook
+  const { data: searchResultsData, isLoading: isLoadingSearch } = useJobs({
+    query: appliedSearch?.query || undefined,
+    location: appliedSearch?.location || undefined,
+    status: "open",
+    limit: 6,
+    page: 1,
+  });
 
-    // If both fields are empty, reset to all jobs
-    if (!queryTitle && !queryLocation) {
-      setFilteredJobs(initialJobs);
+  // We show search results if appliedSearch is not null. Otherwise we show featured jobs.
+  const isSearching = appliedSearch !== null;
+  
+  const handleSearch = () => {
+    const query = searchTitle.trim();
+    const location = searchLocation.trim();
+
+    if (!query && !location) {
+      setAppliedSearch(null);
       setSearchMessage({ type: null, text: "" });
       return;
     }
 
-    const results = initialJobs.filter((job) => {
-      const matchTitle =
-        job.title.toLowerCase().includes(queryTitle) ||
-        job.tags.some((tag) => tag.toLowerCase().includes(queryTitle));
-      const matchLocation = job.location.toLowerCase().includes(queryLocation);
-
-      return matchTitle && matchLocation;
-    });
-
-    if (results.length > 0) {
-      setFilteredJobs(results);
-      setSearchMessage({
-        type: "success",
-        text: `Found ${results.length} job matching your search!`,
-      });
-
-      // Auto smooth-scroll to the jobs list section
-      document.getElementById("jobs")?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      setFilteredJobs([]);
-      setSearchMessage({
-        type: "error",
-        text: "No jobs found matching your criteria. Try adjusting your keywords or location.",
-      });
-    }
+    setAppliedSearch({ query, location });
+    document.getElementById("jobs")?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (isSearching && searchResultsData) {
+      if (searchResultsData.jobs.length > 0) {
+        setSearchMessage({
+          type: "success",
+          text: `Found ${searchResultsData.pagination.total} job(s) matching your search!`,
+        });
+      } else {
+        setSearchMessage({
+          type: "error",
+          text: "No jobs found matching your criteria. Try adjusting your keywords or location.",
+        });
+      }
+    }
+  }, [isSearching, searchResultsData]);
 
   const resetSearch = () => {
     setSearchTitle("");
     setSearchLocation("");
-    setFilteredJobs(initialJobs);
+    setAppliedSearch(null);
     setSearchMessage({ type: null, text: "" });
+  };
+
+  const handlePopularSearch = (term: string) => {
+    setSearchTitle(term);
+    setSearchLocation("");
+    setAppliedSearch({ query: term, location: "" });
+    document.getElementById("jobs")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const renderJobCards = (jobs: Job[], isLoading: boolean) => {
+    if (isLoading) {
+      return Array.from({ length: 6 }).map((_, i) => <JobCardSkeleton key={i} />);
+    }
+
+    if (jobs.length === 0) {
+      return null;
+    }
+
+    return jobs.map((job) => (
+      <Card
+        key={job.id}
+        className="transition-all hover:border-primary hover:shadow-md bg-white flex flex-col justify-between"
+      >
+        <CardContent className="flex h-full flex-col gap-4 p-6">
+          <div className="flex items-start justify-between">
+            {job.company_logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={job.company_logo} alt={job.company_name || ""} className="size-12 rounded-xl object-cover border" />
+            ) : (
+              <span className="flex size-12 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-secondary-foreground uppercase">
+                {job.company_name?.substring(0, 2) || "CO"}
+              </span>
+            )}
+            <button
+              className="text-muted-foreground transition-colors hover:text-primary"
+              aria-label="Save job"
+            >
+              <HugeiconsIcon icon={BookmarkIcon} className="size-5" />
+            </button>
+          </div>
+
+          <div>
+            <h3 className="font-semibold leading-snug line-clamp-2">
+              {job.title}
+            </h3>
+            <p className="text-sm text-muted-foreground line-clamp-1">
+              {job.company_name || "Unknown Company"}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <HugeiconsIcon icon={Location01Icon} className="size-4" />
+              {job.location || "Remote"}
+            </span>
+            <span className="flex items-center gap-1">
+              <HugeiconsIcon icon={ClockIcon} className="size-4" />
+              {formatDistanceToNow(new Date(job.created_at), { addSuffix: true })}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-auto">
+             <Badge variant="secondary" className="font-normal capitalize">
+               {job.type.replace("-", " ")}
+             </Badge>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+            <div>
+              <p className="font-semibold text-foreground">
+                {job.salary_min && job.salary_max
+                  ? `${job.currency || "$"}${(job.salary_min / 1000).toFixed(0)}k - ${(job.salary_max / 1000).toFixed(0)}k`
+                  : "Competitive"}
+              </p>
+              <p className="text-xs text-muted-foreground capitalize">
+                {job.type.replace("-", " ")}
+              </p>
+            </div>
+            <Button size="sm">Apply</Button>
+          </div>
+        </CardContent>
+      </Card>
+    ));
   };
 
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        {/* Hero Section with Light Ice-Blue Gradient and Subtle Dot Grid */}
+        {/* Hero Section */}
         <section
           className="relative overflow-hidden bg-linear-to-b from-[#e0efff] via-[#f0f7ff] to-background"
           style={{
@@ -259,11 +242,15 @@ export default function Page() {
           }}
         >
           <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-            <div className="mx-auto max-w-3xl text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
-                <span className="size-2 rounded-full bg-primary" />
-                Over 12,000 jobs added this week
-              </span>
+            <div className="mx-auto max-w-3xl text-center flex flex-col items-center">
+              {isLoadingStats ? (
+                <div className="h-8 w-64 bg-primary/10 rounded-full animate-pulse" />
+              ) : (
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
+                  <span className="size-2 rounded-full bg-primary" />
+                  Over {statsData?.total_open_jobs?.toLocaleString() || "1000+"} active jobs available
+                </span>
+              )}
 
               <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
                 Find your role <span className="text-primary">reach</span> your
@@ -276,7 +263,7 @@ export default function Page() {
               </p>
 
               {/* Functional Search Container */}
-              <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
+              <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center w-full">
                 <div className="flex flex-1 items-center gap-2 rounded-xl px-3">
                   <HugeiconsIcon
                     icon={SearchIcon}
@@ -287,6 +274,7 @@ export default function Page() {
                     value={searchTitle}
                     onChange={(e) => setSearchTitle(e.target.value)}
                     className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>
                 <div className="hidden h-8 w-px bg-border sm:block" />
@@ -300,6 +288,7 @@ export default function Page() {
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
                     className="border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>
                 <Button size="lg" className="gap-2" onClick={handleSearch}>
@@ -310,7 +299,7 @@ export default function Page() {
 
               {/* Status & Feedback Messages */}
               {searchMessage.type && (
-                <div className="mx-auto mt-4 flex max-w-2xl justify-center">
+                <div className="mx-auto mt-4 flex max-w-2xl justify-center w-full">
                   <div
                     className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium border shadow-sm ${
                       searchMessage.type === "success"
@@ -340,24 +329,12 @@ export default function Page() {
                 </div>
               )}
 
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm w-full">
                 <span className="text-muted-foreground">Popular:</span>
                 {popularSearches.map((term) => (
                   <button
                     key={term}
-                    onClick={() => {
-                      setSearchTitle(term);
-                      setSearchLocation("");
-                      // Immediate search trigger logic alternative
-                      const results = initialJobs.filter((job) =>
-                        job.title.toLowerCase().includes(term.toLowerCase()),
-                      );
-                      setFilteredJobs(results);
-                      setSearchMessage({
-                        type: "success",
-                        text: `Curated ${results.length} positions.`,
-                      });
-                    }}
+                    onClick={() => handlePopularSearch(term)}
                     className="rounded-full border border-border bg-card px-3 py-1 text-foreground transition-colors hover:border-primary hover:text-primary"
                   >
                     {term}
@@ -383,153 +360,105 @@ export default function Page() {
           </div>
 
           <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {categories.map((category) => (
-              <a key={category.name} href="#jobs">
-                <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md">
-                  <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    <HugeiconsIcon icon={category.icon} className="size-6" />
-                  </span>
-                  <div>
-                    <h3 className="font-semibold">{category.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {category.jobs.toLocaleString()} open jobs
-                    </p>
-                  </div>
-                </Card>
-              </a>
-            ))}
+            {isLoadingCategories ? (
+              Array.from({ length: 8 }).map((_, i) => <CategoryCardSkeleton key={i} />)
+            ) : categoriesData && categoriesData.length > 0 ? (
+              categoriesData.map((category) => {
+                const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
+                return (
+                  <button key={category.industry} onClick={() => handlePopularSearch(category.industry)} className="text-left w-full cursor-pointer">
+                    <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
+                      <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                        <HugeiconsIcon icon={IconComponent} className="size-6" />
+                      </span>
+                      <div>
+                        <h3 className="font-semibold">{category.industry}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {category.job_count.toLocaleString()} open jobs
+                        </p>
+                      </div>
+                    </Card>
+                  </button>
+                );
+              })
+            ) : (
+              <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-white shadow-sm">
+                No categories available yet.
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Featured jobs Section */}
+        {/* Jobs Section */}
         <section id="jobs" className="bg-[#f0f7ff] transition-all duration-300">
           <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-                  {searchMessage.type === "success"
-                    ? "Search Results"
-                    : "Featured jobs"}
+                  {isSearching ? "Search Results" : "Featured jobs"}
                 </h2>
                 <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
-                  {searchMessage.type === "success"
+                  {isSearching
                     ? "Roles matching your search parameters located below."
                     : "Hand-picked roles from companies actively hiring right now."}
                 </p>
               </div>
-              {searchMessage.type && (
+              {isSearching && (
                 <Button variant="outline" onClick={resetSearch}>
                   Reset view
                 </Button>
               )}
             </div>
 
-            {/* Dynamic Job Cards Display */}
-            {filteredJobs.length > 0 ? (
-              <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredJobs.map((job) => (
-                  <Card
-                    key={job.title}
-                    className="transition-all hover:border-primary hover:shadow-md bg-white flex flex-col justify-between"
-                  >
-                    <CardContent className="flex h-full flex-col gap-4 p-6">
-                      <div className="flex items-start justify-between">
-                        <span className="flex size-12 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-secondary-foreground">
-                          {job.logo}
-                        </span>
-                        <button
-                          className="text-muted-foreground transition-colors hover:text-primary"
-                          aria-label="Save job"
-                        >
-                          <HugeiconsIcon
-                            icon={BookmarkIcon}
-                            className="size-5"
-                          />
-                        </button>
-                      </div>
-
-                      <div>
-                        <h3 className="font-semibold leading-snug">
-                          {job.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {job.company}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <HugeiconsIcon
-                            icon={Location01Icon}
-                            className="size-4"
-                          />
-                          {job.location}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <HugeiconsIcon icon={ClockIcon} className="size-4" />
-                          {job.posted}
-                        </span>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        {job.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className="font-normal"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
-                        <div>
-                          <p className="font-semibold text-foreground">
-                            {job.salary}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {job.type}
-                          </p>
-                        </div>
-                        <Button size="sm">Apply</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              /* No Results State Layout */
-              <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
-                <HugeiconsIcon
-                  icon={Alert01Icon}
-                  className="size-12 text-muted-foreground stroke-1 mb-4"
-                />
-                <h3 className="text-lg font-semibold text-foreground">
-                  No matches listed
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                  We couldn&apos;t find anything matching your exact text.
-                  Double check spelling or try looking with empty parameters to
-                  view everything.
-                </p>
-                <Button
-                  className="mt-6"
-                  variant="outline"
-                  onClick={resetSearch}
-                >
-                  Browse All Postings
-                </Button>
-              </div>
-            )}
+            <div className="mt-12">
+              {isSearching ? (
+                // Search Results
+                isLoadingSearch ? (
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {renderJobCards([], true)}
+                  </div>
+                ) : searchResultsData?.jobs && searchResultsData.jobs.length > 0 ? (
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {renderJobCards(searchResultsData.jobs, false)}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
+                    <HugeiconsIcon icon={Alert01Icon} className="size-12 text-muted-foreground stroke-1 mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground">No matches listed</h3>
+                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                      We couldn&apos;t find anything matching your exact text. Double check spelling or try looking with empty parameters to view everything.
+                    </p>
+                    <Button className="mt-6" variant="outline" onClick={resetSearch}>
+                      Browse All Postings
+                    </Button>
+                  </div>
+                )
+              ) : (
+                // Featured Jobs
+                isLoadingFeatured ? (
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {renderJobCards([], true)}
+                  </div>
+                ) : featuredJobsData?.jobs && featuredJobsData.jobs.length > 0 ? (
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {renderJobCards(featuredJobsData.jobs, false)}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
+                    <HugeiconsIcon icon={BriefcaseIcon} className="size-12 text-muted-foreground stroke-1 mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground">No featured jobs</h3>
+                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                      There are no featured jobs at the moment. Please check back later or use the search above to find open positions.
+                    </p>
+                  </div>
+                )
+              )}
+            </div>
           </div>
         </section>
 
         {/* How it works */}
-        <section
-          id="how-it-works"
-          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
-        >
+        <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
           <div className="flex flex-col items-center text-center">
             <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
               How it works
@@ -561,24 +490,41 @@ export default function Page() {
 
           {/* Stats Display Block */}
           <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-[#f0f7ff] p-8 sm:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-3xl font-bold text-primary sm:text-4xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
+            {isLoadingStats ? (
+              Array.from({ length: 4 }).map((_, i) => <StatSkeleton key={i} />)
+            ) : (
+              <>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-primary sm:text-4xl">
+                    {statsData?.total_open_jobs?.toLocaleString() || "0"}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-primary sm:text-4xl">
+                    {statsData?.total_companies?.toLocaleString() || "0"}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">Companies</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-primary sm:text-4xl">
+                    {statsData?.total_users?.toLocaleString() || "0"}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-primary sm:text-4xl">
+                    {statsData?.total_applications?.toLocaleString() || "0"}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
+                </div>
+              </>
+            )}
           </div>
         </section>
 
         {/* Top companies */}
-        <section
-          id="companies"
-          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
-        >
+        <section id="companies" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
           <div className="flex flex-col items-center text-center">
             <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
               Top companies hiring
@@ -589,30 +535,43 @@ export default function Page() {
           </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {companies.map((company) => (
-              <a key={company.name} href="#jobs">
-                <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">
-                  <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-base font-bold text-secondary-foreground">
-                    {company.logo}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-semibold">{company.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {company.industry}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <HugeiconsIcon
-                      icon={ArrowUpRightIcon}
-                      className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
-                    />
-                    <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
-                      {company.openings} jobs
-                    </span>
-                  </div>
-                </Card>
-              </a>
-            ))}
+            {isLoadingCompanies ? (
+              Array.from({ length: 6 }).map((_, i) => <CompanyCardSkeleton key={i} />)
+            ) : popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
+              popularCompaniesData.companies.map((company) => (
+                <div key={company.id}>
+                  <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">
+                    {company.logo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={company.logo_url} alt={company.name} className="size-14 shrink-0 rounded-xl object-cover border" />
+                    ) : (
+                      <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-base font-bold text-secondary-foreground uppercase">
+                        {company.name.substring(0, 2)}
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="truncate font-semibold">{company.name}</h3>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {company.industry || "Company"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <HugeiconsIcon
+                        icon={ArrowUpRightIcon}
+                        className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
+                      />
+                      <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
+                        {company.open_jobs_count || 0} jobs
+                      </span>
+                    </div>
+                  </Card>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-white shadow-sm">
+                No companies available yet.
+              </div>
+            )}
           </div>
         </section>
       </main>

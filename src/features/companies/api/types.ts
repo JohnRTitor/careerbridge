@@ -13,6 +13,7 @@ export type Company = z.infer<typeof CompanySchema> & {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+  open_jobs_count?: number;
 };
 
 export type CompanyFilters = z.infer<typeof CompaniesQuerySchema>;

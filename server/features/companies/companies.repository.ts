@@ -17,7 +17,11 @@ import type {
 
 export async function listCompanies(input: ListCompaniesInput & { offset: number }) {
   const { limit = 10, offset, query: queryStr } = input;
-  let baseQuery = `SELECT * FROM companies`;
+  let baseQuery = `
+    SELECT c.*, 
+      (SELECT COUNT(*) FROM jobs j WHERE j.company_id = c.id AND j.status = 'open') AS open_jobs_count
+    FROM companies c
+  `;
   const values: unknown[] = [];
   let paramIndex = 1;
 

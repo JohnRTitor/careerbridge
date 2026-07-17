@@ -21,6 +21,18 @@ export const jobDetailQueryOptions = (id: string) => queryOptions({
 export const useJobs = (filters: JobFilters) => 
   useQuery(jobsQueryOptions(filters));
 
+export const useFeaturedJobs = () =>
+  useQuery({
+    ...jobsQueryOptions({ is_featured: true, limit: 6, status: "open", page: 1 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+export const useLatestJobs = () =>
+  useQuery({
+    ...jobsQueryOptions({ limit: 6, status: "open", page: 1 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
 export const useJobRecommendations = () => 
   useQuery(jobRecommendationsQueryOptions());
 
