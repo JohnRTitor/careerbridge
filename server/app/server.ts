@@ -8,12 +8,16 @@ import { pool } from "./db";
 
 import { profilesRoutes } from "../features/profiles/profiles.routes";
 import { jobsRoutes } from "../features/jobs/jobs.routes";
-import { applicationsRoutes, jobApplicationsRoutes } from "../features/applications/applications.routes";
+import {
+  applicationsRoutes,
+  jobApplicationsRoutes,
+} from "../features/applications/applications.routes";
 import { recruitersRoutes } from "../features/recruiters/recruiters.routes";
 import { companiesRoutes } from "../features/companies/companies.routes";
 import { adminRoutes } from "../features/admin/admin.routes";
 import { metaRoutes } from "../features/meta/meta.routes";
 import { auth } from "../auth/auth";
+
 export const app = new Hono().basePath("/api");
 
 // ─── Auth Route ──────────────────────────────────────────────────────────────
@@ -63,7 +67,7 @@ setupOpenAPI(app);
 
 // ─── 404 ─────────────────────────────────────────────────────────────────────
 app.notFound((c) => {
-  return c.json(fail(c, 404, "Route not found", "NOT_FOUND"));
+  return fail(c, 404, "Route not found", "NOT_FOUND");
 });
 
 // ─── Centralized error handler ───────────────────────────────────────────────
@@ -78,9 +82,20 @@ app.onError((err, c) => {
   }
 
   if (err.name === "ZodError") {
-    return fail(c, 400, "Validation failed", "VALIDATION_ERROR", (err as ZodError).issues);
+    return fail(
+      c,
+      400,
+      "Validation failed",
+      "VALIDATION_ERROR",
+      (err as ZodError).issues,
+    );
   }
 
   console.error("Unhandled error:", err);
-  return fail(c, 500, err instanceof Error ? err.message : "Internal server error", "INTERNAL_SERVER_ERROR");
+  return fail(
+    c,
+    500,
+    err instanceof Error ? err.message : "Internal server error",
+    "INTERNAL_SERVER_ERROR",
+  );
 });
