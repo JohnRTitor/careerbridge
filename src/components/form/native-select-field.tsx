@@ -21,7 +21,8 @@ type NativeSelectFieldProps<TField extends AnyFieldApi> = Omit<
   descriptionClassName?: string;
   errorClassName?: string;
   
-  children: React.ReactNode; // NativeSelectOption elements
+  options?: { label: string; value: string | number }[];
+  children?: React.ReactNode; // NativeSelectOption elements
 };
 
 export function NativeSelectField<TField extends AnyFieldApi>({
@@ -32,6 +33,7 @@ export function NativeSelectField<TField extends AnyFieldApi>({
   labelClassName,
   descriptionClassName,
   errorClassName,
+  options,
   children,
   ...props
 }: NativeSelectFieldProps<TField>) {
@@ -57,7 +59,11 @@ export function NativeSelectField<TField extends AnyFieldApi>({
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
         >
-          {children}
+          {options ? options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          )) : children}
         </NativeSelect>
       )}
     </BaseField>

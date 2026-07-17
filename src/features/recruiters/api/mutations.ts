@@ -52,7 +52,7 @@ export const useUpdateRecruiterProfile = () => {
   return useMutation({
     mutationFn: api.upsertRecruiterProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: recruiterKeys.all.concat(["profile"]) });
+      queryClient.invalidateQueries({ queryKey: [...recruiterKeys.all, "profile"] });
     },
   });
 };

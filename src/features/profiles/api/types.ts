@@ -20,20 +20,33 @@ import {
   UpdateSocialLinkSchema,
   JobPreferenceSchema
 } from "@server/features/profiles/profiles.schemas";
-import { InferResponseType } from "hono/client";
-import { rpcClient } from "@/lib/api/rpc";
+export type Education = AddEducationPayload & { id: string; created_at?: string; updated_at?: string };
+export type Experience = AddExperiencePayload & { id: string; created_at?: string; updated_at?: string };
+export type Certification = AddCertificationPayload & { id: string; created_at?: string; updated_at?: string };
+export type Project = AddProjectPayload & { id: string; created_at?: string; updated_at?: string };
+export type Resume = AddResumePayload & { id: string; uploaded_at?: string; updated_at?: string };
 
-type GetProfileRes = InferResponseType<typeof rpcClient.api.users.profile.$get, 200>;
-export type Profile = GetProfileRes extends { data: infer P } ? P : never;
+export type Skill = AddUserSkillPayload & { skill_name: string; created_at?: string; updated_at?: string };
+export type Language = AddUserLanguagePayload & { language_name: string; created_at?: string; updated_at?: string };
+export type SocialLink = AddSocialLinkPayload & { id: string; created_at?: string; updated_at?: string };
 
-// Infer inner array types
-export type Education = Profile extends { education: (infer E)[] } ? E : never;
-export type Experience = Profile extends { experience: (infer E)[] } ? E : never;
-export type Certification = Profile extends { certifications: (infer C)[] } ? C : never;
-export type Project = Profile extends { projects: (infer P)[] } ? P : never;
-export type Skill = Profile extends { skills: (infer S)[] } ? S : never;
-export type Language = Profile extends { languages: (infer L)[] } ? L : never;
-export type SocialLink = Profile extends { social_links: (infer S)[] } ? S : never;
+export type Profile = UpdateProfilePayload & {
+  user_id: string;
+  name?: string;
+  email?: string;
+  image?: string;
+  resume_url?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  education: Education[];
+  experience: Experience[];
+  certifications: Certification[];
+  projects: Project[];
+  resumes: Resume[];
+  skills: Skill[];
+  languages: Language[];
+  social_links: SocialLink[];
+};
 
 export type UpdateProfilePayload = z.infer<typeof UpdateProfileSchema>;
 export type ResumeUploadPayload = z.infer<typeof ResumeUploadSchema>;

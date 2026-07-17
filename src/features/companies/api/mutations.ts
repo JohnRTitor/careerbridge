@@ -45,7 +45,7 @@ export const useFollowCompany = () => {
   return useMutation({
     mutationFn: api.followCompany,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: companyKeys.all.concat(["followed"]) });
+      queryClient.invalidateQueries({ queryKey: [...companyKeys.all, "followed"] });
     },
   });
 };
@@ -55,7 +55,7 @@ export const useUnfollowCompany = () => {
   return useMutation({
     mutationFn: api.unfollowCompany,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: companyKeys.all.concat(["followed"]) });
+      queryClient.invalidateQueries({ queryKey: [...companyKeys.all, "followed"] });
     },
   });
 };

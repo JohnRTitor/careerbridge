@@ -44,6 +44,7 @@ export async function getProfile(input: GetProfileInput) {
   const skills = await profilesRepository.getUserSkills({ userId });
   const languages = await profilesRepository.getUserLanguages({ userId });
   const social_links = await profilesRepository.getSocialLinks({ userId });
+  const resumes = await profilesRepository.getResumes({ userId });
   
   return { 
     ...profile, 
@@ -53,7 +54,8 @@ export async function getProfile(input: GetProfileInput) {
     projects,
     skills,
     languages,
-    social_links
+    social_links,
+    resumes
   };
 }
 
