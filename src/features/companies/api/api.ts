@@ -4,7 +4,8 @@ import type {
   CreateCompanyPayload,
   UpdateCompanyPayload,
   AddCompanyMemberPayload,
-  UpdateCompanyMemberPayload
+  UpdateCompanyMemberPayload,
+  Company
 } from "./types";
 
 export const listCompanies = async (filters: CompanyFilters) => {
@@ -19,7 +20,7 @@ export const listCompanies = async (filters: CompanyFilters) => {
     throw new Error("message" in error ? error.message : "Failed to fetch companies");
   }
   const json = await res.json();
-  return json.data;
+  return json.data as unknown as { companies: Company[]; pagination: { total: number; page: number; limit: number; totalPages: number } };
 };
 
 export const getCompany = async (id: string) => {
@@ -31,7 +32,7 @@ export const getCompany = async (id: string) => {
     throw new Error("message" in error ? error.message : "Failed to fetch company");
   }
   const json = await res.json();
-  return json.data;
+  return json.data as Company;
 };
 
 export const createCompany = async (data: CreateCompanyPayload) => {

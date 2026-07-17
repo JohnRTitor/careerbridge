@@ -31,6 +31,12 @@ export async function searchJobs(input: SearchJobsInput & { limit: number; offse
     paramIndex++;
   }
 
+  if (input.companyId) {
+    baseQuery += ` AND j.company_id = $${paramIndex}`;
+    values.push(input.companyId);
+    paramIndex++;
+  }
+
   const countQuery = `SELECT COUNT(*) FROM (${baseQuery}) AS filtered_jobs`;
   const countResult = await pool.query(countQuery, values);
   const total = parseInt(countResult.rows[0].count, 10);
