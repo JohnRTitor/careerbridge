@@ -102,10 +102,27 @@ export default function Header() {
               <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
             </SheetTrigger>
 
-            <SheetContent side="right" className="flex h-full w-72 flex-col">
-              <SheetHeader>
-                <SheetTitle className="text-2xl font-bold">
-                  CareerBridge
+            <SheetContent
+              side="right"
+              className="bg-green-100 flex h-full w-72 flex-col"
+            >
+              <SheetHeader className="bg-teal-200">
+                <SheetTitle>
+                  <div className="grid grid-cols-[auto_1fr] items-center gap-3">
+                    {/* Left: Logo */}
+                    <Image
+                      src="/logo.svg"
+                      alt="CareerBridge"
+                      width={45}
+                      height={45}
+                      className="h-11 w-11"
+                    />
+
+                    {/* Right: Brand Name */}
+                    <span className="text-2xl font-bold text-left">
+                      CareerBridge
+                    </span>
+                  </div>
                 </SheetTitle>
               </SheetHeader>
 
@@ -131,7 +148,7 @@ export default function Header() {
                 </div>
 
                 {/* Bottom Auth Button */}
-                <div className="mt-auto border-t pt-4">
+                <div className="mt-auto border-t pt-4 bg-teal-200">
                   {session ? (
                     <Button
                       variant="ghost"
