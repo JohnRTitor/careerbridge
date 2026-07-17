@@ -1,5 +1,5 @@
 import { rpcClient } from "@/lib/api/rpc";
-import type { ApplyJobPayload } from "./types";
+import type { ApplyJobPayload, Application } from "./types";
 
 export const getUserApplications = async () => {
   const res = await rpcClient.api.applications.$get();
@@ -8,7 +8,7 @@ export const getUserApplications = async () => {
     throw new Error("message" in error ? error.message : "Failed to fetch applications");
   }
   const json = await res.json();
-  return json.data;
+  return json.data as Application[];
 };
 
 export const applyForJob = async (jobId: string, data: ApplyJobPayload) => {

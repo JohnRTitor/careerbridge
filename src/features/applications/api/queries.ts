@@ -7,5 +7,5 @@ export const userApplicationsQueryOptions = () => queryOptions({
   queryFn: api.getUserApplications,
 });
 
-export const useUserApplications = () => 
+export const useCandidateApplications = () => 
   useQuery(userApplicationsQueryOptions());
