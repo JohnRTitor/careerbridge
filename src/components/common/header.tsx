@@ -4,8 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Menu01Icon, Login01Icon } from "@hugeicons/core-free-icons";
+import {
+  Menu01Icon,
+  Login01Icon,
+  Logout01Icon,
+} from "@hugeicons/core-free-icons";
 import { usePermission } from "@/hooks/use-permission";
+import { useSession, signOut } from "@/lib/auth-client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +32,9 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   const { can, isLoading } = usePermission();
-  if (isLoading) return null;
+  const { data: session, isPending } = useSession();
+
+  if (isLoading || isPending) return null;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
@@ -60,9 +67,26 @@ export default function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/login" className="text-sm font-medium">
-            Sign in
-          </Link>
+          {session ? (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                signOut({
+                  fetchOptions: {
+                    onSuccess: () => {
+                      window.location.href = "/";
+                    },
+                  },
+                })
+              }
+            >
+              Logout
+            </Button>
+          ) : (
+            <Link href="/login" className="text-sm font-medium">
+              Sign in
+            </Link>
+          )}
 
           {can("job", "create") && (
             <Link href="/jobs/post">
@@ -86,7 +110,7 @@ export default function Header() {
               </SheetHeader>
 
               <nav className="mt-8 flex flex-1 flex-col">
-                {/* Top menu items */}
+                {/* Top Menu */}
                 <div className="flex flex-col gap-1 text-lg">
                   {menuItems.map((item) => (
                     <a
@@ -106,16 +130,36 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* Bottom Sign In */}
+                {/* Bottom Auth Button */}
                 <div className="mt-auto border-t pt-4">
-                  <Link
-                    href="/login"
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
-                  >
-                    <HugeiconsIcon icon={Login01Icon} className="h-6 w-6" />
-                    <span className="text-lg font-bold py-2">Sign in</span>
-                  </Link>
+                  {session ? (
+                    <Button
+                      variant="ghost"
+                      className="flex w-full justify-start gap-3 px-4 py-6 text-lg font-bold"
+                      onClick={() => {
+                        setOpen(false);
+                        signOut({
+                          fetchOptions: {
+                            onSuccess: () => {
+                              window.location.href = "/";
+                            },
+                          },
+                        });
+                      }}
+                    >
+                      <HugeiconsIcon icon={Logout01Icon} className="h-6 w-6" />
+                      Logout
+                    </Button>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
+                    >
+                      <HugeiconsIcon icon={Login01Icon} className="h-6 w-6" />
+                      <span className="text-lg font-bold">Sign in</span>
+                    </Link>
+                  )}
                 </div>
               </nav>
             </SheetContent>
