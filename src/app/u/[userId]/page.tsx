@@ -27,7 +27,7 @@ export default function PublicProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#f8faff] p-4 sm:p-8 space-y-6">
+      <div className="flex min-h-screen flex-col bg-background p-4 sm:p-8 space-y-6">
         <Skeleton className="h-48 w-full rounded-2xl" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
@@ -45,7 +45,7 @@ export default function PublicProfilePage() {
   if (isError) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center p-8 text-center">
-        <div className="size-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mb-4">
+        <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
           <HugeiconsIcon icon={AlertCircleIcon} className="size-8" />
         </div>
         <h2 className="text-xl font-bold text-foreground">Failed to load profile</h2>
@@ -60,8 +60,8 @@ export default function PublicProfilePage() {
 
   if (profile.is_private) {
     return (
-      <div className="flex min-h-[70vh] flex-col items-center justify-center p-8 text-center bg-[#f8faff]">
-        <div className="size-24 rounded-full bg-slate-100 border-4 border-white shadow-sm flex items-center justify-center text-slate-400 mb-6">
+      <div className="flex min-h-[70vh] flex-col items-center justify-center p-8 text-center bg-background">
+        <div className="size-24 rounded-full bg-muted border-4 border-background shadow-sm flex items-center justify-center text-muted-foreground mb-6">
           <HugeiconsIcon icon={LockPasswordIcon} className="size-10" />
         </div>
         <h1 className="text-2xl font-bold text-foreground">This profile is private</h1>
@@ -73,16 +73,16 @@ export default function PublicProfilePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8faff]">
+    <div className="flex min-h-screen flex-col bg-background">
       <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
         <div className="space-y-6">
           
           {/* Header */}
-          <Card className="overflow-hidden border-border bg-white shadow-sm">
+          <Card className="overflow-hidden border-border bg-card shadow-sm">
             <div className="h-32 bg-linear-to-r from-primary/10 via-primary/5 to-transparent relative" />
             <CardContent className="px-6 sm:px-8 pb-8 relative pt-0">
               <div className="flex flex-col sm:flex-row gap-6 items-start">
-                <Avatar className="size-24 sm:size-32 border-4 border-white shadow-md bg-white -mt-12 sm:-mt-16 ring-1 ring-border">
+                <Avatar className="size-24 sm:size-32 border-4 border-white shadow-md bg-background -mt-12 sm:-mt-16 ring-1 ring-border">
                   {profile.image && <AvatarImage src={profile.image} alt={profile.name || "User"} />}
                   <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
                     {profile.name?.charAt(0) || "U"}
@@ -124,7 +124,7 @@ export default function PublicProfilePage() {
               
               {/* About */}
               {profile.about && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={UserCircleIcon} className="size-5 text-primary" />
@@ -141,7 +141,7 @@ export default function PublicProfilePage() {
 
               {/* Experience */}
               {profile.experience?.length > 0 && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={Briefcase01Icon} className="size-5 text-primary" />
@@ -175,7 +175,7 @@ export default function PublicProfilePage() {
 
               {/* Education */}
               {profile.education?.length > 0 && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={BookOpen01Icon} className="size-5 text-primary" />
@@ -204,7 +204,7 @@ export default function PublicProfilePage() {
 
               {/* Projects */}
               {profile.projects?.length > 0 && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={Rocket01Icon} className="size-5 text-primary" />
@@ -241,7 +241,7 @@ export default function PublicProfilePage() {
 
               {/* Certifications */}
               {profile.certifications?.length > 0 && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={Certificate01Icon} className="size-5 text-primary" />
@@ -277,7 +277,7 @@ export default function PublicProfilePage() {
             <div className="space-y-6">
               {/* Skills */}
               {profile.skills?.length > 0 && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={Settings02Icon} className="size-5 text-primary" />
@@ -298,7 +298,7 @@ export default function PublicProfilePage() {
 
               {/* Languages */}
               {profile.languages?.length > 0 && (
-                <Card className="border-border shadow-sm bg-white">
+                <Card className="border-border shadow-sm bg-card">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold flex items-center gap-2">
                       <HugeiconsIcon icon={LanguageCircleIcon} className="size-5 text-primary" />

@@ -182,10 +182,10 @@ export function CertificationsSection({ certifications }: { certifications: Cert
   };
 
   return (
-    <Card className="border-border shadow-sm bg-white">
+    <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
+          <div className="p-2 bg-amber-500/10 text-amber-600 rounded-lg">
             <HugeiconsIcon icon={Certificate01Icon} className="size-5" />
           </div>
           Certifications
@@ -198,7 +198,7 @@ export function CertificationsSection({ certifications }: { certifications: Cert
       <CardContent className="grid gap-4">
         {certifications.length > 0 ? (
           certifications.map((cert) => (
-            <div key={cert.id} className="group relative border rounded-xl p-4 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+            <div key={cert.id} className="group relative border rounded-xl p-4 bg-muted/50 hover:bg-muted transition-colors">
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold text-foreground text-base leading-snug">{cert.name}</h3>
@@ -222,7 +222,7 @@ export function CertificationsSection({ certifications }: { certifications: Cert
               {(cert.credential_id || cert.credential_url) && (
                 <div className="mt-3 flex flex-wrap gap-3">
                   {cert.credential_id && (
-                    <span className="text-xs bg-white border border-border px-2 py-1 rounded-md text-muted-foreground">
+                    <span className="text-xs bg-background border border-border px-2 py-1 rounded-md text-muted-foreground">
                       ID: {cert.credential_id}
                     </span>
                   )}
@@ -242,7 +242,7 @@ export function CertificationsSection({ certifications }: { certifications: Cert
             </div>
           ))
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-slate-50/50">
+          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
             <p className="text-muted-foreground text-sm mb-4">No certifications added yet.</p>
             <Button variant="outline" size="sm" onClick={openNew}>
               Add Certification

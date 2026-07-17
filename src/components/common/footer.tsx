@@ -12,7 +12,6 @@ const candidateLinks = [
 const employerLinks = [
   { title: "Post a Job", href: "/dashboard/post-job" },
   { title: "Employer Dashboard", href: "/dashboard" },
-  { title: "Pricing", href: "/pricing" },
 ];
 
 const companyLinks = [
@@ -43,7 +42,7 @@ export default function Footer() {
               </span>
             </Link>
 
-            <p className="mt-6 max-w-xs text-[17px] leading-8 text-slate-500">
+            <p className="mt-6 max-w-xs text-[17px] leading-8 text-muted-foreground">
               The modern job portal helping people and companies grow together.
             </p>
           </div>
@@ -57,7 +56,7 @@ export default function Footer() {
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="block text-[17px] text-slate-500 transition hover:text-primary"
+                  className="block text-[17px] text-muted-foreground transition hover:text-primary"
                 >
                   {item.title}
                 </Link>
@@ -74,7 +73,7 @@ export default function Footer() {
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="block text-[17px] text-slate-500 transition hover:text-primary"
+                  className="block text-[17px] text-muted-foreground transition hover:text-primary"
                 >
                   {item.title}
                 </Link>
@@ -91,7 +90,7 @@ export default function Footer() {
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="block text-[17px] text-slate-500 transition hover:text-primary"
+                  className="block text-[17px] text-muted-foreground transition hover:text-primary"
                 >
                   {item.title}
                 </Link>
@@ -101,7 +100,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-16 flex flex-col items-center justify-between gap-5 border-t pt-8 text-sm text-slate-500 md:flex-row">
+        <div className="mt-16 flex flex-col items-center justify-between gap-5 border-t pt-8 text-sm text-muted-foreground md:flex-row">
           <p>© {new Date().getFullYear()} CareerBridge. All rights reserved.</p>
 
           <div className="flex items-center gap-8">

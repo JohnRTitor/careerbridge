@@ -37,7 +37,7 @@ export default function CandidateProfilePage() {
   if (isError) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center p-8 text-center">
-        <div className="size-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mb-4">
+        <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
           <HugeiconsIcon icon={AlertCircleIcon} className="size-8" />
         </div>
         <h2 className="text-xl font-bold text-foreground">Failed to load profile</h2>

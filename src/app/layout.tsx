@@ -6,7 +6,7 @@ import Providers from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
 import Footer from "@/components/common/footer";
-import Header from "@/components/common/header";
+import Navbar from "@/components/layout/navbar/navbar";
 
 const publicSansHeading = Public_Sans({
   subsets: ["latin"],
@@ -42,12 +42,15 @@ export default function RootLayout({
         outfit.variable,
         publicSansHeading.variable,
       )}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <Header />
-        <Providers>{children}</Providers>
-        <Footer />
-        <Toaster />
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

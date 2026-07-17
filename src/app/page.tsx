@@ -167,7 +167,7 @@ export default function Page() {
     return jobs.map((job) => (
       <Card
         key={job.id}
-        className="transition-all hover:border-primary hover:shadow-md bg-white flex flex-col justify-between"
+        className="transition-all hover:border-primary hover:shadow-md bg-background flex flex-col justify-between"
       >
         <CardContent className="flex h-full flex-col gap-4 p-6">
           <div className="flex items-start justify-between">
@@ -235,14 +235,13 @@ export default function Page() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section
-          className="relative overflow-hidden bg-linear-to-b from-[#e0efff] via-[#f0f7ff] to-background"
-          style={{
-            backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to bottom, #e0efff, #f0f7ff, #ffffff)`,
-            backgroundSize: "24px 24px, 100% 100%",
-          }}
-        >
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <section className="relative overflow-hidden bg-background">
+          <div 
+            className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
+            style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
+          <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
             <div className="mx-auto max-w-3xl text-center flex flex-col items-center">
               {isLoadingStats ? (
                 <div className="h-8 w-64 bg-primary/10 rounded-full animate-pulse" />
@@ -304,8 +303,8 @@ export default function Page() {
                   <div
                     className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium border shadow-sm ${
                       searchMessage.type === "success"
-                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                        : "bg-rose-50 text-rose-800 border-rose-200"
+                        ? "bg-emerald-500/10 text-emerald-800 border-emerald-200"
+                        : "bg-destructive/10 text-rose-800 border-rose-200"
                     }`}
                   >
                     {searchMessage.type === "success" ? (
@@ -316,7 +315,7 @@ export default function Page() {
                     ) : (
                       <HugeiconsIcon
                         icon={Alert01Icon}
-                        className="size-4 text-rose-600 shrink-0"
+                        className="size-4 text-destructive shrink-0"
                       />
                     )}
                     <span>{searchMessage.text}</span>
@@ -383,7 +382,7 @@ export default function Page() {
                 );
               })
             ) : (
-              <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-white shadow-sm">
+              <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-background shadow-sm">
                 No categories available yet.
               </div>
             )}
@@ -391,7 +390,7 @@ export default function Page() {
         </section>
 
         {/* Jobs Section */}
-        <section id="jobs" className="bg-[#f0f7ff] transition-all duration-300">
+        <section id="jobs" className="bg-muted/30 transition-all duration-300">
           <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
@@ -423,7 +422,7 @@ export default function Page() {
                     {renderJobCards(searchResultsData.jobs, false)}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
+                  <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
                     <HugeiconsIcon icon={Alert01Icon} className="size-12 text-muted-foreground stroke-1 mb-4" />
                     <h3 className="text-lg font-semibold text-foreground">No matches listed</h3>
                     <p className="text-sm text-muted-foreground mt-1 max-w-sm">
@@ -445,7 +444,7 @@ export default function Page() {
                     {renderJobCards(featuredJobsData.jobs, false)}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center rounded-2xl bg-white border p-12 text-center shadow-sm">
+                  <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
                     <HugeiconsIcon icon={BriefcaseIcon} className="size-12 text-muted-foreground stroke-1 mb-4" />
                     <h3 className="text-lg font-semibold text-foreground">No featured jobs</h3>
                     <p className="text-sm text-muted-foreground mt-1 max-w-sm">
@@ -490,7 +489,7 @@ export default function Page() {
           </div>
 
           {/* Stats Display Block */}
-          <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-[#f0f7ff] p-8 sm:grid-cols-4">
+          <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
             {isLoadingStats ? (
               Array.from({ length: 4 }).map((_, i) => <StatSkeleton key={i} />)
             ) : (
@@ -569,7 +568,7 @@ export default function Page() {
                 </Link>
               ))
             ) : (
-              <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-white shadow-sm">
+              <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-background shadow-sm">
                 No companies available yet.
               </div>
             )}

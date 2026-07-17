@@ -68,7 +68,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8faff]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -104,10 +104,11 @@ export default function AdminDashboard() {
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <div
-          className="rounded-3xl border border-destructive/10 bg-gradient-to-r from-red-50 to-rose-50 p-6 sm:p-8 mb-8"
+          className="rounded-3xl border border-destructive/10 bg-gradient-to-r from-destructive/10 to-destructive/5 p-6 sm:p-8 mb-8"
           style={{
-            backgroundImage: `radial-gradient(#ffcdd2 1px, transparent 1px), linear-gradient(to right, #fff0f2, #fff5f5)`,
+            backgroundImage: `radial-gradient(var(--color-destructive) 1px, transparent 1px), linear-gradient(to right, var(--color-destructive), var(--color-destructive))`,
             backgroundSize: "24px 24px, 100% 100%",
+            backgroundBlendMode: "overlay"
           }}
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -124,13 +125,13 @@ export default function AdminDashboard() {
 
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3 mb-8">
           {adminStats.map((stat) => (
-            <Card key={stat.label} className="bg-white border border-border shadow-sm">
+            <Card key={stat.label} className="bg-card border border-border shadow-sm">
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                   <p className="text-3xl font-bold text-foreground mt-1">{isLoadingUsers ? "-" : stat.value}</p>
                 </div>
-                <div className={`size-12 rounded-xl bg-slate-50 flex items-center justify-center ${stat.color}`}>
+                <div className={`size-12 rounded-xl bg-muted flex items-center justify-center ${stat.color}`}>
                   <HugeiconsIcon icon={stat.icon} className="size-6" />
                 </div>
               </CardContent>
@@ -139,18 +140,18 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="users" className="w-full">
-          <TabsList className="mb-6 bg-white border border-border shadow-sm rounded-xl p-1">
+          <TabsList className="mb-6 bg-card border border-border shadow-sm rounded-xl p-1">
             <TabsTrigger value="users" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">User Management</TabsTrigger>
             <TabsTrigger value="companies" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Company Verification</TabsTrigger>
             <TabsTrigger value="audit" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Audit Logs</TabsTrigger>
           </TabsList>
           
           <TabsContent value="users" className="space-y-4">
-            <Card className="bg-white border border-border">
+            <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase bg-slate-50 border-b border-border">
+                    <thead className="text-xs text-muted-foreground uppercase bg-muted border-b border-border">
                       <tr>
                         <th className="px-6 py-4 font-semibold">User</th>
                         <th className="px-6 py-4 font-semibold">Role</th>
@@ -162,7 +163,7 @@ export default function AdminDashboard() {
                       {isLoadingUsers ? (
                         <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">Loading users...</td></tr>
                       ) : usersData?.users.map((user) => (
-                        <tr key={user.id} className="hover:bg-slate-50/50">
+                        <tr key={user.id} className="hover:bg-muted/50">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <div className="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase">
@@ -178,7 +179,7 @@ export default function AdminDashboard() {
                             <Badge variant="outline" className="capitalize">{user.role}</Badge>
                           </td>
                           <td className="px-6 py-4">
-                            <Badge variant={!user.banned ? 'secondary' : 'destructive'} className={!user.banned ? 'bg-emerald-50 text-emerald-700' : ''}>
+                            <Badge variant={!user.banned ? 'secondary' : 'destructive'} className={!user.banned ? 'bg-emerald-500/10 text-emerald-600' : ''}>
                               {!user.banned ? 'Active' : 'Banned'}
                             </Badge>
                           </td>
@@ -208,11 +209,11 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="companies" className="space-y-4">
-            <Card className="bg-white border border-border">
+            <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase bg-slate-50 border-b border-border">
+                    <thead className="text-xs text-muted-foreground uppercase bg-muted border-b border-border">
                       <tr>
                         <th className="px-6 py-4 font-semibold">Company</th>
                         <th className="px-6 py-4 font-semibold">Industry</th>
@@ -224,10 +225,10 @@ export default function AdminDashboard() {
                       {isLoadingCompanies ? (
                         <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">Loading companies...</td></tr>
                       ) : companiesData?.companies.map((company) => (
-                        <tr key={company.id} className="hover:bg-slate-50/50">
+                        <tr key={company.id} className="hover:bg-muted/50">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="size-8 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-xs">
+                              <div className="size-8 rounded-lg bg-muted flex items-center justify-center font-bold text-xs">
                                 <HugeiconsIcon icon={Building01Icon} className="size-4 text-muted-foreground" />
                               </div>
                               <div>
@@ -239,7 +240,7 @@ export default function AdminDashboard() {
                           <td className="px-6 py-4 text-muted-foreground">{company.industry}</td>
                           <td className="px-6 py-4">
                             {company.is_verified ? (
-                              <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-50 border-blue-200">Verified</Badge>
+                              <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">Verified</Badge>
                             ) : (
                               <Badge variant="outline" className="text-muted-foreground">Unverified</Badge>
                             )}
@@ -263,11 +264,11 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="audit" className="space-y-4">
-            <Card className="bg-white border border-border">
+            <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase bg-slate-50 border-b border-border">
+                    <thead className="text-xs text-muted-foreground uppercase bg-muted border-b border-border">
                       <tr>
                         <th className="px-6 py-4 font-semibold">Time</th>
                         <th className="px-6 py-4 font-semibold">Action</th>
@@ -279,12 +280,12 @@ export default function AdminDashboard() {
                       {isLoadingAudit ? (
                         <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">Loading logs...</td></tr>
                       ) : auditData?.logs.map((log) => (
-                        <tr key={log.id} className="hover:bg-slate-50/50">
+                        <tr key={log.id} className="hover:bg-muted/50">
                           <td className="px-6 py-4 text-muted-foreground text-xs whitespace-nowrap">
                             {formatDistanceToNow(parseISO(log.created_at), { addSuffix: true })}
                           </td>
                           <td className="px-6 py-4">
-                            <Badge variant="secondary" className="bg-slate-100 text-slate-700">{log.action}</Badge>
+                            <Badge variant="secondary" className="bg-muted text-foreground">{log.action}</Badge>
                           </td>
                           <td className="px-6 py-4 font-mono text-xs text-muted-foreground">{log.actor_id.substring(0, 8)}...</td>
                           <td className="px-6 py-4">

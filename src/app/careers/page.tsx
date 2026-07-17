@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function CareersPage() {
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-white">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-background">
       <div className="bg-primary px-4 py-16 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl">
@@ -20,9 +20,7 @@ export default function CareersPage() {
           We are not actively hiring at the moment, but we are always looking for great talent. 
           Check back later or send us your resume.
         </p>
-        <Button asChild>
-          <Link href="/contact">Get in Touch</Link>
-        </Button>
+        <Link href="/contact" className={buttonVariants()}>Get in Touch</Link>
       </main>
     </div>
   );

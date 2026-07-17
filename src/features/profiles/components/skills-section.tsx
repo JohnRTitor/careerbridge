@@ -145,10 +145,10 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
   };
 
   return (
-    <Card className="border-border shadow-sm bg-white">
+    <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+          <div className="p-2 bg-indigo-500/10 text-indigo-600 rounded-lg">
             <HugeiconsIcon icon={Settings02Icon} className="size-5" />
           </div>
           Skills
@@ -181,7 +181,7 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-slate-50/50">
+          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
             <p className="text-muted-foreground text-sm mb-4">No skills added yet.</p>
             <Button variant="outline" size="sm" onClick={openNew}>
               Add Skills

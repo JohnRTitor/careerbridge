@@ -71,13 +71,13 @@ export default function CandidateDashboard() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "reviewing":
-        return <Badge variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-50">Reviewing</Badge>;
+        return <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">Reviewing</Badge>;
       case "interviewing":
-        return <Badge variant="secondary" className="bg-amber-50 text-amber-700 hover:bg-amber-50">Interviewing</Badge>;
+        return <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20">Interviewing</Badge>;
       case "offered":
-        return <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-50">Offered</Badge>;
+        return <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">Offered</Badge>;
       case "rejected":
-        return <Badge variant="secondary" className="bg-rose-50 text-rose-700 hover:bg-rose-50">Archived</Badge>;
+        return <Badge variant="secondary" className="bg-destructive/10 text-destructive hover:bg-destructive/20">Archived</Badge>;
       default:
         return <Badge variant="secondary" className="capitalize">{status}</Badge>;
     }
@@ -95,7 +95,7 @@ export default function CandidateDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#f8faff] p-4 sm:p-8 space-y-6">
+      <div className="flex min-h-screen flex-col bg-background p-4 sm:p-8 space-y-6">
         <Skeleton className="h-48 w-full rounded-2xl" />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Skeleton className="h-32 w-full rounded-2xl" />
@@ -117,15 +117,16 @@ export default function CandidateDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8faff]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Main Dashboard Space */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         {/* Ice Blue welcome Banner */}
         <div
-          className="rounded-3xl border border-primary/10 bg-linear-to-r from-[#e0efff] to-[#f0f7ff] p-6 sm:p-8 mb-8"
+          className="rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8"
           style={{
-            backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to right, #e0efff, #f0f7ff)`,
+            backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
             backgroundSize: "24px 24px, 100% 100%",
+            backgroundBlendMode: "overlay"
           }}
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -148,7 +149,7 @@ export default function CandidateDashboard() {
           {candidateStats.map((stat) => (
             <Card
               key={stat.label}
-              className="bg-white border border-border shadow-sm"
+              className="bg-card border border-border shadow-sm"
             >
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
@@ -160,7 +161,7 @@ export default function CandidateDashboard() {
                   </p>
                 </div>
                 <div
-                  className={`size-12 rounded-xl bg-[#f0f7ff] flex items-center justify-center ${stat.color}`}
+                  className={`size-12 rounded-xl bg-primary/10 flex items-center justify-center ${stat.color}`}
                 >
                   <HugeiconsIcon icon={stat.icon} className="size-6" />
                 </div>
@@ -176,7 +177,7 @@ export default function CandidateDashboard() {
               <h2 className="text-xl font-bold tracking-tight text-foreground">
                 Recent Applications
               </h2>
-              <Link href="/dashboard/applications" className={buttonVariants({ variant: "outline", size: "sm", className: "bg-white" })}>
+              <Link href="/dashboard/applications" className={buttonVariants({ variant: "outline", size: "sm", className: "bg-background" })}>
                 View All ({applications.length})
               </Link>
             </div>
@@ -184,7 +185,7 @@ export default function CandidateDashboard() {
             {applications.slice(0, 5).map((app) => (
               <Card
                 key={app.id}
-                className="bg-white transition-all hover:shadow-md border border-border"
+                className="bg-card transition-all hover:shadow-md border border-border"
               >
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row gap-4 justify-between items-start">
@@ -223,7 +224,7 @@ export default function CandidateDashboard() {
                     </div>
                     <div className="w-full sm:w-auto flex sm:flex-col justify-between sm:items-end gap-2 border-t sm:border-t-0 pt-3 sm:pt-0 mt-3 sm:mt-0">
                       {getStatusBadge(app.status)}
-                      <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "mt-auto bg-white text-xs h-8" })}>
+                      <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "mt-auto bg-background text-xs h-8" })}>
                         View Job
                       </Link>
                     </div>
@@ -233,9 +234,9 @@ export default function CandidateDashboard() {
             ))}
             
             {applications.length === 0 && (
-              <Card className="bg-white border border-dashed shadow-sm">
+              <Card className="bg-card border border-dashed shadow-sm">
                 <CardContent className="p-12 flex flex-col items-center justify-center text-center">
-                  <div className="size-12 rounded-full bg-slate-100 flex items-center justify-center text-muted-foreground mb-4">
+                  <div className="size-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
                     <HugeiconsIcon icon={BriefcaseIcon} className="size-6" />
                   </div>
                   <h3 className="text-lg font-semibold">No applications yet</h3>
@@ -250,8 +251,8 @@ export default function CandidateDashboard() {
 
           {/* Right sidebar insights */}
           <div className="space-y-6">
-            <Card className="bg-white border border-border overflow-hidden">
-              <CardContent className="p-6 bg-linear-to-b from-[#f0f7ff] to-white">
+            <Card className="bg-card border border-border overflow-hidden">
+              <CardContent className="p-6 bg-linear-to-b from-primary/10 to-background">
                 <div className="flex items-center justify-between text-primary font-semibold text-sm mb-2">
                   <div className="flex items-center gap-2">
                     <HugeiconsIcon icon={TrendingUp} className="size-4" /> Profile Strength
@@ -259,7 +260,7 @@ export default function CandidateDashboard() {
                   <span>{profileStrength}%</span>
                 </div>
                 
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden mt-1">
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden mt-1">
                   <div 
                     className="h-full bg-primary rounded-full transition-all duration-1000" 
                     style={{ width: `${profileStrength}%` }}
@@ -277,7 +278,7 @@ export default function CandidateDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border border-border">
+            <Card className="bg-card border border-border">
               <CardHeader className="pb-3 flex flex-row items-center justify-between">
                 <CardTitle className="text-lg font-bold flex items-center gap-2">
                   <HugeiconsIcon
@@ -293,7 +294,7 @@ export default function CandidateDashboard() {
               <CardContent className="space-y-4">
                 {savedJobs.slice(0, 3).map(job => (
                   <Link key={job.id} href={`/jobs/${job.id}`} className="block group">
-                    <div className="rounded-xl border border-border p-3.5 bg-slate-50/50 group-hover:bg-slate-50 transition-colors">
+                    <div className="rounded-xl border border-border p-3.5 bg-muted/50 group-hover:bg-muted transition-colors">
                       <div className="flex justify-between items-start gap-4">
                         <h4 className="font-medium text-sm group-hover:text-primary transition-colors line-clamp-1">{job.title}</h4>
                       </div>

@@ -52,8 +52,8 @@ export default function PostJobPage() {
           Back to Dashboard
         </Link>
 
-        <Card className="bg-white border border-border shadow-sm">
-          <CardHeader className="border-b border-border bg-slate-50/50 pb-6 pt-8">
+        <Card className="bg-card border border-border shadow-sm">
+          <CardHeader className="border-b border-border bg-muted/50 pb-6 pt-8">
             <div className="flex items-center gap-3">
               <div className="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                 <HugeiconsIcon icon={BriefcaseIcon} className="size-6" />

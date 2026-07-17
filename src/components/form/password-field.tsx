@@ -59,7 +59,7 @@ export function PasswordField<TField extends AnyFieldApi>({
           className={
             startIcon
               ? cn(
-                  "flex items-center gap-2 rounded-xl border bg-slate-50/50 px-3 py-1 relative transition-colors",
+                  "flex items-center gap-2 rounded-xl border bg-muted/50 px-3 py-1 relative transition-colors",
                   "focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30",
                   invalid
                     ? "border-destructive ring-2 ring-destructive/20 dark:border-destructive/50 dark:ring-destructive/40"

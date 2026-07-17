@@ -34,12 +34,12 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
   });
 
   return (
-    <Card className="overflow-hidden border-border bg-white shadow-sm">
+    <Card className="overflow-hidden border-border bg-card shadow-sm">
       <div className="h-32 bg-linear-to-r from-primary/10 via-primary/5 to-transparent relative">
         <Button 
           variant="secondary" 
           size="sm" 
-          className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm shadow-sm"
+          className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm shadow-sm"
           onClick={() => setIsOpen(true)}
         >
           <HugeiconsIcon icon={PencilEdit01Icon} className="size-4 mr-2" />
@@ -48,7 +48,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
       </div>
       <CardContent className="px-6 sm:px-8 pb-8 relative pt-0">
         <div className="flex flex-col sm:flex-row gap-6 items-start">
-          <Avatar className="size-24 sm:size-32 border-4 border-white shadow-md bg-white -mt-12 sm:-mt-16 ring-1 ring-border">
+          <Avatar className="size-24 sm:size-32 border-4 border-white shadow-md bg-background -mt-12 sm:-mt-16 ring-1 ring-border">
             {profile.image && <AvatarImage src={profile.image} alt={profile.name || "User"} />}
             <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
               {profile.name?.charAt(0) || "U"}

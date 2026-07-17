@@ -56,7 +56,7 @@ function CategoriesContent() {
               const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
               return (
                 <Link key={category.industry} href={`/jobs?query=${encodeURIComponent(category.industry)}`} className="block w-full">
-                  <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full bg-white">
+                  <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full bg-card">
                     <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                       <HugeiconsIcon icon={IconComponent} className="size-6" />
                     </span>
@@ -71,7 +71,7 @@ function CategoriesContent() {
               );
             })
           ) : (
-            <div className="col-span-full flex flex-col items-center justify-center text-center text-muted-foreground py-16 border rounded-2xl bg-white shadow-sm border-dashed">
+            <div className="col-span-full flex flex-col items-center justify-center text-center text-muted-foreground py-16 border rounded-2xl bg-background shadow-sm border-dashed">
               <HugeiconsIcon icon={BriefcaseIcon} className="size-12 mb-4 opacity-50" />
               <p className="text-lg font-medium">No categories available</p>
               <p className="text-sm">Check back later for new opportunities.</p>

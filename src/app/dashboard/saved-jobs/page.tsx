@@ -39,8 +39,8 @@ export default function SavedJobsPage() {
       </div>
 
       {savedJobs.length === 0 ? (
-        <div className="border border-dashed rounded-xl flex-1 flex flex-col items-center justify-center p-12 text-center bg-slate-50/50">
-          <div className="size-16 rounded-full bg-slate-100 flex items-center justify-center text-muted-foreground mb-4">
+        <div className="border border-dashed rounded-xl flex-1 flex flex-col items-center justify-center p-12 text-center bg-muted/50">
+          <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
             <HugeiconsIcon icon={BookmarkIcon} className="size-8" />
           </div>
           <h3 className="text-xl font-semibold">No saved jobs</h3>

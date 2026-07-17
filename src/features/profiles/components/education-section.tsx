@@ -181,7 +181,7 @@ export function EducationSection({ education }: { education: Education[] }) {
   };
 
   return (
-    <Card className="border-border shadow-sm bg-white">
+    <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
           <div className="p-2 bg-purple-50 text-purple-600 rounded-lg">
@@ -202,8 +202,8 @@ export function EducationSection({ education }: { education: Education[] }) {
                 <div className="absolute left-[19px] top-12 bottom-[-24px] w-px bg-border/60 hidden sm:block" />
               )}
               <div className="flex gap-4 items-start">
-                <div className="size-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-border sm:flex hidden z-10">
-                  <HugeiconsIcon icon={Mortarboard01Icon} className="size-4 text-slate-500" />
+                <div className="size-10 rounded-full bg-muted flex items-center justify-center shrink-0 border border-border sm:flex hidden z-10">
+                  <HugeiconsIcon icon={Mortarboard01Icon} className="size-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 space-y-1.5">
                   <div className="flex justify-between items-start">
@@ -240,7 +240,7 @@ export function EducationSection({ education }: { education: Education[] }) {
             </div>
           ))
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-slate-50/50">
+          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
             <p className="text-muted-foreground text-sm mb-4">No education added yet.</p>
             <Button variant="outline" size="sm" onClick={openNew}>
               Add Education

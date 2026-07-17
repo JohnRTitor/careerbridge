@@ -65,7 +65,7 @@ export default function JobDetailsPage() {
     return (
       <div className="flex flex-col min-h-screen bg-[#f8faff] p-4 sm:p-8 space-y-6 max-w-5xl mx-auto w-full">
         <Skeleton className="h-8 w-24 mb-4" />
-        <div className="bg-white rounded-2xl p-6 border border-border">
+        <div className="bg-background rounded-2xl p-6 border border-border">
           <div className="flex items-start gap-6">
             <Skeleton className="size-20 rounded-xl" />
             <div className="space-y-3 flex-1">
@@ -106,7 +106,7 @@ export default function JobDetailsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#f8faff] pb-16">
       {/* Header Section */}
-      <div className="bg-white border-b border-border py-8">
+      <div className="bg-background border-b border-border py-8">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <button 
             onClick={() => router.back()}
@@ -119,7 +119,7 @@ export default function JobDetailsPage() {
           <div className="flex flex-col sm:flex-row gap-6 justify-between items-start sm:items-end">
             <div className="flex flex-col sm:flex-row gap-5 items-start">
               {job.company_logo ? (
-                <div className="size-16 sm:size-20 rounded-2xl border border-border overflow-hidden shrink-0 bg-white shadow-sm">
+                <div className="size-16 sm:size-20 rounded-2xl border border-border overflow-hidden shrink-0 bg-background shadow-sm">
                   <img src={job.company_logo} alt={job.company_name || ""} className="w-full h-full object-contain" />
                 </div>
               ) : (
@@ -148,11 +148,11 @@ export default function JobDetailsPage() {
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mt-4">
-                  <Badge variant="secondary" className="font-normal capitalize bg-slate-100 text-slate-700">
+                  <Badge variant="secondary" className="font-normal capitalize bg-muted text-muted-foreground">
                     {job.type.replace("-", " ")}
                   </Badge>
                   {(job.salary_min || job.salary_max) && (
-                    <Badge variant="outline" className="font-normal border-border bg-white text-foreground">
+                    <Badge variant="outline" className="font-normal border-border bg-background text-foreground">
                       <HugeiconsIcon icon={Wallet01Icon} className="size-3.5 mr-1.5 text-muted-foreground" />
                       {job.salary_min ? `$${(job.salary_min / 1000).toFixed(0)}k` : ""}
                       {job.salary_min && job.salary_max ? " - " : ""}
@@ -207,9 +207,9 @@ export default function JobDetailsPage() {
           
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            <section className="bg-white rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
+            <section className="bg-background rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
               <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
-                <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
+                <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
                   <HugeiconsIcon icon={BriefcaseIcon} className="size-4" />
                 </div>
                 Job Description
@@ -220,9 +220,9 @@ export default function JobDetailsPage() {
             </section>
 
             {job.requirements && (
-              <section className="bg-white rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
+              <section className="bg-background rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
                 <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
-                  <div className="p-1.5 bg-rose-50 text-rose-600 rounded-lg">
+                  <div className="p-1.5 bg-destructive/10 text-destructive rounded-lg">
                     <HugeiconsIcon icon={Tick02Icon} className="size-4" />
                   </div>
                   Requirements
@@ -234,9 +234,9 @@ export default function JobDetailsPage() {
             )}
 
             {job.benefits && (
-              <section className="bg-white rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
+              <section className="bg-background rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
                 <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
-                  <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+                  <div className="p-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg">
                     <HugeiconsIcon icon={Wallet01Icon} className="size-4" />
                   </div>
                   Benefits & Perks
@@ -250,11 +250,11 @@ export default function JobDetailsPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <section className="bg-white rounded-2xl p-6 border border-border shadow-sm">
+            <section className="bg-background rounded-2xl p-6 border border-border shadow-sm">
               <h2 className="text-lg font-bold tracking-tight mb-4 text-foreground">About the Company</h2>
               <div className="flex items-center gap-4 mb-4">
                 {job.company_logo ? (
-                  <div className="size-12 rounded-lg border border-border overflow-hidden shrink-0 bg-white">
+                  <div className="size-12 rounded-lg border border-border overflow-hidden shrink-0 bg-background">
                     <img src={job.company_logo} alt={job.company_name || ""} className="w-full h-full object-contain" />
                   </div>
                 ) : (

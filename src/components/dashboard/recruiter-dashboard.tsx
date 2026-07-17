@@ -61,17 +61,17 @@ export default function RecruiterDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-slate-100 text-slate-700 border-slate-200";
+        return "bg-muted text-foreground border-border";
       case "reviewing":
-        return "bg-blue-50 text-blue-700 border-blue-200";
+        return "bg-primary/10 text-primary border-primary/20";
       case "shortlisted":
-        return "bg-indigo-50 text-indigo-700 border-indigo-200";
+        return "bg-indigo-500/10 text-indigo-600 border-indigo-500/20";
       case "hired":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+        return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
       case "rejected":
-        return "bg-rose-50 text-rose-700 border-rose-200";
+        return "bg-destructive/10 text-destructive border-destructive/20";
       default:
-        return "bg-slate-50 text-slate-700 border-slate-200";
+        return "bg-muted text-muted-foreground border-border";
     }
   };
 
@@ -115,14 +115,15 @@ export default function RecruiterDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8faff]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <div
-          className="rounded-3xl border border-primary/10 bg-gradient-to-r from-[#e0efff] to-[#f0f7ff] p-6 sm:p-8 mb-8"
+          className="rounded-3xl border border-primary/10 bg-gradient-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8"
           style={{
-            backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to right, #e0efff, #f0f7ff)`,
+            backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
             backgroundSize: "24px 24px, 100% 100%",
+            backgroundBlendMode: "overlay"
           }}
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -158,7 +159,7 @@ export default function RecruiterDashboard() {
             {recruiterStats.map((stat) => (
               <Card
                 key={stat.label}
-                className="bg-white border border-border shadow-sm"
+                className="bg-card border border-border shadow-sm"
               >
                 <CardContent className="p-6 flex items-center justify-between">
                   <div>
@@ -170,7 +171,7 @@ export default function RecruiterDashboard() {
                     </p>
                   </div>
                   <div
-                    className={`size-12 rounded-xl bg-[#f0f7ff] flex items-center justify-center ${stat.color}`}
+                    className={`size-12 rounded-xl bg-primary/10 flex items-center justify-center ${stat.color}`}
                   >
                     <HugeiconsIcon icon={stat.icon} className="size-6" />
                   </div>
@@ -195,19 +196,19 @@ export default function RecruiterDashboard() {
                 ))}
               </div>
             ) : appsData?.applications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-dashed border-border text-center">
+              <div className="flex flex-col items-center justify-center p-8 bg-card rounded-xl border border-dashed border-border text-center">
                 <p className="text-muted-foreground">No recent applications.</p>
               </div>
             ) : (
               appsData?.applications.map((app) => (
                 <Card
                   key={app.id}
-                  className="bg-white transition-all hover:shadow-md border border-border"
+                  className="bg-card transition-all hover:shadow-md border border-border"
                 >
                   <CardContent className="p-5">
                     <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                       <div className="flex gap-3.5">
-                        <div className="flex size-11 items-center justify-center rounded-xl bg-primary text-sm font-bold text-white shrink-0 uppercase">
+                        <div className="flex size-11 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-secondary-foreground shrink-0 uppercase">
                           {app.candidate_name?.substring(0, 2) || "NA"}
                         </div>
                         <div>
@@ -248,7 +249,7 @@ export default function RecruiterDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-8 text-xs bg-white"
+                              className="h-8 text-xs bg-background"
                               onClick={() =>
                                 handleUpdateStatus(app.id, "reviewing")
                               }
@@ -279,7 +280,7 @@ export default function RecruiterDashboard() {
           </div>
 
           <div className="space-y-6">
-            <Card className="bg-white border border-border">
+            <Card className="bg-card border border-border">
               <div className="p-5 border-b border-border">
                 <h2 className="text-lg font-bold text-foreground">
                   Active Postings
@@ -298,7 +299,7 @@ export default function RecruiterDashboard() {
                   jobsData?.jobs.map((job) => (
                     <div
                       key={job.id}
-                      className="p-4 flex items-center justify-between hover:bg-slate-50/50 cursor-pointer group"
+                      className="p-4 flex items-center justify-between hover:bg-muted/50 cursor-pointer group"
                     >
                       <div className="min-w-0">
                         <h4 className="font-semibold text-sm truncate">
@@ -318,7 +319,7 @@ export default function RecruiterDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-[#f0f7ff] to-white border border-border p-5">
+            <Card className="bg-gradient-to-br from-primary/10 to-background border border-border p-5">
               <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                 <HugeiconsIcon
                   icon={Tick01Icon}

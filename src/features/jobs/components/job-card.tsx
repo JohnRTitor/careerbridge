@@ -48,12 +48,12 @@ export function JobCard({
   const isSaving = saveMutation.isPending || unsaveMutation.isPending;
 
   return (
-    <Card className="bg-white border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+    <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
       <CardContent className="p-5 flex flex-col h-full">
         <div className="flex justify-between items-start gap-4 mb-4">
           <div className="flex gap-4">
             {job.company_logo ? (
-              <div className="size-12 rounded-xl border border-border overflow-hidden shrink-0 bg-white">
+              <div className="size-12 rounded-xl border border-border overflow-hidden shrink-0 bg-background">
                 <img
                   src={job.company_logo}
                   alt={job.company_name || ""}
@@ -80,7 +80,7 @@ export function JobCard({
           <button
             onClick={handleToggleSave}
             disabled={isSaving}
-            className={`p-2 rounded-full hover:bg-slate-100 transition-colors shrink-0 disabled:opacity-50 ${
+            className={`p-2 rounded-full hover:bg-muted transition-colors shrink-0 disabled:opacity-50 ${
               isSaved ? "text-primary bg-primary/5" : "text-muted-foreground"
             }`}
             aria-label={isSaved ? "Unsave job" : "Save job"}
@@ -94,18 +94,18 @@ export function JobCard({
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          <Badge variant="secondary" className="font-normal capitalize bg-slate-100 text-slate-700 hover:bg-slate-200 border-0">
+          <Badge variant="secondary" className="font-normal capitalize bg-muted text-muted-foreground hover:bg-accent border-0">
             {job.type.replace("-", " ")}
           </Badge>
           {(job.salary_min || job.salary_max) && (
-            <Badge variant="outline" className="font-normal text-slate-600 border-slate-200">
+            <Badge variant="outline" className="font-normal text-muted-foreground border-border">
               <HugeiconsIcon icon={Wallet01Icon} className="size-3 mr-1" />
               {job.salary_min ? `$${(job.salary_min / 1000).toFixed(0)}k` : ""}
               {job.salary_min && job.salary_max ? " - " : ""}
               {job.salary_max ? `$${(job.salary_max / 1000).toFixed(0)}k` : ""}
             </Badge>
           )}
-          <Badge variant="outline" className="font-normal text-slate-600 border-slate-200">
+          <Badge variant="outline" className="font-normal text-muted-foreground border-border">
             <HugeiconsIcon icon={Location01Icon} className="size-3 mr-1" />
             <span className="truncate max-w-[100px]">{job.location}</span>
           </Badge>

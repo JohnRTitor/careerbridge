@@ -60,7 +60,7 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
 
         {applyMutation.isSuccess ? (
           <div className="flex flex-col items-center justify-center py-6 text-center">
-            <div className="size-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+            <div className="size-12 rounded-full bg-emerald-500/20 text-emerald-600 flex items-center justify-center mb-4">
               <HugeiconsIcon icon={Tick02Icon} className="size-6" />
             </div>
             <h3 className="text-lg font-semibold text-foreground">Application Sent!</h3>
@@ -100,7 +100,7 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
                       ))}
                     </NativeSelect>
                   ) : (
-                    <div className="border border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-center bg-slate-50/50">
+                    <div className="border border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-center bg-muted/50">
                       <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-6 text-muted-foreground mb-2" />
                       <p className="text-sm font-medium">No resumes found</p>
                       <p className="text-xs text-muted-foreground mt-1 mb-3">

@@ -56,10 +56,10 @@ export function ResumesSection() {
   };
 
   return (
-    <Card className="border-border shadow-sm bg-white">
+    <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <div className="p-2 bg-rose-50 text-rose-600 rounded-lg">
+          <div className="p-2 bg-destructive/10 text-destructive rounded-lg">
             <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-5" />
           </div>
           Resumes
@@ -76,19 +76,19 @@ export function ResumesSection() {
               <div 
                 key={resume.id} 
                 className={`group border rounded-xl p-3 transition-colors ${
-                  resume.is_default ? "bg-rose-50/30 border-rose-200" : "bg-slate-50/50 hover:bg-slate-50 border-border"
+                  resume.is_default ? "bg-destructive/10/30 border-rose-200" : "bg-muted/50 hover:bg-muted border-border"
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="size-8 rounded-lg bg-white border border-border flex items-center justify-center shrink-0">
+                    <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center shrink-0">
                       <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-4 text-muted-foreground" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
                         {resume.title}
                         {resume.is_default && (
-                          <span className="text-[10px] uppercase font-bold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-sm">
+                          <span className="text-[10px] uppercase font-bold bg-destructive/20 text-destructive px-1.5 py-0.5 rounded-sm">
                             Primary
                           </span>
                         )}
@@ -125,7 +125,7 @@ export function ResumesSection() {
                     </>
                   )}
                   <button 
-                    className="text-xs flex items-center gap-1.5 text-rose-500 hover:text-rose-600 font-medium transition-colors cursor-pointer ml-auto"
+                    className="text-xs flex items-center gap-1.5 text-destructive hover:text-destructive font-medium transition-colors cursor-pointer ml-auto"
                     onClick={async () => {
                       if (window.confirm("Are you sure you want to delete this resume?")) {
                         await deleteMutation.mutateAsync(resume.id);
@@ -140,7 +140,7 @@ export function ResumesSection() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-slate-50/50">
+          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
             <p className="text-muted-foreground text-sm mb-4">No resumes uploaded yet.</p>
             <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
               Upload Resume

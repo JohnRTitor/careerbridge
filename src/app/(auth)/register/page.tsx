@@ -69,7 +69,7 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        <Card className="bg-white border-border shadow-md rounded-2xl overflow-hidden">
+        <Card className="bg-card border-border shadow-md rounded-2xl overflow-hidden">
           <CardContent className="p-6 sm:p-8">
             <form
               onSubmit={(e) => {

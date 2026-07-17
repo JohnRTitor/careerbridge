@@ -25,7 +25,7 @@ export function AboutSection({ profile }: { profile: Profile }) {
   });
 
   return (
-    <Card className="border-border shadow-sm bg-white">
+    <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
           <HugeiconsIcon icon={UserCircleIcon} className="size-5 text-primary" />

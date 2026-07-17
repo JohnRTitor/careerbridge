@@ -129,7 +129,7 @@ export function LanguagesSection({ languages }: { languages: Language[] }) {
   };
 
   return (
-    <Card className="border-border shadow-sm bg-white">
+    <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
           <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
@@ -165,7 +165,7 @@ export function LanguagesSection({ languages }: { languages: Language[] }) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-slate-50/50">
+          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
             <p className="text-muted-foreground text-sm mb-4">No languages added yet.</p>
             <Button variant="outline" size="sm" onClick={openNew}>
               Add Languages

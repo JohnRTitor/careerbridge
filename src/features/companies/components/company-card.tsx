@@ -37,12 +37,12 @@ export function CompanyCard({ company }: { company: Company }) {
   const isFollowing = followMutation.isPending || unfollowMutation.isPending;
 
   return (
-    <Card className="bg-white border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+    <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
       <CardContent className="p-5 flex flex-col h-full">
         <div className="flex justify-between items-start gap-4 mb-4">
           <div className="flex gap-4">
             {company.logo_url ? (
-              <div className="size-14 rounded-xl border border-border overflow-hidden shrink-0 bg-white">
+              <div className="size-14 rounded-xl border border-border overflow-hidden shrink-0 bg-background">
                 <img
                   src={company.logo_url}
                   alt={company.name}
@@ -60,7 +60,7 @@ export function CompanyCard({ company }: { company: Company }) {
                   {company.name}
                 </h3>
                 {company.is_verified && (
-                  <div className="text-blue-500 bg-blue-50 rounded-full p-0.5" title="Verified Company">
+                  <div className="text-primary bg-primary/10 rounded-full p-0.5" title="Verified Company">
                     <HugeiconsIcon icon={Tick02Icon} className="size-3.5" />
                   </div>
                 )}
@@ -74,13 +74,13 @@ export function CompanyCard({ company }: { company: Company }) {
 
         <div className="flex flex-wrap gap-2 mb-4 mt-auto pt-4">
           {company.industry && (
-            <Badge variant="secondary" className="font-normal bg-slate-100 text-slate-700">
+            <Badge variant="secondary" className="font-normal bg-muted text-muted-foreground">
               <HugeiconsIcon icon={BriefcaseIcon} className="size-3 mr-1" />
               {company.industry}
             </Badge>
           )}
           {company.location && (
-            <Badge variant="outline" className="font-normal text-slate-600 border-slate-200">
+            <Badge variant="outline" className="font-normal text-muted-foreground border-border">
               <HugeiconsIcon icon={Location01Icon} className="size-3 mr-1" />
               <span className="truncate max-w-[120px]">{company.location}</span>
             </Badge>
@@ -88,7 +88,7 @@ export function CompanyCard({ company }: { company: Company }) {
         </div>
 
         <div className="flex items-center justify-between gap-3 pt-4 border-t border-border/50">
-          <Link href={`/companies/${company.id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-8 flex-1 bg-white" })}>
+          <Link href={`/companies/${company.id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-8 flex-1 bg-background" })}>
             View Profile
           </Link>
           

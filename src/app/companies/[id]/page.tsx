@@ -71,7 +71,7 @@ export default function CompanyDetailsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8faff] pb-16">
-      <div className="bg-white border-b border-border pt-8 pb-12">
+      <div className="bg-background border-b border-border pt-8 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <button 
             onClick={() => router.back()}
@@ -84,7 +84,7 @@ export default function CompanyDetailsPage() {
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center w-full md:w-auto">
               {company.logo_url ? (
-                <div className="size-24 rounded-2xl border border-border overflow-hidden shrink-0 bg-white shadow-sm p-2">
+                <div className="size-24 rounded-2xl border border-border overflow-hidden shrink-0 bg-background shadow-sm p-2">
                   <img src={company.logo_url} alt={company.name} className="w-full h-full object-contain" />
                 </div>
               ) : (
@@ -99,7 +99,7 @@ export default function CompanyDetailsPage() {
                     {company.name}
                   </h1>
                   {company.is_verified && (
-                    <div className="text-blue-500 bg-blue-50 rounded-full p-1 mt-1" title="Verified Company">
+                    <div className="text-primary bg-primary/10 rounded-full p-1 mt-1" title="Verified Company">
                       <HugeiconsIcon icon={Tick02Icon} className="size-5" />
                     </div>
                   )}
@@ -182,8 +182,8 @@ export default function CompanyDetailsPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-12 text-center bg-white border border-dashed rounded-2xl max-w-3xl mx-auto">
-                <div className="size-16 rounded-full bg-slate-100 flex items-center justify-center text-muted-foreground mb-4">
+              <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl max-w-3xl mx-auto">
+                <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
                   <HugeiconsIcon icon={BriefcaseIcon} className="size-8" />
                 </div>
                 <h3 className="text-xl font-semibold">No open roles currently</h3>

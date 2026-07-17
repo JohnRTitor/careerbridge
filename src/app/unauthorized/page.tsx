@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
@@ -17,12 +17,8 @@ export default function UnauthorizedPage() {
             If you believe this is an error, please contact support or try logging in with an account that has the required permissions.
           </p>
           <div className="flex justify-center space-x-4 pt-4">
-            <Button asChild variant="outline">
-              <Link href="/">Return Home</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/login">Sign In</Link>
-            </Button>
+            <Link href="/" className={buttonVariants({ variant: "outline" })}>Return Home</Link>
+            <Link href="/login" className={buttonVariants()}>Sign In</Link>
           </div>
         </CardContent>
       </Card>

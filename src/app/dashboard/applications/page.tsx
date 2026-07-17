@@ -28,7 +28,7 @@ const formatTimeAgo = (dateStr: string) => {
 };
 
 const ApplicationCard = ({ app }: { app: Application }) => (
-  <Card className="bg-white border border-border shadow-sm hover:shadow-md transition-shadow">
+  <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
     <CardContent className="p-4">
       <div className="flex gap-3">
         {app.company_logo ? (
@@ -61,7 +61,7 @@ const ApplicationCard = ({ app }: { app: Application }) => (
           <HugeiconsIcon icon={ClockIcon} className="size-3" />
           {formatTimeAgo(app.applied_at)}
         </span>
-        <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-white" })}>View Job</Link>
+        <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-background" })}>View Job</Link>
       </div>
     </CardContent>
   </Card>
@@ -76,7 +76,7 @@ const KanbanColumn = ({
   apps: Application[];
   badgeClass: string;
 }) => (
-  <div className="flex flex-col min-w-[280px] w-full max-w-sm shrink-0 bg-slate-50/50 rounded-xl border border-border p-4">
+  <div className="flex flex-col min-w-[280px] w-full max-w-sm shrink-0 bg-muted/50 rounded-xl border border-border p-4">
     <div className="flex items-center justify-between mb-4">
       <h3 className="font-semibold text-sm">{title}</h3>
       <Badge variant="secondary" className={badgeClass}>
@@ -132,7 +132,7 @@ export default function ApplicationsTrackerPage() {
           <button
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
               view === "kanban"
-                ? "bg-white text-foreground shadow-xs border border-border/50"
+                ? "bg-background text-foreground shadow-xs border border-border/50"
                 : "text-muted-foreground hover:text-foreground"
             }`}
             onClick={() => setView("kanban")}
@@ -143,7 +143,7 @@ export default function ApplicationsTrackerPage() {
           <button
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
               view === "list"
-                ? "bg-white text-foreground shadow-xs border border-border/50"
+                ? "bg-background text-foreground shadow-xs border border-border/50"
                 : "text-muted-foreground hover:text-foreground"
             }`}
             onClick={() => setView("list")}
@@ -155,8 +155,8 @@ export default function ApplicationsTrackerPage() {
       </div>
 
       {applications.length === 0 ? (
-        <Card className="border-dashed flex-1 flex flex-col items-center justify-center p-12 text-center bg-slate-50/50">
-          <div className="size-16 rounded-full bg-slate-100 flex items-center justify-center text-muted-foreground mb-4">
+        <Card className="border-dashed flex-1 flex flex-col items-center justify-center p-12 text-center bg-muted/50">
+          <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
             <HugeiconsIcon icon={BriefcaseIcon} className="size-8" />
           </div>
           <h3 className="text-xl font-semibold">No applications found</h3>
@@ -170,22 +170,22 @@ export default function ApplicationsTrackerPage() {
           <KanbanColumn
             title="Reviewing"
             apps={reviewing}
-            badgeClass="bg-blue-100 text-blue-700 hover:bg-blue-100"
+            badgeClass="bg-blue-100 text-primary hover:bg-blue-100"
           />
           <KanbanColumn
             title="Interviewing"
             apps={interviewing}
-            badgeClass="bg-amber-100 text-amber-700 hover:bg-amber-100"
+            badgeClass="bg-amber-100 text-amber-600 hover:bg-amber-100"
           />
           <KanbanColumn
             title="Offered"
             apps={offered}
-            badgeClass="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
+            badgeClass="bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/20"
           />
           <KanbanColumn
             title="Archived"
             apps={rejected}
-            badgeClass="bg-rose-100 text-rose-700 hover:bg-rose-100"
+            badgeClass="bg-destructive/20 text-destructive hover:bg-destructive/20"
           />
         </div>
       ) : (

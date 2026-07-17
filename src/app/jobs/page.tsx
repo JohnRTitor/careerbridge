@@ -96,7 +96,7 @@ function JobSearchContent() {
             </p>
           </div>
 
-          <form onSubmit={handleSearch} className="bg-white p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-4xl mx-auto">
+          <form onSubmit={handleSearch} className="bg-background p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-4xl mx-auto">
             <div className="relative flex-1 flex items-center">
               <HugeiconsIcon icon={Search01Icon} className="absolute left-3 size-5 text-muted-foreground" />
               <Input 
@@ -165,8 +165,8 @@ function JobSearchContent() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-12 text-center bg-white border border-dashed rounded-2xl">
-                <div className="size-16 rounded-full bg-slate-100 flex items-center justify-center text-muted-foreground mb-4">
+              <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl">
+                <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
                   <HugeiconsIcon icon={Search01Icon} className="size-8" />
                 </div>
                 <h3 className="text-xl font-semibold">No results found</h3>
