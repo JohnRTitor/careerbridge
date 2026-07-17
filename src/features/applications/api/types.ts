@@ -1,9 +1,5 @@
 import { z } from "zod";
 import { ApplyJobSchema } from "@server/features/applications/applications.schemas";
-import { InferResponseType } from "hono/client";
-import { rpcClient } from "@/lib/api/rpc";
-import { Job } from "@/features/jobs/api/types";
-
 export type Application = {
   id: string;
   job_id: string;

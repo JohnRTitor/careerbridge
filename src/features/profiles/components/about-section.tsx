@@ -42,7 +42,7 @@ export function AboutSection({ profile }: { profile: Profile }) {
           </p>
         ) : (
           <div className="text-center py-6">
-            <p className="text-muted-foreground text-sm mb-4">You haven't written an about summary yet.</p>
+            <p className="text-muted-foreground text-sm mb-4">You haven&apos;t written an about summary yet.</p>
             <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
               Add About Summary
             </Button>

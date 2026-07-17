@@ -122,7 +122,7 @@ function CompaniesSearchContent() {
                 </div>
                 <h3 className="text-xl font-semibold">No companies found</h3>
                 <p className="text-muted-foreground max-w-sm mt-2">
-                  We couldn't find any companies matching your search. Try adjusting your query.
+                  We couldn&apos;t find any companies matching your search. Try adjusting your query.
                 </p>
                 <Button variant="outline" className="mt-6" onClick={() => {
                   setQuery("");

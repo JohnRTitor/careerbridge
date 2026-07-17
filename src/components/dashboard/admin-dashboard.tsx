@@ -6,12 +6,11 @@ import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { 
   Building01Icon, MenuIcon, Cancel01Icon, UserGroupIcon, 
-  Shield01Icon, ClockIcon, Search01Icon 
+  Shield01Icon
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { toast } from "sonner";
@@ -104,7 +103,7 @@ export default function AdminDashboard() {
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <div
-          className="rounded-3xl border border-destructive/10 bg-gradient-to-r from-destructive/10 to-destructive/5 p-6 sm:p-8 mb-8"
+          className="rounded-3xl border border-destructive/10 bg-linear-to-r from-destructive/10 to-destructive/5 p-6 sm:p-8 mb-8"
           style={{
             backgroundImage: `radial-gradient(var(--color-destructive) 1px, transparent 1px), linear-gradient(to right, var(--color-destructive), var(--color-destructive))`,
             backgroundSize: "24px 24px, 100% 100%",

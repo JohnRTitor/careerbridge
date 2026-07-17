@@ -149,7 +149,7 @@ export default function PublicProfilePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {profile.experience.map((exp: any) => (
+                    {profile.experience.map((exp: Record<string, unknown>) => (
                       <div key={exp.id} className="relative pl-6 before:absolute before:left-1.5 before:top-2 before:bottom-0 before:w-0.5 before:bg-border last:before:hidden">
                         <div className="absolute left-0 top-1.5 size-3.5 rounded-full bg-primary/20 border-2 border-primary" />
                         <h4 className="text-base font-semibold">{exp.title}</h4>
@@ -183,7 +183,7 @@ export default function PublicProfilePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {profile.education.map((edu: any) => (
+                    {profile.education.map((edu: Record<string, unknown>) => (
                       <div key={edu.id} className="relative pl-6 before:absolute before:left-1.5 before:top-2 before:bottom-0 before:w-0.5 before:bg-border last:before:hidden">
                         <div className="absolute left-0 top-1.5 size-3.5 rounded-full bg-primary/20 border-2 border-primary" />
                         <h4 className="text-base font-semibold">{edu.institution}</h4>
@@ -212,7 +212,7 @@ export default function PublicProfilePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="grid gap-4 sm:grid-cols-2">
-                    {profile.projects.map((proj: any) => (
+                    {profile.projects.map((proj: Record<string, unknown>) => (
                       <div key={proj.id} className="border border-border rounded-lg p-4 bg-muted/20">
                         <h4 className="font-semibold text-base">{proj.title}</h4>
                         <div className="text-xs text-muted-foreground mt-1 mb-2">
@@ -249,7 +249,7 @@ export default function PublicProfilePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {profile.certifications.map((cert: any) => (
+                    {profile.certifications.map((cert: Record<string, unknown>) => (
                       <div key={cert.id} className="flex gap-4 p-3 rounded-lg hover:bg-muted/30 transition-colors">
                         <div className="size-12 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
                           <HugeiconsIcon icon={Certificate01Icon} className="size-6 text-primary" />
@@ -286,7 +286,7 @@ export default function PublicProfilePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      {profile.skills.map((skill: any) => (
+                      {profile.skills.map((skill: Record<string, unknown>) => (
                         <Badge key={skill.skill_id} variant="secondary" className="px-3 py-1 bg-primary/5 text-primary hover:bg-primary/10 border-none">
                           {skill.skill_name}
                         </Badge>
@@ -306,7 +306,7 @@ export default function PublicProfilePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {profile.languages.map((lang: any) => (
+                    {profile.languages.map((lang: Record<string, unknown>) => (
                       <div key={lang.language_id} className="flex justify-between items-center text-sm">
                         <span className="font-medium text-foreground">{lang.language_name}</span>
                         {lang.proficiency && (

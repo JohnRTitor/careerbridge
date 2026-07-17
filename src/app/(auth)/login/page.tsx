@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MailIcon, LockIcon, ArrowRightIcon, Shield02Icon } from "@hugeicons/core-free-icons";
@@ -48,7 +47,7 @@ export default function SignInPage() {
   });
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
+    <div className="relative flex min-h-[calc(100vh-4rem)] justify-center overflow-hidden bg-background px-4 py-12 sm:py-20">
       <div 
         className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
         style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
@@ -58,19 +57,6 @@ export default function SignInPage() {
       <div className="relative z-10 w-full max-w-md space-y-6">
         {/* Main Logo & Platform Context */}
         <div className="flex flex-col items-center text-center">
-          <Link href="/" className="flex items-center gap-1.5 mb-2">
-            <Image
-              src="/logo.svg"
-              alt="CareerBridge Logo"
-              width={70}
-              height={70}
-              priority
-              className="h-16 w-16 object-contain"
-            />
-            <span className="text-2xl font-bold tracking-tight text-foreground">
-              CareerBridge
-            </span>
-          </Link>
           <h1 className="text-xl font-bold text-foreground sm:text-2xl">
             Welcome Back
           </h1>
@@ -157,7 +143,7 @@ export default function SignInPage() {
         {/* Security context disclaimer footer */}
         <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
           <HugeiconsIcon icon={Shield02Icon} className="size-3.5 text-emerald-600" />
-          <span>SSL Secure 256-bit encrypted dynamic state parsing</span>
+          <span>Secured by 256-bit SSL encryption</span>
         </div>
       </div>
     </div>

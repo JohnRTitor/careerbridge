@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MailIcon, LockIcon, UserIcon, ArrowRightIcon, Tick01Icon } from "@hugeicons/core-free-icons";
@@ -26,7 +25,7 @@ export default function SignUpPage() {
     },
     onSubmit: async ({ value }) => {
       setLoading(true);
-      const { data, error } = await authClient.signUp.email({
+      const { error } = await authClient.signUp.email({
         email: value.email,
         password: value.password,
         name: value.fullName,
@@ -44,7 +43,7 @@ export default function SignUpPage() {
   });
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
+    <div className="relative flex min-h-[calc(100vh-4rem)] justify-center overflow-hidden bg-background px-4 py-12 sm:py-20">
       <div 
         className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
         style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
@@ -53,18 +52,6 @@ export default function SignUpPage() {
       
       <div className="relative z-10 w-full max-w-md space-y-6">
         <div className="flex flex-col items-center text-center">
-          <Link href="/" className="flex items-center gap-1.5 mb-2">
-            <Image
-              src="/logo.svg"
-              alt="CareerBridge Logo"
-              width={70}
-              height={70}
-              className="h-16 w-16 object-contain"
-            />
-            <span className="text-2xl font-bold tracking-tight text-foreground">
-              CareerBridge
-            </span>
-          </Link>
           <h1 className="text-xl font-bold text-foreground sm:text-2xl">
             Create Your Account
           </h1>
@@ -122,8 +109,7 @@ export default function SignUpPage() {
               <div className="flex items-start gap-2 pt-1 text-pretty text-[11px] leading-relaxed text-muted-foreground">
                 <HugeiconsIcon icon={Tick01Icon} className="size-3.5 text-primary shrink-0 mt-0.5" />
                 <span>
-                  By checking setup parameters, you agree to the default Terms
-                  of System Operation and Automated Data Policies.
+                  By creating an account, you agree to our Terms of Service and Privacy Policy.
                 </span>
               </div>
 
@@ -142,7 +128,7 @@ export default function SignUpPage() {
                   href="/login"
                   className="font-semibold text-primary hover:underline"
                 >
-                  Sign inside here
+                  Sign in
                 </Link>
               </p>
             </div>

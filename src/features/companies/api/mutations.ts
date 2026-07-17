@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { companyKeys } from "./query-keys";
 import * as api from "./api";
 import type { 
-  CreateCompanyPayload, 
   UpdateCompanyPayload, 
   AddCompanyMemberPayload, 
   UpdateCompanyMemberPayload 

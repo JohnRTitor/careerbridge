@@ -120,6 +120,7 @@ export default function JobDetailsPage() {
             <div className="flex flex-col sm:flex-row gap-5 items-start">
               {job.company_logo ? (
                 <div className="size-16 sm:size-20 rounded-2xl border border-border overflow-hidden shrink-0 bg-background shadow-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={job.company_logo} alt={job.company_name || ""} className="w-full h-full object-contain" />
                 </div>
               ) : (
@@ -255,6 +256,7 @@ export default function JobDetailsPage() {
               <div className="flex items-center gap-4 mb-4">
                 {job.company_logo ? (
                   <div className="size-12 rounded-lg border border-border overflow-hidden shrink-0 bg-background">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={job.company_logo} alt={job.company_name || ""} className="w-full h-full object-contain" />
                   </div>
                 ) : (

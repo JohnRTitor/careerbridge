@@ -28,7 +28,7 @@ app.on(["POST", "GET"], "/auth/*", (c) => {
 });
 
 // ─── Feature Routes ──────────────────────────────────────────────────────────
-const routes = app
+export const routes = app
   .route("/users", profilesRoutes)
   .route("/u", publicProfilesRoutes)
   .route("/jobs", jobsRoutes)

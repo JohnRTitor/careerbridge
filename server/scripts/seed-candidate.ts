@@ -2,7 +2,7 @@ import { parseArgs } from "node:util";
 import { faker } from "@faker-js/faker";
 import { pool } from "../app/db";
 import { randomUUID as uuidv4 } from "node:crypto";
-import { JOB_TYPES, WORK_MODES, VISIBILITIES, randomDate, batchInsert } from "./seed-utils";
+import { JOB_TYPES, WORK_MODES, randomDate, batchInsert } from "./seed-utils";
 
 async function main() {
   const { values } = parseArgs({
@@ -69,7 +69,7 @@ async function main() {
 
     // 3. Find Open Jobs & Employers
     const openJobsRes = await pool.query("SELECT id FROM jobs WHERE status = 'open'");
-    let jobIds = openJobsRes.rows.map((r: any) => r.id);
+    const jobIds = openJobsRes.rows.map((r: Record<string, unknown>) => r.id);
 
     // Get an employer and company for mock jobs if we need more
     if (jobIds.length < numApplications) {
@@ -82,7 +82,7 @@ async function main() {
       const employers = employersRes.rows;
       
       const companiesRes = await pool.query("SELECT id FROM companies LIMIT 50");
-      const companyIds = companiesRes.rows.map((r: any) => r.id);
+      const companyIds = companiesRes.rows.map((r: Record<string, unknown>) => r.id);
 
       const newJobsData = [];
       const neededJobs = numApplications - jobIds.length;
@@ -108,13 +108,13 @@ async function main() {
     // 4. Submit Applications
     const selectedJobIds = faker.helpers.arrayElements(jobIds, numApplications);
     const existingAppsRes = await pool.query("SELECT job_id FROM applications WHERE candidate_id = $1", [userId]);
-    const existingJobIds = new Set(existingAppsRes.rows.map((r: any) => r.job_id));
+    const existingJobIds = new Set(existingAppsRes.rows.map((r: Record<string, unknown>) => r.job_id));
 
     const appsData = [];
     const savedJobsData = [];
     const auditLogsData = [];
     
-    let baseDate = new Date();
+    const baseDate = new Date();
     baseDate.setMonth(baseDate.getMonth() - 6);
 
     let insertedCount = 0;

@@ -14,7 +14,7 @@ export function randomDate(start: Date, end: Date) {
 export async function batchInsert(
   tableName: string,
   columns: string[],
-  data: any[][],
+  data: unknown[][],
   onConflict: string = "",
   chunkSize = 2000
 ) {
@@ -26,7 +26,7 @@ export async function batchInsert(
 
   for (let i = 0; i < data.length; i += actualChunkSize) {
     const chunk = data.slice(i, i + actualChunkSize);
-    const values: any[] = [];
+    const values: unknown[] = [];
     const queryPlaceholders = [];
 
     let paramIndex = 1;

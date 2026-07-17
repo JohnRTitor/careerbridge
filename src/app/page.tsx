@@ -1,12 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   BriefcaseIcon,
-  MenuIcon,
-  Cancel01Icon,
   SearchIcon,
   Location01Icon,
   ClockIcon,
@@ -44,7 +41,7 @@ const popularSearches = [
   "Marketing",
 ];
 
-const categoryIcons: Record<string, any> = {
+const categoryIcons: Record<string, React.ElementType> = {
   "Engineering": CodeIcon,
   "Technology": CodeIcon,
   "Design": PenToolIcon,
@@ -85,14 +82,6 @@ export default function Page() {
   // Applied search states (to pass to useJobs)
   const [appliedSearch, setAppliedSearch] = useState<{ query: string; location: string } | null>(null);
 
-  const [searchMessage, setSearchMessage] = useState<{
-    type: "success" | "error" | null;
-    text: string;
-  }>({
-    type: null,
-    text: "",
-  });
-
   // Data Hooks
   const { data: statsData, isLoading: isLoadingStats } = useHomepageStats();
   const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
@@ -111,13 +100,29 @@ export default function Page() {
   // We show search results if appliedSearch is not null. Otherwise we show featured jobs.
   const isSearching = appliedSearch !== null;
   
+  const searchMessage = (() => {
+    if (isSearching && searchResultsData) {
+      if (searchResultsData.jobs.length > 0) {
+        return {
+          type: "success" as const,
+          text: `Found ${searchResultsData.pagination.total} job(s) matching your search!`,
+        };
+      } else {
+        return {
+          type: "error" as const,
+          text: "No jobs found matching your criteria. Try adjusting your keywords or location.",
+        };
+      }
+    }
+    return { type: null, text: "" };
+  })();
+  
   const handleSearch = () => {
     const query = searchTitle.trim();
     const location = searchLocation.trim();
 
     if (!query && !location) {
       setAppliedSearch(null);
-      setSearchMessage({ type: null, text: "" });
       return;
     }
 
@@ -125,27 +130,10 @@ export default function Page() {
     document.getElementById("jobs")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    if (isSearching && searchResultsData) {
-      if (searchResultsData.jobs.length > 0) {
-        setSearchMessage({
-          type: "success",
-          text: `Found ${searchResultsData.pagination.total} job(s) matching your search!`,
-        });
-      } else {
-        setSearchMessage({
-          type: "error",
-          text: "No jobs found matching your criteria. Try adjusting your keywords or location.",
-        });
-      }
-    }
-  }, [isSearching, searchResultsData]);
-
   const resetSearch = () => {
     setSearchTitle("");
     setSearchLocation("");
     setAppliedSearch(null);
-    setSearchMessage({ type: null, text: "" });
   };
 
   const handlePopularSearch = (term: string) => {
@@ -240,7 +228,7 @@ export default function Page() {
             className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
             style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
           <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
             <div className="mx-auto max-w-3xl text-center flex flex-col items-center">
               {isLoadingStats ? (

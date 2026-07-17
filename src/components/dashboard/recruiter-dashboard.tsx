@@ -1,13 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   BriefcaseIcon,
-  MenuIcon,
-  Cancel01Icon,
   UserGroupIcon,
   PlusSignIcon,
   ClockIcon,
@@ -25,14 +21,11 @@ import {
   useRecruiterAnalytics,
   useRecruiterJobs,
   useRecruiterApplications,
-  useRecruiterProfile,
 } from "@/features/recruiters/api/queries";
 import { useUpdateApplicationStatus } from "@/features/recruiters/api/mutations";
 import { toast } from "sonner";
 
 export default function RecruiterDashboard() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { data: profile } = useRecruiterProfile();
   const { data: analytics, isLoading: isLoadingAnalytics } =
     useRecruiterAnalytics();
   const { data: jobsData, isLoading: isLoadingJobs } = useRecruiterJobs({
@@ -119,7 +112,7 @@ export default function RecruiterDashboard() {
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <div
-          className="rounded-3xl border border-primary/10 bg-gradient-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8"
+          className="rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8"
           style={{
             backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
             backgroundSize: "24px 24px, 100% 100%",
@@ -319,7 +312,7 @@ export default function RecruiterDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-primary/10 to-background border border-border p-5">
+            <Card className="bg-linear-to-br from-primary/10 to-background border border-border p-5">
               <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                 <HugeiconsIcon
                   icon={Tick01Icon}

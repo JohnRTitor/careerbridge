@@ -38,19 +38,25 @@ This project is built using modern web technologies:
    ```
 
 3. Configure Environment Variables:
-   Copy the example environment file and fill in your details (e.g., Database URL, Auth secrets).
+   Copy the example environment file and fill in your details (e.g., Database URL, Auth secrets). Ensure you have a running PostgreSQL database and update the `DATABASE_URL` accordingly.
 
    ```bash
    cp .env.example .env
    ```
 
-4. Start the development server:
+4. Setup the database and seed it with mock data:
+
+   ```bash
+   pnpm db:setup
+   ```
+
+5. Start the development server:
 
    ```bash
    pnpm dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ### Database Scripts
 
@@ -67,83 +73,41 @@ This project is built using modern web technologies:
 
 ### Core Infrastructure
 
-- [ ] Set up Next.js architecture and database connections.
-- [ ] Implement robust authentication and authorization using Better Auth (RBAC for Job Seekers, Recruiters, Admins).
-- [ ] Set up Hono API routes.
+- [x] Set up Next.js architecture and database connections.
+- [x] Implement robust authentication and authorization using Better Auth (RBAC for Job Seekers, Recruiters, Admins).
+- [x] Set up Hono API routes.
 
 ### User Profile Management
 
-- [ ] Create user registration and onboarding flow.
-- [ ] Build professional profile management (personal info, education, work experience, skills).
-- [ ] Implement resume and portfolio upload functionality.
-- [ ] Add profile visibility controls.
+- [x] Create user registration and onboarding flow.
+- [x] Build professional profile management (personal info, education, work experience, skills).
+- [x] Implement resume and portfolio upload functionality.
+- [x] Add profile visibility controls.
 
 ### Job Search & Application System
 
-- [ ] Develop job search engine with keyword filtering and sorting.
+- [x] Develop job search engine with keyword filtering and sorting.
 - [ ] Implement personalized job recommendations (based on user profile).
-- [ ] Build job application submission flow.
-- [ ] Allow users to save jobs and track application status.
+- [x] Build job application submission flow.
+- [x] Allow users to save jobs and track application status.
 
 ### Recruiter Dashboard & ATS
 
-- [ ] Build tools for creating and managing job postings.
-- [ ] Develop Applicant Tracking System (ATS) interface.
-- [ ] Implement candidate review, filtering, and shortlisting.
+- [x] Build tools for creating and managing job postings.
+- [x] Develop Applicant Tracking System (ATS) interface.
+- [x] Implement candidate review, filtering, and shortlisting.
 - [ ] Add recruitment analytics.
 
 ### Administration & Governance
 
 - [ ] Build System Admin dashboard for user management.
 - [ ] Implement platform monitoring and audit logging.
-- [ ] Add content moderation and company verification workflows.
 
 ### Future Enhancements
 
 - [ ] AI-driven job recommendations.
 - [ ] AI-powered resume analysis.
 - [ ] Automated certifications upload and verification.
-
-## API Routes Task List
-
-### User Profile Management
-
-- [ ] `GET /api/users/profile` - Get current user profile
-- [ ] `PUT /api/users/profile` - Update user profile (personal info, visibility)
-- [ ] `POST /api/users/profile/education` - Add education entry
-- [ ] `PUT /api/users/profile/education/:id` - Update education entry
-- [ ] `DELETE /api/users/profile/education/:id` - Delete education entry
-- [ ] `POST /api/users/profile/experience` - Add work experience
-- [ ] `PUT /api/users/profile/experience/:id` - Update work experience
-- [ ] `DELETE /api/users/profile/experience/:id` - Delete work experience
-- [ ] `POST /api/users/profile/resume` - Upload resume/portfolio
-
-### Job Search & Application System
-
-- [ ] `GET /api/jobs` - Search jobs (with filters, sorting, pagination)
-- [ ] `GET /api/jobs/:id` - Get specific job details
-- [ ] `GET /api/jobs/recommendations` - Get personalized job recommendations
-- [ ] `POST /api/jobs/:id/apply` - Submit job application
-- [ ] `POST /api/jobs/:id/save` - Save/bookmark a job
-- [ ] `DELETE /api/jobs/:id/save` - Remove saved job
-- [ ] `GET /api/applications` - Get user's job applications and statuses
-
-### Recruiter Dashboard & ATS
-
-- [ ] `POST /api/recruiters/jobs` - Create a new job posting
-- [ ] `PUT /api/recruiters/jobs/:id` - Update an existing job posting
-- [ ] `DELETE /api/recruiters/jobs/:id` - Delete a job posting
-- [ ] `GET /api/recruiters/jobs/:id/applicants` - Get applicants for a job
-- [ ] `PUT /api/recruiters/applications/:id/status` - Update applicant status (shortlist, reject, hire)
-- [ ] `GET /api/recruiters/analytics` - Get recruitment analytics dashboard data
-
-### Administration & Governance
-
-- [ ] `GET /api/admin/users` - List all users (with filtering)
-- [ ] `PUT /api/admin/users/:id/role` - Change user role
-- [ ] `PUT /api/admin/users/:id/status` - Suspend/ban/activate user
-- [ ] `GET /api/admin/audit-logs` - Retrieve audit logs
-- [ ] `PUT /api/admin/companies/:id/verify` - Verify a company profile
 
 ---
 

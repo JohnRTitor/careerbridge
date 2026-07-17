@@ -43,6 +43,7 @@ export function CompanyCard({ company }: { company: Company }) {
           <div className="flex gap-4">
             {company.logo_url ? (
               <div className="size-14 rounded-xl border border-border overflow-hidden shrink-0 bg-background">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={company.logo_url}
                   alt={company.name}

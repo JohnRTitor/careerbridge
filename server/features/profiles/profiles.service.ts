@@ -85,6 +85,7 @@ export async function getPublicProfile(input: GetProfileInput) {
   const languages = await profilesRepository.getUserLanguages({ userId });
   const social_links = await profilesRepository.getSocialLinks({ userId });
   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { email, ...safeProfile } = profile;
 
   return { 

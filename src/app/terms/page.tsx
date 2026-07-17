@@ -15,9 +15,9 @@ export default function TermsPage() {
         <h2>1. Acceptance of Terms</h2>
         <p>By accessing or using our Service, you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.</p>
         <h2>2. Use License</h2>
-        <p>Permission is granted to temporarily download one copy of the materials (information or software) on CareerBridge's website for personal, non-commercial transitory viewing only.</p>
+        <p>Permission is granted to temporarily download one copy of the materials (information or software) on CareerBridge&apos;s website for personal, non-commercial transitory viewing only.</p>
         <h2>3. Disclaimer</h2>
-        <p>The materials on CareerBridge's website are provided on an 'as is' basis. CareerBridge makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+        <p>The materials on CareerBridge&apos;s website are provided on an &apos;as is&apos; basis. CareerBridge makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
       </main>
     </div>
   );

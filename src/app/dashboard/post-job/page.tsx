@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon, BriefcaseIcon } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { NativeSelect } from "@/components/ui/native-select";
 import { useAppForm } from "@/hooks/use-app-form";
@@ -35,7 +35,7 @@ export default function PostJobPage() {
         });
         toast.success("Job posted successfully!");
         router.push("/dashboard");
-      } catch (error) {
+      } catch {
         toast.error("Failed to post job. Please try again.");
       }
     },

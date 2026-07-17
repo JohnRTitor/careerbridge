@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { InferRequestType, InferResponseType } from "hono/client";
+import { InferResponseType } from "hono/client";
 import { rpcClient } from "@/lib/api/rpc";
 import { UsersQuerySchema, UpdateUserRoleSchema, UpdateUserStatusSchema } from "@server/features/admin/admin.schemas";
 import { VerifyCompanySchema } from "@server/features/companies/companies.schemas";

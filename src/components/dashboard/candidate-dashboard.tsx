@@ -12,7 +12,7 @@ import {
   Tick01Icon,
   TrendingUp,
 } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -192,6 +192,7 @@ export default function CandidateDashboard() {
                     <div className="flex gap-4">
                       {app.company_logo ? (
                         <div className="size-12 rounded-xl border border-border overflow-hidden shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={app.company_logo} alt={app.company_name || ""} className="w-full h-full object-cover" />
                         </div>
                       ) : (
@@ -307,7 +308,7 @@ export default function CandidateDashboard() {
                 
                 {savedJobs.length === 0 && (
                   <div className="text-center py-6 text-sm text-muted-foreground">
-                    You haven't saved any jobs yet.
+                    You haven&apos;t saved any jobs yet.
                   </div>
                 )}
               </CardContent>

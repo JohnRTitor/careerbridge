@@ -2,7 +2,7 @@ import { parseArgs } from "node:util";
 import { faker } from "@faker-js/faker";
 import { pool } from "../app/db";
 import { randomUUID as uuidv4 } from "node:crypto";
-import { JOB_TYPES, WORK_MODES, VISIBILITIES, randomDate, batchInsert } from "./seed-utils";
+import { JOB_TYPES, WORK_MODES, randomDate, batchInsert } from "./seed-utils";
 
 async function main() {
   const { values } = parseArgs({
@@ -50,7 +50,7 @@ async function main() {
     // 2. Generate Jobs
     const jobsData = [];
     const generatedJobIds = [];
-    let baseDate = new Date();
+    const baseDate = new Date();
     baseDate.setMonth(baseDate.getMonth() - 12); // jobs over the last year
 
     for (let i = 0; i < numJobs; i++) {
@@ -85,7 +85,7 @@ async function main() {
 
     // 3. Generate Applicants for each Job
     const candidateRes = await pool.query('SELECT id FROM "user" WHERE role = \'candidate\'');
-    let candidateIds = candidateRes.rows.map((r: any) => r.id);
+    const candidateIds: string[] = candidateRes.rows.map((r) => r.id);
 
     // If not enough candidates, well, we just reuse them, but we must respect UNIQUE(job_id, candidate_id)
     // We have candidates, we just pick subset per job.
@@ -111,7 +111,7 @@ async function main() {
           // Status distribution depends on job age and status
           // Newer jobs -> more pending/reviewing
           // Older jobs / closed -> more hired/rejected/shortlisted
-          let statusProb = Math.random();
+          const statusProb = Math.random();
           let status = "pending";
           
           if (jobStatus === "closed") {

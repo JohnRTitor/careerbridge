@@ -1,5 +1,5 @@
 import { jobsRepository } from "./jobs.repository";
-import { NotFoundError, BadRequestError } from "../../shared/errors";
+import { NotFoundError } from "../../shared/errors";
 import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput } from "./jobs.schemas";
 
 export async function searchJobs(input: SearchJobsInput) {

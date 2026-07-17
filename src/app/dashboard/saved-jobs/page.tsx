@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { BookmarkIcon } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSavedJobs } from "@/features/jobs/api/queries";
 import { JobCard } from "@/features/jobs/components/job-card";
@@ -30,7 +30,7 @@ export default function SavedJobsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Saved Jobs</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Jobs you've bookmarked to review or apply for later.
+            Jobs you&apos;ve bookmarked to review or apply for later.
           </p>
         </div>
         <div className="flex items-center text-sm font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg border border-border">
@@ -45,7 +45,7 @@ export default function SavedJobsPage() {
           </div>
           <h3 className="text-xl font-semibold">No saved jobs</h3>
           <p className="text-muted-foreground max-w-sm mt-2">
-            You haven't saved any jobs yet. When you see a job you like, click the bookmark icon to save it here.
+            You haven&apos;t saved any jobs yet. When you see a job you like, click the bookmark icon to save it here.
           </p>
           <Link href="/jobs" className={buttonVariants({ className: "mt-6" })}>Browse Jobs</Link>
         </div>

@@ -8,7 +8,7 @@ import {
   Location01Icon,
   Wallet01Icon,
 } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -54,6 +54,7 @@ export function JobCard({
           <div className="flex gap-4">
             {job.company_logo ? (
               <div className="size-12 rounded-xl border border-border overflow-hidden shrink-0 bg-background">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={job.company_logo}
                   alt={job.company_name || ""}

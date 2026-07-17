@@ -9,8 +9,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { 
   PencilEdit01Icon, 
   Location01Icon, 
-  Link01Icon,
-  Briefcase01Icon
+  Link01Icon
 } from "@hugeicons/core-free-icons";
 import type { Profile } from "@/features/profiles/api/types";
 import { useAppForm } from "@/hooks/use-app-form";

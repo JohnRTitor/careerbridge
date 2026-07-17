@@ -72,7 +72,7 @@ export function TextField<TField extends AnyFieldApi>({
             onChange={(e) => field.handleChange(e.target.value)}
             className={
               startIcon
-                ? "border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 aria-invalid:ring-0 text-sm"
+                ? "border-0 bg-transparent dark:bg-transparent px-0 shadow-none focus-visible:ring-0 aria-invalid:ring-0 text-sm"
                 : className
             }
           />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -171,7 +171,7 @@ function JobSearchContent() {
                 </div>
                 <h3 className="text-xl font-semibold">No results found</h3>
                 <p className="text-muted-foreground max-w-sm mt-2">
-                  We couldn't find any jobs matching your criteria. Try adjusting your search keywords or filters.
+                  We couldn&apos;t find any jobs matching your criteria. Try adjusting your search keywords or filters.
                 </p>
                 <Button variant="outline" className="mt-6" onClick={() => {
                   setQuery("");

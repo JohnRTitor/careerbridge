@@ -166,7 +166,7 @@ async function createUsers(config: SeedConfig, state: SeedState) {
         firstName,
         lastName,
         faker.phone.number(),
-        faker.date.birthdate({ min: 18, max: 65 }),
+        faker.date.birthdate({ min: 18, max: 65, mode: 'age' }),
         faker.person.sex(),
         faker.location.country(),
         faker.location.state(),
@@ -424,7 +424,7 @@ async function seed() {
     process.exit(1);
   }
 
-  let baseDate = new Date();
+  const baseDate = new Date();
   baseDate.setFullYear(baseDate.getFullYear() - 3);
 
   const state: SeedState = {

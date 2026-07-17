@@ -85,6 +85,7 @@ export default function CompanyDetailsPage() {
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center w-full md:w-auto">
               {company.logo_url ? (
                 <div className="size-24 rounded-2xl border border-border overflow-hidden shrink-0 bg-background shadow-sm p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={company.logo_url} alt={company.name} className="w-full h-full object-contain" />
                 </div>
               ) : (
@@ -188,7 +189,7 @@ export default function CompanyDetailsPage() {
                 </div>
                 <h3 className="text-xl font-semibold">No open roles currently</h3>
                 <p className="text-muted-foreground mt-2">
-                  {company.name} doesn't have any open positions right now. {isCandidate && !isFollowed ? "Follow them to get notified when they post new jobs!" : "Check back later for new opportunities."}
+                  {company.name} doesn&apos;t have any open positions right now. {isCandidate && !isFollowed ? "Follow them to get notified when they post new jobs!" : "Check back later for new opportunities."}
                 </p>
                 {isCandidate && !isFollowed && (
                   <Button onClick={handleToggleFollow} disabled={isFollowing} className="mt-6">

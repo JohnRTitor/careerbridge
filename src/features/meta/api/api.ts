@@ -1,6 +1,4 @@
 import type { ErrorResponse } from "@server/shared/responses";
-import { SearchMetaSchema } from "@server/features/meta/meta.schemas";
-import { z } from "zod";
 import { rpcClient } from "@/lib/api/rpc";
 import type { InferRequestType } from "hono/client";
 import type { 

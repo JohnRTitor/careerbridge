@@ -19,7 +19,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const categoryIcons: Record<string, any> = {
+const categoryIcons: Record<string, React.ElementType> = {
   Engineering: CodeIcon,
   Technology: CodeIcon,
   Design: PenToolIcon,

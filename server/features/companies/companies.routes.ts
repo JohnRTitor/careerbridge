@@ -8,7 +8,7 @@ import { ok, created, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 import { requireAuth } from "../../app/middleware/auth";
 import { requirePermission } from "../../app/middleware/authorize";
-import { CompanySchema, UpdateCompanySchema, VerifyCompanySchema, CompanyMemberSchema, UpdateCompanyMemberSchema } from "./companies.schemas";
+import { CompanySchema, UpdateCompanySchema, CompanyMemberSchema, UpdateCompanyMemberSchema } from "./companies.schemas";
 const app = new Hono<AppEnv>();
 
 export const companiesRoutes = app

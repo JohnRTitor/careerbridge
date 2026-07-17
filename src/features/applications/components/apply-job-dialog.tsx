@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DocumentAttachmentIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -42,7 +41,7 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
         });
         toast.success("Application submitted successfully!");
         onOpenChange(false);
-      } catch (error) {
+      } catch {
         toast.error("Failed to submit application. Please try again.");
       }
     },

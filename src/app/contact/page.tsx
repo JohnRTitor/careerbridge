@@ -11,7 +11,7 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="mt-4 text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-            We'd love to hear from you. Please fill out this form or get in touch.
+            We&apos;d love to hear from you. Please fill out this form or get in touch.
           </p>
         </div>
       </div>

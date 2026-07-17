@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { LogOut, User, LayoutDashboard, Settings } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
