@@ -2,8 +2,29 @@ import { rpcClient } from "@/lib/api/rpc";
 import type { 
   CreateJobPayload, 
   UpdateJobPayload, 
-  UpdateApplicationStatusPayload 
+  UpdateApplicationStatusPayload,
+  UpdateRecruiterProfilePayload
 } from "./types";
+
+export const getRecruiterProfile = async () => {
+  const res = await rpcClient.api.recruiters.profile.$get();
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to fetch profile");
+  }
+  const json = await res.json();
+  return json.data;
+};
+
+export const upsertRecruiterProfile = async (data: UpdateRecruiterProfilePayload) => {
+  const res = await rpcClient.api.recruiters.profile.$put({ json: data });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to update profile");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
 export const createJob = async (data: CreateJobPayload) => {
   const res = await rpcClient.api.recruiters.jobs.$post({ json: data });

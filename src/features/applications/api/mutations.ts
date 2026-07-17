@@ -13,3 +13,12 @@ export const useApplyForJob = () => {
     },
   });
 };
+export const useWithdrawApplication = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: api.withdrawApplication,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: applicationKeys.lists() });
+    },
+  });
+};

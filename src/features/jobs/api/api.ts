@@ -53,3 +53,13 @@ export const unsaveJob = async (id: string) => {
     throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to unsave job");
   }
 };
+
+export const getSavedJobs = async () => {
+  const res = await rpcClient.api.jobs.saved.$get();
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to fetch saved jobs");
+  }
+  const json = await res.json();
+  return json.data;
+};
