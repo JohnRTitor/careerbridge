@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
+import { usePermission } from "@/hooks/use-permission";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,9 @@ const menuItems = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+
+  const { can, isLoading } = usePermission();
+  if (isLoading) return null;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
@@ -60,7 +64,11 @@ export default function Header() {
             Sign in
           </Link>
 
-          <Button>Post a Job</Button>
+          {can("job", "create") && (
+            <Link href="/jobs/post">
+              <Button>Post a Job</Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile */}
@@ -97,9 +105,11 @@ export default function Header() {
                   Sign in
                 </Link>
 
-                <Button className="mt-3 w-full" onClick={() => setOpen(false)}>
-                  Post a Job
-                </Button>
+                {can("job", "create") && (
+                  <Link href="/jobs/post" onClick={() => setOpen(false)}>
+                    <Button className="mt-3 w-full">Post a Job</Button>
+                  </Link>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
