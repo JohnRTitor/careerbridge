@@ -21,7 +21,7 @@ import { auth } from "../auth/auth";
 export const app = new Hono().basePath("/api");
 
 // ─── Auth Route ──────────────────────────────────────────────────────────────
-app.on(["POST", "GET"], "/auth/**", (c) => {
+app.on(["POST", "GET"], "/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
 
