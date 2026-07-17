@@ -24,3 +24,19 @@ export const recruiterProfileQueryOptions = () => queryOptions({
 });
 
 export const useRecruiterProfile = () => useQuery(recruiterProfileQueryOptions());
+
+export const recruiterJobsQueryOptions = (filters: { page?: number; limit?: number }) => queryOptions({
+  queryKey: [...recruiterKeys.all, "jobs", filters],
+  queryFn: () => api.getRecruiterJobs(filters),
+});
+
+export const useRecruiterJobs = (filters: { page?: number; limit?: number } = {}) => 
+  useQuery(recruiterJobsQueryOptions(filters));
+
+export const recruiterApplicationsQueryOptions = (filters: { page?: number; limit?: number }) => queryOptions({
+  queryKey: [...recruiterKeys.all, "applications", filters],
+  queryFn: () => api.getRecruiterApplications(filters),
+});
+
+export const useRecruiterApplications = (filters: { page?: number; limit?: number } = {}) => 
+  useQuery(recruiterApplicationsQueryOptions(filters));

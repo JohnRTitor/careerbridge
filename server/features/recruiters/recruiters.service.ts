@@ -1,6 +1,6 @@
 import { recruitersRepository } from "./recruiters.repository";
 import { NotFoundError, ForbiddenError } from "../../shared/errors";
-import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput, GetRecruiterProfileInput, UpsertRecruiterProfileInput } from "./recruiters.schemas";
+import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput, GetRecruiterProfileInput, UpsertRecruiterProfileInput, GetRecruiterJobsInput, GetRecruiterApplicationsInput } from "./recruiters.schemas";
 
 export async function createJob(input: CreateJobInput) {
   return recruitersRepository.createJob(input);
@@ -43,6 +43,14 @@ export async function upsertRecruiterProfile(input: UpsertRecruiterProfileInput)
   return recruitersRepository.upsertRecruiterProfile(input);
 }
 
+export async function getRecruiterJobs(input: GetRecruiterJobsInput) {
+  return recruitersRepository.getRecruiterJobs(input);
+}
+
+export async function getRecruiterApplications(input: GetRecruiterApplicationsInput) {
+  return recruitersRepository.getRecruiterApplications(input);
+}
+
 export const recruitersService = {
   createJob,
   updateJob,
@@ -52,4 +60,6 @@ export const recruitersService = {
   getAnalytics,
   getRecruiterProfile,
   upsertRecruiterProfile,
+  getRecruiterJobs,
+  getRecruiterApplications,
 };

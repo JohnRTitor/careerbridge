@@ -16,11 +16,12 @@ import { useAppForm } from "@/hooks/use-app-form";
 import { format, parseISO } from "date-fns";
 import { useAddResume, useDeleteResume, useUpdateResumeEntity } from "@/features/profiles/api/mutations";
 import { useProfile } from "@/features/profiles/api/queries";
+import type { Resume } from "@/features/profiles/api/types";
 
 export function ResumesSection() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: profile } = useProfile();
-  const resumes = (profile?.resumes as any[]) || [];
+  const resumes = (profile?.resumes as Resume[]) || [];
   
   const uploadMutation = useAddResume();
   const deleteMutation = useDeleteResume();
@@ -185,7 +186,7 @@ export function ResumesSection() {
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        field.handleChange(file as any);
+                        field.handleChange(file);
                       }
                     }}
                     required
