@@ -1,26 +1,30 @@
-import { ApplicationsRepository } from "./applications.repository";
-import { JobsService } from "../jobs/jobs.service";
+import { applicationsRepository } from "./applications.repository";
+import { jobsService } from "../jobs/jobs.service";
 import { ConflictError, BadRequestError } from "../../shared/errors";
-import { z } from "zod";
-import { ApplyJobSchema } from "./applications.schemas";
+import type { GetUserApplicationsInput, ApplyForJobInput } from "./applications.schemas";
 
-export class ApplicationsService {
-  static async getUserApplications(userId: string) {
-    return ApplicationsRepository.getUserApplications(userId);
-  }
-
-  static async applyForJob(jobId: string, candidateId: string, data: z.infer<typeof ApplyJobSchema>) {
-    const job = await JobsService.getJobById(jobId);
-    
-    if (job.status !== "open") {
-      throw new BadRequestError("Cannot apply to a job that is not open");
-    }
-
-    const existing = await ApplicationsRepository.getApplication(jobId, candidateId);
-    if (existing) {
-      throw new ConflictError("You have already applied to this job");
-    }
-
-    return ApplicationsRepository.applyForJob(jobId, candidateId, data);
-  }
+export async function getUserApplications(input: GetUserApplicationsInput) {
+  return applicationsRepository.getUserApplications(input);
 }
+
+export async function applyForJob(input: ApplyForJobInput) {
+  const { jobId, candidateId } = input;
+  // Note: we update this to the future structure of jobsService
+  const job = await jobsService.getJobById({ jobId });
+  
+  if (job.status !== "open") {
+    throw new BadRequestError("Cannot apply to a job that is not open");
+  }
+
+  const existing = await applicationsRepository.getApplication({ jobId, candidateId });
+  if (existing) {
+    throw new ConflictError("You have already applied to this job");
+  }
+
+  return applicationsRepository.applyForJob(input);
+}
+
+export const applicationsService = {
+  getUserApplications,
+  applyForJob,
+};

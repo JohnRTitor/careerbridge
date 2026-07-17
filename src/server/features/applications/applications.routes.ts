@@ -4,7 +4,7 @@ import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
 import { requireCandidate, requirePermission } from "../../app/middleware/authorize";
-import { ApplicationsService } from "./applications.service";
+import { applicationsService } from "./applications.service";
 import { ApplyJobSchema } from "./applications.schemas";
 import { ok, created } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
@@ -22,7 +22,7 @@ applicationsRoutes.get(
   requirePermission("application", "read"),
   async (c) => {
     const user = c.get("user");
-    const applications = await ApplicationsService.getUserApplications(user.id);
+    const applications = await applicationsService.getUserApplications({ userId: user.id });
     return ok(c, applications);
   }
 );
@@ -45,7 +45,7 @@ jobApplicationsRoutes.post(
     const { id: jobId } = c.req.valid("param");
     const data = c.req.valid("json");
     
-    const application = await ApplicationsService.applyForJob(jobId, user.id, data);
+    const application = await applicationsService.applyForJob({ jobId, candidateId: user.id, data });
     return created(c, application, "Application submitted successfully");
   }
 );

@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth/auth";
-import { AdminService } from "@/server/features/admin/admin.service";
+import { adminService } from "@/server/features/admin/admin.service";
 import { headers } from "next/headers";
 import { LoginInput, RegisterInput } from "@/lib/zod-schemas";
 
@@ -42,8 +42,7 @@ export async function registerAction(data: RegisterInput) {
       return { error: "Failed to create user" };
     }
 
-    // Assign the role requested
-    const updatedUser = await AdminService.updateUserRole(response.user.id, data.accountType);
+    const updatedUser = await adminService.updateUserRole({ userId: response.user.id, data: { role: data.accountType } });
 
     return { success: true, user: updatedUser };
   } catch (error: unknown) {

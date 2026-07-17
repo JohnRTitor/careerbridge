@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
-import { CompaniesService } from "./companies.service";
+import { companiesService } from "./companies.service";
 import { CompaniesQuerySchema } from "./companies.schemas";
 import { ok } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
@@ -17,8 +17,8 @@ companiesRoutes.get(
   }),
   sValidator("query", CompaniesQuerySchema),
   async (c) => {
-    const query = c.req.valid("query");
-    const result = await CompaniesService.listCompanies(query);
+    const input = c.req.valid("query");
+    const result = await companiesService.listCompanies(input);
     return ok(c, result);
   }
 );
@@ -31,8 +31,8 @@ companiesRoutes.get(
   }),
   sValidator("param", UuidParamSchema),
   async (c) => {
-    const { id } = c.req.valid("param");
-    const company = await CompaniesService.getCompany(id);
+    const { id: companyId } = c.req.valid("param");
+    const company = await companiesService.getCompany({ companyId });
     return ok(c, company);
   }
 );

@@ -4,11 +4,11 @@ import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
 import { requireAdmin, requirePermission } from "../../app/middleware/authorize";
-import { AdminService } from "./admin.service";
+import { adminService } from "./admin.service";
 import { UsersQuerySchema, UpdateUserRoleSchema, UpdateUserStatusSchema } from "./admin.schemas";
-import { CompaniesService } from "../companies/companies.service";
+import { companiesService } from "../companies/companies.service";
 import { VerifyCompanySchema } from "../companies/companies.schemas";
-import { AuditService } from "../audit/audit.service";
+import { auditService } from "../audit/audit.service";
 import { PaginationQuerySchema, UuidParamSchema } from "../../shared/schemas";
 import { ok } from "../../shared/responses";
 import { z } from "zod";
@@ -30,13 +30,13 @@ adminRoutes.get(
   sValidator("query", UsersQuerySchema),
   requirePermission("admin", "users"),
   async (c) => {
-    const query = c.req.valid("query");
-    const result = await AdminService.listUsers(query);
+    const input = c.req.valid("query");
+    const result = await adminService.listUsers(input);
     return ok(c, result);
   }
 );
 
-adminRoutes.put(
+adminRoutes.patch(
   "/users/:id/role",
   describeRoute({
     summary: "Change user role",
@@ -46,18 +46,24 @@ adminRoutes.put(
   sValidator("json", UpdateUserRoleSchema),
   requirePermission("admin", "roles"),
   async (c) => {
-    const { id } = c.req.valid("param");
-    const { role } = c.req.valid("json");
-    const user = await AdminService.updateUserRole(id, role);
+    const { id: userId } = c.req.valid("param");
+    const data = c.req.valid("json");
+    const user = await adminService.updateUserRole({ userId, data });
     
     // Audit log
-    await AuditService.logAction(c.get("user").id, "UPDATE_USER_ROLE", "user", id, { role });
+    await auditService.logAction({
+      actorId: c.get("user").id, 
+      action: "UPDATE_USER_ROLE", 
+      targetType: "user", 
+      targetId: userId, 
+      details: data 
+    });
     
     return ok(c, user, "Role updated successfully");
   }
 );
 
-adminRoutes.put(
+adminRoutes.patch(
   "/users/:id/status",
   describeRoute({
     summary: "Change user status (ban/unban)",
@@ -67,12 +73,18 @@ adminRoutes.put(
   sValidator("json", UpdateUserStatusSchema),
   requirePermission("admin", "moderate"),
   async (c) => {
-    const { id } = c.req.valid("param");
+    const { id: userId } = c.req.valid("param");
     const data = c.req.valid("json");
-    const user = await AdminService.updateUserStatus(id, data);
+    const user = await adminService.updateUserStatus({ userId, data });
     
     // Audit log
-    await AuditService.logAction(c.get("user").id, "UPDATE_USER_STATUS", "user", id, data);
+    await auditService.logAction({
+      actorId: c.get("user").id, 
+      action: "UPDATE_USER_STATUS", 
+      targetType: "user", 
+      targetId: userId, 
+      details: data 
+    });
     
     return ok(c, user, "Status updated successfully");
   }
@@ -87,13 +99,13 @@ adminRoutes.get(
   sValidator("query", PaginationQuerySchema),
   requirePermission("analytics", "read"),
   async (c) => {
-    const query = c.req.valid("query");
-    const logs = await AuditService.getLogs(query);
+    const input = c.req.valid("query");
+    const logs = await auditService.getLogs(input);
     return ok(c, logs);
   }
 );
 
-adminRoutes.put(
+adminRoutes.patch(
   "/companies/:id/verify",
   describeRoute({
     summary: "Verify a company profile",
@@ -103,12 +115,19 @@ adminRoutes.put(
   sValidator("json", VerifyCompanySchema),
   requirePermission("company", "verify"),
   async (c) => {
-    const { id } = c.req.valid("param");
-    const { is_verified } = c.req.valid("json");
-    const company = await CompaniesService.verifyCompany(id, is_verified);
+    const { id: companyId } = c.req.valid("param");
+    const data = c.req.valid("json");
+    // Will update CompaniesService later
+    const company = await companiesService.verifyCompany({ companyId, isVerified: data.is_verified });
     
     // Audit log
-    await AuditService.logAction(c.get("user").id, "VERIFY_COMPANY", "company", id, { is_verified });
+    await auditService.logAction({
+      actorId: c.get("user").id, 
+      action: "VERIFY_COMPANY", 
+      targetType: "company", 
+      targetId: companyId, 
+      details: data 
+    });
     
     return ok(c, company, "Company verification updated");
   }

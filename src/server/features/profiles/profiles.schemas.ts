@@ -23,6 +23,8 @@ export const EducationSchema = z.object({
   description: z.string().optional(),
 }).meta({ id: "EducationEntry" });
 
+export const UpdateEducationSchema = EducationSchema.partial().meta({ id: "UpdateEducation" });
+
 export const ExperienceSchema = z.object({
   title: z.string().min(1, "Title is required"),
   company: z.string().min(1, "Company is required"),
@@ -31,3 +33,52 @@ export const ExperienceSchema = z.object({
   end_date: z.string().refine((date) => !isNaN(Date.parse(date)), { message: "Invalid date" }).optional(),
   description: z.string().optional(),
 }).meta({ id: "ExperienceEntry" });
+
+export const UpdateExperienceSchema = ExperienceSchema.partial().meta({ id: "UpdateExperience" });
+
+// Input Types
+export type GetProfileInput = {
+  userId: string;
+};
+
+export type UpdateProfileInput = {
+  userId: string;
+  data: z.infer<typeof UpdateProfileSchema>;
+};
+
+export type UpdateResumeInput = {
+  userId: string;
+  data: z.infer<typeof ResumeUploadSchema>;
+};
+
+export type AddEducationInput = {
+  userId: string;
+  data: z.infer<typeof EducationSchema>;
+};
+
+export type UpdateEducationInput = {
+  educationId: string;
+  userId: string;
+  data: z.infer<typeof UpdateEducationSchema>;
+};
+
+export type DeleteEducationInput = {
+  educationId: string;
+  userId: string;
+};
+
+export type AddExperienceInput = {
+  userId: string;
+  data: z.infer<typeof ExperienceSchema>;
+};
+
+export type UpdateExperienceInput = {
+  experienceId: string;
+  userId: string;
+  data: z.infer<typeof UpdateExperienceSchema>;
+};
+
+export type DeleteExperienceInput = {
+  experienceId: string;
+  userId: string;
+};

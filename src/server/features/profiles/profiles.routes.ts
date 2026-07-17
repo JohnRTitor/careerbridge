@@ -4,8 +4,15 @@ import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
 import { requirePermission } from "../../app/middleware/authorize";
-import { ProfilesService } from "./profiles.service";
-import { UpdateProfileSchema, ResumeUploadSchema, EducationSchema, ExperienceSchema } from "./profiles.schemas";
+import { profilesService } from "./profiles.service";
+import { 
+  UpdateProfileSchema, 
+  ResumeUploadSchema, 
+  EducationSchema, 
+  UpdateEducationSchema,
+  ExperienceSchema,
+  UpdateExperienceSchema
+} from "./profiles.schemas";
 import { ok, noContent, created } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 
@@ -23,12 +30,12 @@ profilesRoutes.get(
   requirePermission("profile", "read"),
   async (c) => {
     const user = c.get("user");
-    const profile = await ProfilesService.getProfile(user.id);
+    const profile = await profilesService.getProfile({ userId: user.id });
     return ok(c, profile);
   }
 );
 
-profilesRoutes.put(
+profilesRoutes.patch(
   "/profile",
   describeRoute({
     summary: "Update current user profile",
@@ -39,7 +46,7 @@ profilesRoutes.put(
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
-    const profile = await ProfilesService.updateProfile(user.id, data);
+    const profile = await profilesService.updateProfile({ userId: user.id, data });
     return ok(c, profile, "Profile updated successfully");
   }
 );
@@ -55,7 +62,7 @@ profilesRoutes.post(
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
-    const profile = await ProfilesService.updateResume(user.id, data);
+    const profile = await profilesService.updateResume({ userId: user.id, data });
     return ok(c, profile, "Resume updated successfully");
   }
 );
@@ -71,25 +78,25 @@ profilesRoutes.post(
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
-    const education = await ProfilesService.addEducation(user.id, data);
+    const education = await profilesService.addEducation({ userId: user.id, data });
     return created(c, education, "Education added successfully");
   }
 );
 
-profilesRoutes.put(
+profilesRoutes.patch(
   "/profile/education/:id",
   describeRoute({
     summary: "Update education entry",
     tags: ["Profiles"],
   }),
   sValidator("param", UuidParamSchema),
-  sValidator("json", EducationSchema.partial()),
+  sValidator("json", UpdateEducationSchema),
   requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
+    const { id: educationId } = c.req.valid("param");
     const data = c.req.valid("json");
-    const education = await ProfilesService.updateEducation(id, user.id, data);
+    const education = await profilesService.updateEducation({ educationId, userId: user.id, data });
     return ok(c, education, "Education updated successfully");
   }
 );
@@ -104,8 +111,8 @@ profilesRoutes.delete(
   requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
-    await ProfilesService.deleteEducation(id, user.id);
+    const { id: educationId } = c.req.valid("param");
+    await profilesService.deleteEducation({ educationId, userId: user.id });
     return noContent(c);
   }
 );
@@ -121,25 +128,25 @@ profilesRoutes.post(
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
-    const experience = await ProfilesService.addExperience(user.id, data);
+    const experience = await profilesService.addExperience({ userId: user.id, data });
     return created(c, experience, "Experience added successfully");
   }
 );
 
-profilesRoutes.put(
+profilesRoutes.patch(
   "/profile/experience/:id",
   describeRoute({
     summary: "Update experience entry",
     tags: ["Profiles"],
   }),
   sValidator("param", UuidParamSchema),
-  sValidator("json", ExperienceSchema.partial()),
+  sValidator("json", UpdateExperienceSchema),
   requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
+    const { id: experienceId } = c.req.valid("param");
     const data = c.req.valid("json");
-    const experience = await ProfilesService.updateExperience(id, user.id, data);
+    const experience = await profilesService.updateExperience({ experienceId, userId: user.id, data });
     return ok(c, experience, "Experience updated successfully");
   }
 );
@@ -154,8 +161,8 @@ profilesRoutes.delete(
   requirePermission("profile", "update"),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
-    await ProfilesService.deleteExperience(id, user.id);
+    const { id: experienceId } = c.req.valid("param");
+    await profilesService.deleteExperience({ experienceId, userId: user.id });
     return noContent(c);
   }
 );

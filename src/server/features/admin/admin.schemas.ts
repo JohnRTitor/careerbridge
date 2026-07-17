@@ -15,3 +15,16 @@ export const UsersQuerySchema = PaginationQuerySchema.extend({
   query: z.string().optional(),
   role: z.string().optional(),
 }).meta({ id: "UsersQuery" });
+
+// Input Types
+export type ListUsersInput = z.infer<typeof UsersQuerySchema>;
+
+export type UpdateUserRoleInput = {
+  userId: string;
+  data: z.infer<typeof UpdateUserRoleSchema>;
+};
+
+export type UpdateUserStatusInput = {
+  userId: string;
+  data: z.infer<typeof UpdateUserStatusSchema>;
+};

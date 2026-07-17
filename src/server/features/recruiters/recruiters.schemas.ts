@@ -12,8 +12,42 @@ export const CreateJobSchema = z.object({
   status: JobStatusSchema.optional().default("open"),
 }).meta({ id: "CreateJob" });
 
+export const UpdateJobSchema = CreateJobSchema.partial().meta({ id: "UpdateJob" });
+
 export const ApplicationStatusSchema = z.enum(["pending", "reviewing", "shortlisted", "rejected", "hired"]);
 
 export const UpdateApplicationStatusSchema = z.object({
   status: ApplicationStatusSchema,
 }).meta({ id: "UpdateApplicationStatus" });
+
+// Input Types
+export type CreateJobInput = {
+  recruiterId: string;
+  data: z.infer<typeof CreateJobSchema>;
+};
+
+export type UpdateJobInput = {
+  jobId: string;
+  recruiterId: string;
+  data: z.infer<typeof UpdateJobSchema>;
+};
+
+export type DeleteJobInput = {
+  jobId: string;
+  recruiterId: string;
+};
+
+export type GetJobApplicantsInput = {
+  jobId: string;
+  recruiterId: string;
+};
+
+export type UpdateApplicationStatusInput = {
+  applicationId: string;
+  recruiterId: string;
+  data: z.infer<typeof UpdateApplicationStatusSchema>;
+};
+
+export type GetAnalyticsInput = {
+  recruiterId: string;
+};

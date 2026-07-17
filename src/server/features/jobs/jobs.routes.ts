@@ -4,7 +4,7 @@ import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
 import { requirePermission } from "../../app/middleware/authorize";
-import { JobsService } from "./jobs.service";
+import { jobsService } from "./jobs.service";
 import { JobSearchQuerySchema } from "./jobs.schemas";
 import { ok, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
@@ -19,8 +19,8 @@ jobsRoutes.get(
   }),
   sValidator("query", JobSearchQuerySchema),
   async (c) => {
-    const query = c.req.valid("query");
-    const result = await JobsService.searchJobs(query);
+    const input = c.req.valid("query");
+    const result = await jobsService.searchJobs(input);
     return ok(c, result);
   }
 );
@@ -35,7 +35,7 @@ jobsRoutes.get(
   }),
   async (c) => {
     const user = c.get("user");
-    const recommendations = await JobsService.getRecommendations(user.id);
+    const recommendations = await jobsService.getRecommendations({ userId: user.id });
     return ok(c, recommendations);
   }
 );
@@ -48,8 +48,8 @@ jobsRoutes.get(
   }),
   sValidator("param", UuidParamSchema),
   async (c) => {
-    const { id } = c.req.valid("param");
-    const job = await JobsService.getJobById(id);
+    const { id: jobId } = c.req.valid("param");
+    const job = await jobsService.getJobById({ jobId });
     return ok(c, job);
   }
 );
@@ -65,8 +65,8 @@ jobsRoutes.post(
   sValidator("param", UuidParamSchema),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
-    const result = await JobsService.saveJob(user.id, id);
+    const { id: jobId } = c.req.valid("param");
+    const result = await jobsService.saveJob({ userId: user.id, jobId });
     return ok(c, result, "Job saved successfully");
   }
 );
@@ -82,8 +82,8 @@ jobsRoutes.delete(
   sValidator("param", UuidParamSchema),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
-    await JobsService.unsaveJob(user.id, id);
+    const { id: jobId } = c.req.valid("param");
+    await jobsService.unsaveJob({ userId: user.id, jobId });
     return noContent(c);
   }
 );

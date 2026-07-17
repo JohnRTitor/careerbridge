@@ -6,8 +6,8 @@ import { requireAuth } from "../../app/middleware/auth";
 import { requirePermission } from "../../app/middleware/authorize";
 import { requireOwnership } from "../../app/middleware/ownership";
 import { pool } from "../../app/db";
-import { RecruitersService } from "./recruiters.service";
-import { CreateJobSchema, UpdateApplicationStatusSchema } from "./recruiters.schemas";
+import { recruitersService } from "./recruiters.service";
+import { CreateJobSchema, UpdateJobSchema, UpdateApplicationStatusSchema } from "./recruiters.schemas";
 import { ok, created, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 
@@ -27,19 +27,19 @@ recruitersRoutes.post(
   async (c) => {
     const user = c.get("user");
     const data = c.req.valid("json");
-    const job = await RecruitersService.createJob(user.id, data);
+    const job = await recruitersService.createJob({ recruiterId: user.id, data });
     return created(c, job, "Job created successfully");
   }
 );
 
-recruitersRoutes.put(
+recruitersRoutes.patch(
   "/jobs/:id",
   describeRoute({
     summary: "Update an existing job posting",
     tags: ["Recruiters"],
   }),
   sValidator("param", UuidParamSchema),
-  sValidator("json", CreateJobSchema.partial()),
+  sValidator("json", UpdateJobSchema),
   requirePermission("job", "update"),
   requireOwnership(
     (c) => pool.query<{ recruiter_id: string }>("SELECT recruiter_id FROM jobs WHERE id = $1", [c.req.param("id")]).then((r) => r.rows[0]),
@@ -47,9 +47,9 @@ recruitersRoutes.put(
   ),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
+    const { id: jobId } = c.req.valid("param");
     const data = c.req.valid("json");
-    const job = await RecruitersService.updateJob(id, user.id, data);
+    const job = await recruitersService.updateJob({ jobId, recruiterId: user.id, data });
     return ok(c, job, "Job updated successfully");
   }
 );
@@ -68,8 +68,8 @@ recruitersRoutes.delete(
   ),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
-    await RecruitersService.deleteJob(id, user.id);
+    const { id: jobId } = c.req.valid("param");
+    await recruitersService.deleteJob({ jobId, recruiterId: user.id });
     return noContent(c);
   }
 );
@@ -84,13 +84,13 @@ recruitersRoutes.get(
   requirePermission("application", "read"),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
-    const applicants = await RecruitersService.getJobApplicants(id, user.id);
+    const { id: jobId } = c.req.valid("param");
+    const applicants = await recruitersService.getJobApplicants({ jobId, recruiterId: user.id });
     return ok(c, applicants);
   }
 );
 
-recruitersRoutes.put(
+recruitersRoutes.patch(
   "/applications/:id/status",
   describeRoute({
     summary: "Update applicant status",
@@ -110,9 +110,9 @@ recruitersRoutes.put(
   ),
   async (c) => {
     const user = c.get("user");
-    const { id } = c.req.valid("param");
+    const { id: applicationId } = c.req.valid("param");
     const data = c.req.valid("json");
-    const application = await RecruitersService.updateApplicationStatus(id, user.id, data);
+    const application = await recruitersService.updateApplicationStatus({ applicationId, recruiterId: user.id, data });
     return ok(c, application, "Status updated successfully");
   }
 );
@@ -126,7 +126,7 @@ recruitersRoutes.get(
   requirePermission("analytics", "read"),
   async (c) => {
     const user = c.get("user");
-    const analytics = await RecruitersService.getAnalytics(user.id);
+    const analytics = await recruitersService.getAnalytics({ recruiterId: user.id });
     return ok(c, analytics);
   }
 );

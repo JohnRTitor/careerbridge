@@ -1,37 +1,43 @@
-import { RecruitersRepository } from "./recruiters.repository";
+import { recruitersRepository } from "./recruiters.repository";
 import { NotFoundError, ForbiddenError } from "../../shared/errors";
-import { z } from "zod";
-import { CreateJobSchema, UpdateApplicationStatusSchema } from "./recruiters.schemas";
+import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput } from "./recruiters.schemas";
 
-export class RecruitersService {
-  static async createJob(recruiterId: string, data: z.infer<typeof CreateJobSchema>) {
-    return RecruitersRepository.createJob(recruiterId, data);
-  }
-
-  static async updateJob(jobId: string, recruiterId: string, data: Partial<z.infer<typeof CreateJobSchema>>) {
-    const job = await RecruitersRepository.updateJob(jobId, recruiterId, data);
-    if (!job) throw new NotFoundError("Job not found or access denied");
-    return job;
-  }
-
-  static async deleteJob(jobId: string, recruiterId: string) {
-    const success = await RecruitersRepository.deleteJob(jobId, recruiterId);
-    if (!success) throw new NotFoundError("Job not found or access denied");
-  }
-
-  static async getJobApplicants(jobId: string, recruiterId: string) {
-    const applicants = await RecruitersRepository.getJobApplicants(jobId, recruiterId);
-    if (!applicants) throw new ForbiddenError("Access denied");
-    return applicants;
-  }
-
-  static async updateApplicationStatus(applicationId: string, recruiterId: string, data: z.infer<typeof UpdateApplicationStatusSchema>) {
-    const application = await RecruitersRepository.updateApplicationStatus(applicationId, recruiterId, data.status);
-    if (!application) throw new NotFoundError("Application not found or access denied");
-    return application;
-  }
-
-  static async getAnalytics(recruiterId: string) {
-    return RecruitersRepository.getAnalytics(recruiterId);
-  }
+export async function createJob(input: CreateJobInput) {
+  return recruitersRepository.createJob(input);
 }
+
+export async function updateJob(input: UpdateJobInput) {
+  const job = await recruitersRepository.updateJob(input);
+  if (!job) throw new NotFoundError("Job not found or access denied");
+  return job;
+}
+
+export async function deleteJob(input: DeleteJobInput) {
+  const success = await recruitersRepository.deleteJob(input);
+  if (!success) throw new NotFoundError("Job not found or access denied");
+}
+
+export async function getJobApplicants(input: GetJobApplicantsInput) {
+  const applicants = await recruitersRepository.getJobApplicants(input);
+  if (!applicants) throw new ForbiddenError("Access denied");
+  return applicants;
+}
+
+export async function updateApplicationStatus(input: UpdateApplicationStatusInput) {
+  const application = await recruitersRepository.updateApplicationStatus(input);
+  if (!application) throw new NotFoundError("Application not found or access denied");
+  return application;
+}
+
+export async function getAnalytics(input: GetAnalyticsInput) {
+  return recruitersRepository.getAnalytics(input);
+}
+
+export const recruitersService = {
+  createJob,
+  updateJob,
+  deleteJob,
+  getJobApplicants,
+  updateApplicationStatus,
+  getAnalytics,
+};

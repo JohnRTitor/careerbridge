@@ -10,3 +10,24 @@ export const JobSearchQuerySchema = PaginationQuerySchema.extend({
   location: z.string().optional(),
   type: JobTypeSchema.optional(),
 }).meta({ id: "JobSearchQuery" });
+
+// Input Types
+export type SearchJobsInput = z.infer<typeof JobSearchQuerySchema>;
+
+export type GetJobByIdInput = {
+  jobId: string;
+};
+
+export type SaveJobInput = {
+  userId: string;
+  jobId: string;
+};
+
+export type UnsaveJobInput = {
+  userId: string;
+  jobId: string;
+};
+
+export type GetRecommendationsInput = {
+  userId: string;
+};
