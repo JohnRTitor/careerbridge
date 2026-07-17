@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Menu01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
@@ -67,7 +68,11 @@ export default function Header() {
           onClick={() => setOpen(!open)}
           className="rounded-lg p-2 lg:hidden"
         >
-          {open ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+          {open ? (
+            <HugeiconsIcon icon={Cancel01Icon} className="h-7 w-7" />
+          ) : (
+            <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
+          )}
         </button>
       </div>
 
