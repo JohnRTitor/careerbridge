@@ -38,8 +38,8 @@ async function main() {
       process.exit(1);
     }
     const user = userRes.rows[0];
-    if (user.role !== "employer") {
-      console.error(`User with ID ${userId} is not an employer (role: ${user.role}).`);
+    if (user.role !== "recruiter") {
+      console.error(`User with ID ${userId} is not a recruiter (role: ${user.role}).`);
       process.exit(1);
     }
 
