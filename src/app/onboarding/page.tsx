@@ -1,4 +1,4 @@
-import { getSession } from "@/auth/utils";
+import { getSession } from "@server/auth/utils";
 import { redirect } from "next/navigation";
 import { OnboardingForm } from "./onboarding-form";
 

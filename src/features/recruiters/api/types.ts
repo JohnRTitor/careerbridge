@@ -1,14 +1,15 @@
-import { Job } from "@/features/jobs/api/types";
-import { Application } from "@/features/applications/api/types";
+import { z } from "zod";
+import { 
+  CreateJobSchema, 
+  UpdateJobSchema, 
+  UpdateApplicationStatusSchema 
+} from "@server/features/recruiters/recruiters.schemas";
+import { InferResponseType } from "hono/client";
+import { rpcClient } from "@/lib/api/rpc";
 
-export type CreateJobPayload = Omit<Job, "id" | "created_at" | "updated_at" | "created_by" | "company_id"> & {
-  company_id?: string;
-};
+export type CreateJobPayload = z.infer<typeof CreateJobSchema>;
+export type UpdateJobPayload = z.infer<typeof UpdateJobSchema>;
+export type UpdateApplicationStatusPayload = z.infer<typeof UpdateApplicationStatusSchema>;
 
-export type UpdateJobPayload = Partial<CreateJobPayload>;
-
-export type UpdateApplicationStatusPayload = {
-  status: "pending" | "reviewing" | "shortlisted" | "rejected" | "hired";
-  recruiter_notes?: string;
-  rating?: number;
-};
+type GetApplicantsRes = InferResponseType<(typeof rpcClient.api.recruiters.jobs)[":id"]["applicants"]["$get"], 200>;
+export type Applicant = GetApplicantsRes extends { data: (infer A)[] } ? A : never;

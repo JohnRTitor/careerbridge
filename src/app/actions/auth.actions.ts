@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@/auth/auth";
-import { adminService } from "@/server/features/admin/admin.service";
+import { auth } from "@server/auth/auth";
+import { adminService } from "@server/features/admin/admin.service";
 import { headers } from "next/headers";
 import { LoginInput, RegisterInput } from "@/lib/zod-schemas";
 
@@ -49,7 +49,7 @@ export async function registerAction(data: RegisterInput) {
   }
 }
 
-import { pool } from "@/server/app/db";
+import { pool } from "@server/app/db";
 import { OnboardingInput } from "@/lib/zod-schemas";
 
 export async function submitOnboardingAction(data: OnboardingInput) {

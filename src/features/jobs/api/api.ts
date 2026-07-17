@@ -1,29 +1,55 @@
-import { apiClient } from "@/lib/api/api-client";
-import type { Job, JobFilters } from "./types";
+import { rpcClient } from "@/lib/api/rpc";
+import type { JobFilters } from "./types";
 
-export const searchJobs = (filters: JobFilters) => {
-  const searchParams = new URLSearchParams();
-  if (filters.q) searchParams.set("q", filters.q);
-  if (filters.location) searchParams.set("location", filters.location);
-  if (filters.type) searchParams.set("type", filters.type);
-  if (filters.work_mode) searchParams.set("work_mode", filters.work_mode);
-  if (filters.experience_level) searchParams.set("experience_level", filters.experience_level);
-  if (filters.page) searchParams.set("page", filters.page.toString());
-  if (filters.limit) searchParams.set("limit", filters.limit.toString());
-
-  const queryString = searchParams.toString();
-  const url = queryString ? `/jobs?${queryString}` : `/jobs`;
-  return apiClient<{ jobs: Job[]; total: number }>(url);
+export const searchJobs = async (filters: JobFilters) => {
+  const query = {
+    ...filters,
+    page: filters.page?.toString(),
+    limit: filters.limit?.toString(),
+  };
+  const res = await rpcClient.api.jobs.$get({ query });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to search jobs");
+  }
+  const json = await res.json();
+  return json.data;
 };
 
-export const getRecommendations = () => 
-  apiClient<Job[]>("/jobs/recommendations");
+export const getRecommendations = async () => {
+  const res = await rpcClient.api.jobs.recommendations.$get();
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to fetch recommendations");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const getJobById = (id: string) => 
-  apiClient<Job>(`/jobs/${id}`);
+export const getJobById = async (id: string) => {
+  const res = await rpcClient.api.jobs[":id"].$get({ param: { id } });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to fetch job");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const saveJob = (id: string) =>
-  apiClient<void>(`/jobs/${id}/save`, { method: "POST" });
+export const saveJob = async (id: string) => {
+  const res = await rpcClient.api.jobs[":id"].save.$post({ param: { id } });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to save job");
+  }
+  const json = await res.json();
+  return json.data;
+};
 
-export const unsaveJob = (id: string) =>
-  apiClient<void>(`/jobs/${id}/save`, { method: "DELETE" });
+export const unsaveJob = async (id: string) => {
+  const res = await rpcClient.api.jobs[":id"].save.$delete({ param: { id } });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to unsave job");
+  }
+};

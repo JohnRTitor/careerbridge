@@ -49,7 +49,7 @@ export default function SignInPage() {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#e0efff] via-[#f0f7ff] to-background px-4 py-12"
+      className="flex min-h-screen items-center justify-center bg-linear-to-b from-[#e0efff] via-[#f0f7ff] to-background px-4 py-12"
       style={{
         backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to bottom, #e0efff, #f0f7ff, #ffffff)`,
         backgroundSize: "24px 24px, 100% 100%",

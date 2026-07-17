@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MailIcon, LockIcon, UserIcon, Building01Icon, ArrowRightIcon, Tick01Icon } from "@hugeicons/core-free-icons";
+import { MailIcon, LockIcon, UserIcon, ArrowRightIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
 import { registerSchema } from "@/lib/zod-schemas";
@@ -41,7 +41,7 @@ export default function SignUpPage() {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#e0efff] via-[#f0f7ff] to-background px-4 py-12"
+      className="flex min-h-screen items-center justify-center bg-linear-to-b from-[#e0efff] via-[#f0f7ff] to-background px-4 py-12"
       style={{
         backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to bottom, #e0efff, #f0f7ff, #ffffff)`,
         backgroundSize: "24px 24px, 100% 100%",

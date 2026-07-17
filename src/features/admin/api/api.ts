@@ -1,52 +1,77 @@
-import { apiClient } from "@/lib/api/api-client";
-import { Company } from "@/features/companies/api/types";
+import { rpcClient } from "@/lib/api/rpc";
 import type { 
-  User, 
   UserFilters, 
   UpdateUserRolePayload, 
   UpdateUserStatusPayload, 
-  AuditLog, 
   AuditLogFilters, 
   VerifyCompanyPayload 
 } from "./types";
 
-export const getUsers = (filters: UserFilters) => {
-  const searchParams = new URLSearchParams();
-  if (filters.q) searchParams.set("q", filters.q);
-  if (filters.role) searchParams.set("role", filters.role);
-  if (filters.banned !== undefined) searchParams.set("banned", filters.banned.toString());
-  if (filters.page) searchParams.set("page", filters.page.toString());
-  if (filters.limit) searchParams.set("limit", filters.limit.toString());
-
-  const queryString = searchParams.toString();
-  const url = queryString ? `/admin/users?${queryString}` : `/admin/users`;
-  return apiClient<{ users: User[]; total: number }>(url);
+export const getUsers = async (filters: UserFilters) => {
+  const query = {
+    ...filters,
+    page: filters.page?.toString(),
+    limit: filters.limit?.toString(),
+  };
+  const res = await rpcClient.api.admin.users.$get({ query });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to fetch users");
+  }
+  const json = await res.json();
+  return json.data;
 };
 
-export const updateUserRole = (userId: string, data: UpdateUserRolePayload) => 
-  apiClient<User>(`/admin/users/${userId}/role`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
+export const updateUserRole = async (userId: string, data: UpdateUserRolePayload) => {
+  const res = await rpcClient.api.admin.users[":id"].role.$patch({
+    param: { id: userId },
+    json: data,
   });
-
-export const updateUserStatus = (userId: string, data: UpdateUserStatusPayload) => 
-  apiClient<User>(`/admin/users/${userId}/status`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
-
-export const getAuditLogs = (filters: AuditLogFilters) => {
-  const searchParams = new URLSearchParams();
-  if (filters.page) searchParams.set("page", filters.page.toString());
-  if (filters.limit) searchParams.set("limit", filters.limit.toString());
-
-  const queryString = searchParams.toString();
-  const url = queryString ? `/admin/audit-logs?${queryString}` : `/admin/audit-logs`;
-  return apiClient<{ logs: AuditLog[]; total: number }>(url);
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to update role");
+  }
+  const json = await res.json();
+  return json.data;
 };
 
-export const verifyCompany = (companyId: string, data: VerifyCompanyPayload) => 
-  apiClient<Company>(`/admin/companies/${companyId}/verify`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
+export const updateUserStatus = async (userId: string, data: UpdateUserStatusPayload) => {
+  const res = await rpcClient.api.admin.users[":id"].status.$patch({
+    param: { id: userId },
+    json: data,
   });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to update status");
+  }
+  const json = await res.json();
+  return json.data;
+};
+
+export const getAuditLogs = async (filters: AuditLogFilters) => {
+  const query = {
+    ...filters,
+    page: filters.page?.toString(),
+    limit: filters.limit?.toString(),
+  };
+  const res = await rpcClient.api.admin["audit-logs"].$get({ query });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to fetch audit logs");
+  }
+  const json = await res.json();
+  return json.data;
+};
+
+export const verifyCompany = async (companyId: string, data: VerifyCompanyPayload) => {
+  const res = await rpcClient.api.admin.companies[":id"].verify.$patch({
+    param: { id: companyId },
+    json: data,
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error("message" in error ? error.message : "Failed to verify company");
+  }
+  const json = await res.json();
+  return json.data;
+};
