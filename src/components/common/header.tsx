@@ -1,23 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
+import { useState } from "react";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
-  { href: "/jobs", text: "Find Jobs" },
-  { href: "/categories", text: "Categories" },
-  { href: "/companies", text: "Companies" },
-  { href: "/how-it-works", text: "How it Works" },
+  { href: "#find-jobs", text: "Find Jobs" },
+  { href: "#categories", text: "Categories" },
+  { href: "#companies", text: "Companies" },
+  { href: "#how-it-works", text: "How it Works" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
@@ -26,82 +28,70 @@ export default function Header() {
             alt="CareerBridge"
             width={50}
             height={50}
-            priority
             className="h-12 w-12"
           />
-
-          <span className="text-2xl font-bold tracking-tight">
-            CareerBridge
-          </span>
+          <span className="text-2xl font-bold">CareerBridge</span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop */}
         <nav className="hidden items-center gap-10 lg:flex">
           {menuItems.map((item) => (
-            <Link
+            <a
               key={item.text}
               href={item.href}
               className="text-sm font-medium text-slate-600 transition hover:text-primary"
             >
               {item.text}
-            </Link>
+            </a>
           ))}
         </nav>
 
-        {/* Desktop Buttons */}
-        <div className="hidden items-center gap-5 lg:flex">
-          <Link
-            href="/login"
-            className="text-sm font-semibold transition hover:text-primary"
-          >
-            Sign in
-          </Link>
+        <div className="hidden items-center gap-4 lg:flex">
+          <Link href="/login">Sign in</Link>
 
-          <Link href="/post-job">
-            <Button className="rounded-lg px-5">Post a Job</Button>
-          </Link>
+          <Button>Post a Job</Button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="rounded-lg p-2 lg:hidden"
-        >
-          {open ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-        </button>
-      </div>
+        {/* Mobile */}
+        <div className="lg:hidden">
+          <Drawer open={open} onOpenChange={setOpen} direction="right">
+            <DrawerTrigger
+              render={
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              }
+            />
 
-      {/* Mobile Menu */}
-      <div
-        className={`overflow-hidden border-t bg-white transition-all duration-300 lg:hidden ${
-          open ? "max-h-[500px]" : "max-h-0"
-        }`}
-      >
-        <div className="space-y-2 p-5">
-          {menuItems.map((item) => (
-            <Link
-              key={item.text}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="block rounded-lg px-3 py-3 text-slate-700 transition hover:bg-slate-100"
-            >
-              {item.text}
-            </Link>
-          ))}
+            <DrawerContent className="h-full w-72 ml-auto rounded-l-xl rounded-r-none">
+              <div className="flex flex-col gap-5 p-6 pt-12">
+                {menuItems.map((item) => (
+                  <a
+                    key={item.text}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-3 text-slate-700 transition hover:bg-slate-100"
+                  >
+                    {item.text}
+                  </a>
+                ))}
 
-          <hr className="my-3" />
+                <hr />
 
-          <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="block rounded-lg px-3 py-3 font-medium transition hover:bg-slate-100"
-          >
-            Sign in
-          </Link>
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-3 font-medium hover:bg-slate-100"
+                >
+                  Sign in
+                </Link>
 
-          <Link href="/post-job" onClick={() => setOpen(false)}>
-            <Button className="mt-2 w-full">Post a Job</Button>
-          </Link>
+                <Link href="/post-job" onClick={() => setOpen(false)}>
+                  <Button className="w-full">Post a Job</Button>
+                </Link>
+              </div>
+            </DrawerContent>
+          </Drawer>
         </div>
       </div>
     </header>
