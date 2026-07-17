@@ -37,9 +37,9 @@ export function OnboardingForm({ user }: { user: { name: string; email: string }
 
       toast.success("Profile updated successfully!");
       if (value.accountType === "candidate") {
-        router.push("/candidate_dashboard");
+        router.push("/candidate-dashboard");
       } else {
-        router.push("/recruiter_dashboard");
+        router.push("/recruiter-dashboard");
       }
     },
   });

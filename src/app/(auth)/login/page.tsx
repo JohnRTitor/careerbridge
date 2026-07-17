@@ -41,8 +41,8 @@ export default function SignInPage() {
       
       const userRole = data?.user?.role || "candidate";
       if (userRole === "admin") router.push("/admin");
-      else if (userRole === "recruiter") router.push("/recruiter_dashboard");
-      else if (userRole === "candidate") router.push("/candidate_dashboard");
+      else if (userRole === "recruiter") router.push("/recruiter-dashboard");
+      else if (userRole === "candidate") router.push("/candidate-dashboard");
       else router.push("/onboarding");
     },
   });

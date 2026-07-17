@@ -11,10 +11,10 @@ export default async function OnboardingPage() {
 
   // If the user already has a role set (e.g., they completed onboarding), redirect them.
   if (session.user.role === "candidate") {
-    redirect("/candidate_dashboard");
+    redirect("/candidate-dashboard");
   }
   if (session.user.role === "recruiter") {
-    redirect("/recruiter_dashboard");
+    redirect("/recruiter-dashboard");
   }
   if (session.user.role === "admin") {
     redirect("/admin");
