@@ -1,5 +1,5 @@
 import type { Context, Next } from "hono";
-import { auth as betterAuth } from "../../../auth/auth";
+import { auth as betterAuth } from "../../auth/auth";
 import { UnauthorizedError } from "../../shared/errors";
 
 /**

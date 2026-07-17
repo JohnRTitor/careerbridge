@@ -1,4 +1,4 @@
-import { ac, admin, candidate, recruiter, user } from "../../../auth/permissions";
+import { ac, admin, candidate, recruiter, user } from "../../auth/permissions";
 
 const rolesMap: Record<string, ReturnType<typeof ac.newRole>> = {
   admin,
