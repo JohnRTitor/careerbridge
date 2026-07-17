@@ -2,10 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Menu01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { Menu01Icon } from "@hugeicons/core-free-icons";
+
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const menuItems = [
   { href: "#find-jobs", text: "Find Jobs" },
@@ -16,19 +24,6 @@ const menuItems = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
@@ -42,10 +37,11 @@ export default function Header() {
             height={50}
             className="h-12 w-12"
           />
+
           <span className="text-2xl font-bold">CareerBridge</span>
         </Link>
 
-        {/* Desktop */}
+        {/* Desktop Menu */}
         <nav className="hidden items-center gap-10 lg:flex">
           {menuItems.map((item) => (
             <a
@@ -58,81 +54,55 @@ export default function Header() {
           ))}
         </nav>
 
+        {/* Desktop Actions */}
         <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/login">Sign in</Link>
+          <Link href="/login" className="text-sm font-medium">
+            Sign in
+          </Link>
 
           <Button>Post a Job</Button>
         </div>
 
         {/* Mobile */}
-        {/* Mobile */}
         <div className="lg:hidden">
-          {/* Hamburger Button */}
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="rounded-lg p-2 transition hover:bg-gray-100"
-          >
-            <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
-          </button>
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger className="flex h-10 w-10 items-center justify-center rounded-md hover:bg-gray-100">
+              <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
+            </SheetTrigger>
 
-          {/* Overlay */}
-          <div
-            onClick={() => setOpen(false)}
-            className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
-              open
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
-          />
+            <SheetContent side="right" className="w-72">
+              <SheetHeader>
+                <SheetTitle>CareerBridge</SheetTitle>
+              </SheetHeader>
 
-          {/* Sidebar */}
-          <aside
-            className={`fixed right-0 top-0 z-50 h-screen w-72 bg-white shadow-xl transition-transform duration-300 ${
-              open ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b p-5">
-              <span className="text-xl font-bold">CareerBridge</span>
+              <nav className="mt-8 flex flex-col gap-2">
+                {menuItems.map((item) => (
+                  <a
+                    key={item.text}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-4 py-3 text-gray-700 transition hover:bg-gray-100 hover:text-primary"
+                  >
+                    {item.text}
+                  </a>
+                ))}
 
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-md p-2 hover:bg-gray-100"
-              >
-                <HugeiconsIcon icon={Cancel01Icon} className="h-6 w-6" />
-              </button>
-            </div>
+                <hr className="my-5" />
 
-            {/* Navigation */}
-            <nav className="flex flex-col p-5">
-              {menuItems.map((item) => (
-                <a
-                  key={item.text}
-                  href={item.href}
+                <Link
+                  href="/login"
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-4 py-3 text-gray-700 transition hover:bg-gray-100 hover:text-primary"
+                  className="rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
                 >
-                  {item.text}
-                </a>
-              ))}
+                  Sign in
+                </Link>
 
-              <hr className="my-5" />
-
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
-              >
-                Sign in
-              </Link>
-
-              <Link href="/post-job" onClick={() => setOpen(false)}>
-                <Button className="mt-4 w-full">Post a Job</Button>
-              </Link>
-            </nav>
-          </aside>
+                <Button className="mt-3 w-full" onClick={() => setOpen(false)}>
+                  Post a Job
+                </Button>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
