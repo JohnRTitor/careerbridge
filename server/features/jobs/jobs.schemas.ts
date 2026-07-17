@@ -14,6 +14,7 @@ export const JobSearchQuerySchema = PaginationQuerySchema.extend({
   query: z.string().optional(),
   location: z.string().optional(),
   type: JobTypeSchema.optional(),
+  companyId: z.string().optional(),
 }).meta({ id: "JobSearchQuery" });
 
 // Input Types
