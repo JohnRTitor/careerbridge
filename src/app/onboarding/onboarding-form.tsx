@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRightIcon, Calendar01Icon, UserIcon, Briefcase02Icon } from "@hugeicons/core-free-icons";
+import { ArrowRightIcon } from "@hugeicons/core-free-icons";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { SelectItem } from "@/components/ui/select";
@@ -70,8 +70,8 @@ export function OnboardingForm({ user }: { user: { name: string; email: string }
                   labelClassName="text-sm font-semibold"
                   placeholder="Select an account type"
                 >
-                  <SelectItem value="candidate">I'm looking for work</SelectItem>
-                  <SelectItem value="recruiter">I'm hiring talent</SelectItem>
+                  <SelectItem value="candidate">I&apos;m looking for work</SelectItem>
+                  <SelectItem value="recruiter">I&apos;m hiring talent</SelectItem>
                 </field.SelectField>
               )}
             </form.AppField>

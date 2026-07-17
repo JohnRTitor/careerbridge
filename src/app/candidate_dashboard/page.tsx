@@ -186,7 +186,7 @@ export default function CandidateDashboard() {
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         {/* Ice Blue welcome Banner */}
         <div
-          className="rounded-3xl border border-primary/10 bg-gradient-to-r from-[#e0efff] to-[#f0f7ff] p-6 sm:p-8 mb-8"
+          className="rounded-3xl border border-primary/10 bg-linear-to-r from-[#e0efff] to-[#f0f7ff] p-6 sm:p-8 mb-8"
           style={{
             backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to right, #e0efff, #f0f7ff)`,
             backgroundSize: "24px 24px, 100% 100%",
@@ -339,7 +339,7 @@ export default function CandidateDashboard() {
             </Card>
 
             <Card className="bg-white border border-border overflow-hidden">
-              <CardContent className="p-6 bg-gradient-to-b from-[#f0f7ff] to-white">
+              <CardContent className="p-6 bg-linear-to-b from-[#f0f7ff] to-white">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
                   <HugeiconsIcon icon={TrendingUp} className="size-4" /> Profile Discovery
                 </div>

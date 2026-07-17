@@ -1,4 +1,3 @@
-import { Company } from "@/features/companies/api/types";
 
 export interface User {
   id: string;

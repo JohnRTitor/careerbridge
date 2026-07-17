@@ -303,7 +303,7 @@ export default function Page() {
       <main className="flex-1">
         {/* Hero Section with Light Ice-Blue Gradient and Subtle Dot Grid */}
         <section
-          className="relative overflow-hidden bg-gradient-to-b from-[#e0efff] via-[#f0f7ff] to-background"
+          className="relative overflow-hidden bg-linear-to-b from-[#e0efff] via-[#f0f7ff] to-background"
           style={{
             backgroundImage: `radial-gradient(#c2deff 1px, transparent 1px), linear-gradient(to bottom, #e0efff, #f0f7ff, #ffffff)`,
             backgroundSize: "24px 24px, 100% 100%",
