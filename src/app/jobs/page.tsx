@@ -15,7 +15,16 @@ import { useJobs } from "@/features/jobs/api/queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { JobFilters } from "@/features/jobs/api/types";
 import { NativeSelect } from "@/components/ui/native-select";
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { generatePagination } from "@/lib/utils";
 function JobSearchContent() {
   const router = useRouter();
   const pathname = usePathname();
@@ -170,34 +179,41 @@ function JobSearchContent() {
             )}
 
             {data && data.pagination.totalPages > 1 && (
-              <div className="flex justify-center mt-12 gap-2">
-                <Button 
-                  variant="outline" 
-                  disabled={page === 1}
-                  onClick={() => handlePageChange(page - 1)}
-                >
-                  Previous
-                </Button>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: data.pagination.totalPages }).map((_, i) => (
-                    <Button 
-                      key={i} 
-                      variant={page === i + 1 ? "default" : "ghost"} 
-                      size="icon"
-                      onClick={() => handlePageChange(i + 1)}
-                    >
-                      {i + 1}
-                    </Button>
+              <Pagination className="mt-12">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); if (page > 1) handlePageChange(page - 1); }} 
+                      className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  
+                  {generatePagination(page, data.pagination.totalPages).map((p, i) => (
+                    <PaginationItem key={i}>
+                      {p === "..." ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink 
+                          href="#"
+                          isActive={page === p}
+                          onClick={(e) => { e.preventDefault(); handlePageChange(p as number); }}
+                        >
+                          {p}
+                        </PaginationLink>
+                      )}
+                    </PaginationItem>
                   ))}
-                </div>
-                <Button 
-                  variant="outline" 
-                  disabled={page === data.pagination.totalPages}
-                  onClick={() => handlePageChange(page + 1)}
-                >
-                  Next
-                </Button>
-              </div>
+
+                  <PaginationItem>
+                    <PaginationNext 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); if (page < data.pagination.totalPages) handlePageChange(page + 1); }} 
+                      className={page === data.pagination.totalPages ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             )}
           </>
         )}
