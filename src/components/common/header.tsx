@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-
+import { useState, useEffect } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
@@ -18,6 +16,19 @@ const menuItems = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
@@ -56,48 +67,72 @@ export default function Header() {
         {/* Mobile */}
         {/* Mobile */}
         <div className="lg:hidden">
+          {/* Hamburger Button */}
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="rounded-lg p-2"
+            className="rounded-lg p-2 transition hover:bg-gray-100"
           >
-            {open ? (
-              <HugeiconsIcon icon={Cancel01Icon} className="h-7 w-7" />
-            ) : (
-              <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
-            )}
+            <HugeiconsIcon icon={Menu01Icon} className="h-7 w-7" />
           </button>
 
-          <Drawer open={open} onOpenChange={setOpen} showSwipeHandle={false}>
-            <DrawerContent className="ml-auto h-full w-72 rounded-l-xl rounded-r-none">
-              <div className="flex flex-col gap-5 p-6 pt-12">
-                {menuItems.map((item) => (
-                  <a
-                    key={item.text}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-3 text-slate-700 transition hover:bg-slate-100"
-                  >
-                    {item.text}
-                  </a>
-                ))}
+          {/* Overlay */}
+          <div
+            onClick={() => setOpen(false)}
+            className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
+              open
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
+            }`}
+          />
 
-                <hr />
+          {/* Sidebar */}
+          <aside
+            className={`fixed right-0 top-0 z-50 h-screen w-72 bg-white shadow-xl transition-transform duration-300 ${
+              open ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between border-b p-5">
+              <span className="text-xl font-bold">CareerBridge</span>
 
-                <Link
-                  href="/login"
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded-md p-2 hover:bg-gray-100"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex flex-col p-5">
+              {menuItems.map((item) => (
+                <a
+                  key={item.text}
+                  href={item.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-3 font-medium hover:bg-slate-100"
+                  className="rounded-lg px-4 py-3 text-gray-700 transition hover:bg-gray-100 hover:text-primary"
                 >
-                  Sign in
-                </Link>
+                  {item.text}
+                </a>
+              ))}
 
-                <Link href="/post-job" onClick={() => setOpen(false)}>
-                  <Button className="w-full">Post a Job</Button>
-                </Link>
-              </div>
-            </DrawerContent>
-          </Drawer>
+              <hr className="my-5" />
+
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-4 py-3 font-medium hover:bg-gray-100"
+              >
+                Sign in
+              </Link>
+
+              <Link href="/post-job" onClick={() => setOpen(false)}>
+                <Button className="mt-4 w-full">Post a Job</Button>
+              </Link>
+            </nav>
+          </aside>
         </div>
       </div>
     </header>
