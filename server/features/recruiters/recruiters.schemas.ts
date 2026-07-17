@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { JobTypeSchema, JobStatusSchema } from "../jobs/jobs.schemas";
+import { PaginationQuerySchema } from "../../shared/schemas";
 
 export const CreateJobSchema = z
   .object({
@@ -64,6 +65,17 @@ export type UpdateApplicationStatusInput = {
 export type GetAnalyticsInput = {
   recruiterId: string;
 };
+
+export const GetRecruiterJobsSchema = PaginationQuerySchema.extend({}).meta({ id: "GetRecruiterJobsQuery" });
+export const GetRecruiterApplicationsSchema = PaginationQuerySchema.extend({}).meta({ id: "GetRecruiterApplicationsQuery" });
+
+export type GetRecruiterJobsInput = {
+  recruiterId: string;
+} & z.infer<typeof GetRecruiterJobsSchema>;
+
+export type GetRecruiterApplicationsInput = {
+  recruiterId: string;
+} & z.infer<typeof GetRecruiterApplicationsSchema>;
 
 // Recruiter Profile
 export const RecruiterProfileSchema = z.object({

@@ -1,5 +1,6 @@
 import { rpcClient } from "@/lib/api/rpc";
 import type { ApplyJobPayload, Application } from "./types";
+import type { ErrorResponse } from "@server/shared/responses";
 
 export const getUserApplications = async () => {
   const res = await rpcClient.api.applications.$get();
@@ -27,6 +28,6 @@ export const withdrawApplication = async (id: string) => {
   const res = await rpcClient.api.applications[":id"].$delete({ param: { id } });
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as any).message) : "Failed to withdraw application");
+    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to withdraw application");
   }
 };

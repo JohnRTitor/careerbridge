@@ -7,7 +7,7 @@ import { requirePermission } from "../../app/middleware/authorize";
 import { requireOwnership } from "../../app/middleware/ownership";
 import { pool } from "../../app/db";
 import { recruitersService } from "./recruiters.service";
-import { CreateJobSchema, UpdateJobSchema, UpdateApplicationStatusSchema, RecruiterProfileSchema } from "./recruiters.schemas";
+import { CreateJobSchema, UpdateJobSchema, UpdateApplicationStatusSchema, RecruiterProfileSchema, GetRecruiterJobsSchema, GetRecruiterApplicationsSchema } from "./recruiters.schemas";
 import { ok, created, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 
@@ -142,5 +142,29 @@ export const recruitersRoutes = app
       const data = c.req.valid("json");
       const profile = await recruitersService.upsertRecruiterProfile({ userId: user.id, data });
       return ok(c, profile, "Profile updated successfully");
+    }
+  )
+  .get(
+    "/jobs",
+    describeRoute({ summary: "Get recruiter jobs", tags: ["Recruiters"] }),
+    sValidator("query", GetRecruiterJobsSchema),
+    requirePermission("job", "read"),
+    async (c) => {
+      const user = c.get("user");
+      const input = c.req.valid("query");
+      const jobs = await recruitersService.getRecruiterJobs({ ...input, recruiterId: user.id });
+      return ok(c, jobs);
+    }
+  )
+  .get(
+    "/applications",
+    describeRoute({ summary: "Get recruiter applications", tags: ["Recruiters"] }),
+    sValidator("query", GetRecruiterApplicationsSchema),
+    requirePermission("application", "read"),
+    async (c) => {
+      const user = c.get("user");
+      const input = c.req.valid("query");
+      const applications = await recruitersService.getRecruiterApplications({ ...input, recruiterId: user.id });
+      return ok(c, applications);
     }
   );

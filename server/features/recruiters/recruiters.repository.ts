@@ -1,5 +1,5 @@
 import { pool } from "../../app/db";
-import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput, GetRecruiterProfileInput, UpsertRecruiterProfileInput } from "./recruiters.schemas";
+import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput, GetRecruiterProfileInput, UpsertRecruiterProfileInput, GetRecruiterJobsInput, GetRecruiterApplicationsInput } from "./recruiters.schemas";
 
 export async function createJob(input: CreateJobInput) {
   const { recruiterId, data } = input;
@@ -146,6 +146,70 @@ export async function upsertRecruiterProfile(input: UpsertRecruiterProfileInput)
   return result.rows[0];
 }
 
+export async function getRecruiterJobs(input: GetRecruiterJobsInput) {
+  const { recruiterId, page = 1, limit = 10 } = input;
+  const offset = (page - 1) * limit;
+
+  const countResult = await pool.query(`SELECT COUNT(*) FROM jobs WHERE recruiter_id = $1`, [recruiterId]);
+  const total = parseInt(countResult.rows[0].count, 10);
+
+  const query = `
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo
+    FROM jobs j
+    LEFT JOIN companies c ON j.company_id = c.id
+    WHERE j.recruiter_id = $1
+    ORDER BY j.created_at DESC
+    LIMIT $2 OFFSET $3
+  `;
+  const result = await pool.query(query, [recruiterId, limit, offset]);
+
+  return {
+    jobs: result.rows,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    }
+  };
+}
+
+export async function getRecruiterApplications(input: GetRecruiterApplicationsInput) {
+  const { recruiterId, page = 1, limit = 10 } = input;
+  const offset = (page - 1) * limit;
+
+  const countQuery = `
+    SELECT COUNT(a.id) 
+    FROM applications a
+    JOIN jobs j ON a.job_id = j.id
+    WHERE j.recruiter_id = $1
+  `;
+  const countResult = await pool.query(countQuery, [recruiterId]);
+  const total = parseInt(countResult.rows[0].count, 10);
+
+  const query = `
+    SELECT a.*, j.title as job_title, u.name as candidate_name, u.email as candidate_email, p.headline as candidate_headline, p.experience as candidate_experience
+    FROM applications a
+    JOIN jobs j ON a.job_id = j.id
+    JOIN "user" u ON a.candidate_id = u.id
+    LEFT JOIN user_profile p ON u.id = p.user_id
+    WHERE j.recruiter_id = $1
+    ORDER BY a.applied_at DESC
+    LIMIT $2 OFFSET $3
+  `;
+  const result = await pool.query(query, [recruiterId, limit, offset]);
+
+  return {
+    applications: result.rows,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    }
+  };
+}
+
 export const recruitersRepository = {
   createJob,
   updateJob,
@@ -155,4 +219,6 @@ export const recruitersRepository = {
   getAnalytics,
   getRecruiterProfile,
   upsertRecruiterProfile,
+  getRecruiterJobs,
+  getRecruiterApplications,
 };
