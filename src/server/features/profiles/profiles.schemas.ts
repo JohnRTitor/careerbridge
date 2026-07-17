@@ -103,3 +103,95 @@ export type DeleteExperienceInput = {
   experienceId: string;
   userId: string;
 };
+
+// -- Certifications --
+export const CertificationSchema = z.object({
+  name: z.string().min(1),
+  issuer: z.string().optional(),
+  issue_date: z.string().optional(),
+  expiry_date: z.string().optional(),
+  credential_id: z.string().optional(),
+  credential_url: z.string().url().optional().or(z.literal("")),
+});
+export const UpdateCertificationSchema = CertificationSchema.partial();
+
+export type AddCertificationInput = { userId: string; data: z.infer<typeof CertificationSchema> };
+export type UpdateCertificationInput = { certificationId: string; userId: string; data: z.infer<typeof UpdateCertificationSchema> };
+export type DeleteCertificationInput = { certificationId: string; userId: string };
+
+// -- Projects --
+export const ProjectSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  repository_url: z.string().url().optional().or(z.literal("")),
+  live_url: z.string().url().optional().or(z.literal("")),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+});
+export const UpdateProjectSchema = ProjectSchema.partial();
+
+export type AddProjectInput = { userId: string; data: z.infer<typeof ProjectSchema> };
+export type UpdateProjectInput = { projectId: string; userId: string; data: z.infer<typeof UpdateProjectSchema> };
+export type DeleteProjectInput = { projectId: string; userId: string };
+
+// -- Resumes --
+export const ResumeSchema = z.object({
+  title: z.string().optional(),
+  file_url: z.string().url(),
+  is_default: z.boolean().optional().default(false),
+});
+export const UpdateResumeEntitySchema = z.object({
+  title: z.string().optional(),
+  is_default: z.boolean().optional(),
+});
+
+export type AddResumeInput = { userId: string; data: z.infer<typeof ResumeSchema> };
+export type UpdateResumeEntityInput = { resumeId: string; userId: string; data: z.infer<typeof UpdateResumeEntitySchema> };
+export type DeleteResumeInput = { resumeId: string; userId: string };
+
+// -- Skills --
+export const UserSkillSchema = z.object({
+  skill_id: z.string().uuid(),
+  years_of_experience: z.number().int().nonnegative().optional(),
+  proficiency: z.number().int().min(1).max(5).optional(),
+});
+export const UpdateUserSkillSchema = UserSkillSchema.omit({ skill_id: true });
+
+export type AddUserSkillInput = { userId: string; data: z.infer<typeof UserSkillSchema> };
+export type UpdateUserSkillInput = { skillId: string; userId: string; data: z.infer<typeof UpdateUserSkillSchema> };
+export type DeleteUserSkillInput = { skillId: string; userId: string };
+
+// -- Languages --
+export const UserLanguageSchema = z.object({
+  language_id: z.string().uuid(),
+  proficiency: z.string().optional(),
+});
+export const UpdateUserLanguageSchema = UserLanguageSchema.omit({ language_id: true });
+
+export type AddUserLanguageInput = { userId: string; data: z.infer<typeof UserLanguageSchema> };
+export type UpdateUserLanguageInput = { languageId: string; userId: string; data: z.infer<typeof UpdateUserLanguageSchema> };
+export type DeleteUserLanguageInput = { languageId: string; userId: string };
+
+// -- Social Links --
+export const SocialLinkSchema = z.object({
+  platform: z.string().min(1),
+  url: z.string().url(),
+});
+export const UpdateSocialLinkSchema = SocialLinkSchema.partial();
+
+export type AddSocialLinkInput = { userId: string; data: z.infer<typeof SocialLinkSchema> };
+export type UpdateSocialLinkInput = { linkId: string; userId: string; data: z.infer<typeof UpdateSocialLinkSchema> };
+export type DeleteSocialLinkInput = { linkId: string; userId: string };
+
+// -- Job Preferences --
+export const JobPreferenceSchema = z.object({
+  preferred_job_type: z.enum(["full-time", "part-time", "contract", "internship", "freelance"]).optional(),
+  preferred_work_mode: z.enum(["remote", "hybrid", "onsite"]).optional(),
+  preferred_location: z.string().optional(),
+  expected_salary: z.number().optional(),
+  notice_period: z.number().optional(),
+  willing_to_relocate: z.boolean().optional(),
+});
+export const UpdateJobPreferenceSchema = JobPreferenceSchema;
+
+export type UpsertJobPreferenceInput = { userId: string; data: z.infer<typeof JobPreferenceSchema> };

@@ -539,7 +539,7 @@ export default function Page() {
                   No matches listed
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                  We couldn't find anything matching your exact text. Double
+                  We couldn&apos;t find anything matching your exact text. Double
                   check spelling or try looking with empty parameters to view
                   everything.
                 </p>

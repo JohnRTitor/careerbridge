@@ -30,8 +30,64 @@ export async function verifyCompany(input: VerifyCompanyInput) {
   return company;
 }
 
+export async function createCompany(input: any) {
+  return companiesRepository.createCompany(input);
+}
+
+export async function updateCompany(input: any) {
+  const result = await companiesRepository.updateCompany(input);
+  if (!result) throw new NotFoundError("Company not found");
+  return result;
+}
+
+export async function deleteCompany(input: any) {
+  const success = await companiesRepository.deleteCompany(input);
+  if (!success) throw new NotFoundError("Company not found");
+}
+
+export async function followCompany(input: any) {
+  return companiesRepository.followCompany(input);
+}
+
+export async function unfollowCompany(input: any) {
+  return companiesRepository.unfollowCompany(input);
+}
+
+export async function getFollowedCompanies(input: any) {
+  return companiesRepository.getFollowedCompanies(input);
+}
+
+export async function addCompanyMember(input: any) {
+  return companiesRepository.addCompanyMember(input);
+}
+
+export async function updateCompanyMember(input: any) {
+  const result = await companiesRepository.updateCompanyMember(input);
+  if (!result) throw new NotFoundError("Company member not found");
+  return result;
+}
+
+export async function removeCompanyMember(input: any) {
+  const success = await companiesRepository.removeCompanyMember(input);
+  if (!success) throw new NotFoundError("Company member not found");
+}
+
+export async function getCompanyMembers(input: any) {
+  return companiesRepository.getCompanyMembers(input);
+}
+
 export const companiesService = {
   listCompanies,
   getCompany,
   verifyCompany,
+  createCompany,
+  updateCompany,
+  deleteCompany,
+  followCompany,
+  unfollowCompany,
+  getFollowedCompanies,
+  addCompanyMember,
+  updateCompanyMember,
+  removeCompanyMember,
+  getCompanyMembers,
 };

@@ -14,9 +14,14 @@ export function getFieldState(field: AnyFieldApi): ResolvedFieldState {
     invalid,
     error: invalid
       ? errors
-          .map((error) =>
-            error instanceof Error ? error.message : String(error),
-          )
+          .map((error) => {
+            if (typeof error === "string") return error;
+            if (error instanceof Error) return error.message;
+            if (error && typeof error === "object" && "message" in (error as any)) {
+              return String((error as any).message);
+            }
+            return JSON.stringify(error);
+          })
           .join(", ")
       : undefined,
   };

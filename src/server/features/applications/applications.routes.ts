@@ -6,7 +6,7 @@ import { requireAuth } from "../../app/middleware/auth";
 import { requireCandidate, requirePermission } from "../../app/middleware/authorize";
 import { applicationsService } from "./applications.service";
 import { ApplyJobSchema } from "./applications.schemas";
-import { ok, created } from "../../shared/responses";
+import { ok, created, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 
 export const applicationsRoutes = new Hono<AppEnv>();
@@ -47,5 +47,21 @@ jobApplicationsRoutes.post(
     
     const application = await applicationsService.applyForJob({ jobId, candidateId: user.id, data });
     return created(c, application, "Application submitted successfully");
+  }
+);
+
+applicationsRoutes.delete(
+  "/:id",
+  requirePermission("application", "delete"),
+  describeRoute({
+    summary: "Withdraw job application",
+    tags: ["Applications"],
+  }),
+  sValidator("param", UuidParamSchema),
+  async (c) => {
+    const user = c.get("user");
+    const { id } = c.req.valid("param");
+    await applicationsService.withdrawApplication({ applicationId: id, candidateId: user.id });
+    return noContent(c);
   }
 );

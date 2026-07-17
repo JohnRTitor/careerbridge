@@ -64,3 +64,19 @@ export type UpdateApplicationStatusInput = {
 export type GetAnalyticsInput = {
   recruiterId: string;
 };
+
+// Recruiter Profile
+export const RecruiterProfileSchema = z.object({
+  company_id: z.string().uuid().optional(),
+  designation: z.string().optional(),
+  phone: z.string().optional(),
+});
+export const UpdateRecruiterProfileSchema = RecruiterProfileSchema.partial();
+
+export type GetRecruiterProfileInput = {
+  userId: string;
+};
+export type UpsertRecruiterProfileInput = {
+  userId: string;
+  data: z.infer<typeof RecruiterProfileSchema>;
+};

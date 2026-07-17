@@ -92,6 +92,19 @@ export async function getRecommendations(input: GetRecommendationsInput & { limi
   const result = await pool.query(query, [limit]);
   return result.rows;
 }
+export async function getSavedJobs(input: any) {
+  const { userId } = input;
+  const query = `
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo, sj.saved_at
+    FROM saved_jobs sj
+    JOIN jobs j ON sj.job_id = j.id
+    LEFT JOIN companies c ON j.company_id = c.id
+    WHERE sj.user_id = $1
+    ORDER BY sj.saved_at DESC
+  `;
+  const result = await pool.query(query, [userId]);
+  return result.rows;
+}
 
 export const jobsRepository = {
   searchJobs,
@@ -99,4 +112,5 @@ export const jobsRepository = {
   saveJob,
   unsaveJob,
   getRecommendations,
+  getSavedJobs,
 };

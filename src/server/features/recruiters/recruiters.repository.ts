@@ -119,6 +119,33 @@ export async function getAnalytics(input: GetAnalyticsInput) {
   };
 }
 
+export async function getRecruiterProfile(input: any) {
+  const { userId } = input;
+  const query = `
+    SELECT rp.*, c.name as company_name 
+    FROM recruiter_profiles rp
+    LEFT JOIN companies c ON rp.company_id = c.id
+    WHERE rp.user_id = $1
+  `;
+  const result = await pool.query(query, [userId]);
+  return result.rows[0];
+}
+
+export async function upsertRecruiterProfile(input: any) {
+  const { userId, data } = input;
+  const query = `
+    INSERT INTO recruiter_profiles (user_id, company_id, designation, phone, verified)
+    VALUES ($1, $2, $3, $4, false)
+    ON CONFLICT (user_id) DO UPDATE SET
+      company_id = COALESCE(EXCLUDED.company_id, recruiter_profiles.company_id),
+      designation = COALESCE(EXCLUDED.designation, recruiter_profiles.designation),
+      phone = COALESCE(EXCLUDED.phone, recruiter_profiles.phone)
+    RETURNING *;
+  `;
+  const result = await pool.query(query, [userId, data.company_id, data.designation, data.phone]);
+  return result.rows[0];
+}
+
 export const recruitersRepository = {
   createJob,
   updateJob,
@@ -126,4 +153,6 @@ export const recruitersRepository = {
   getJobApplicants,
   updateApplicationStatus,
   getAnalytics,
+  getRecruiterProfile,
+  upsertRecruiterProfile,
 };

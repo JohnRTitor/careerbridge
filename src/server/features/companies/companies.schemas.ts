@@ -48,3 +48,26 @@ export type UpdateCompanyInput = {
   companyId: string;
   data: z.infer<typeof UpdateCompanySchema>;
 };
+
+export type DeleteCompanyInput = {
+  companyId: string;
+};
+
+// Followers
+export type FollowCompanyInput = { companyId: string; userId: string };
+export type UnfollowCompanyInput = { companyId: string; userId: string };
+export type GetFollowedCompaniesInput = { userId: string };
+
+// Members
+export const CompanyMemberSchema = z.object({
+  user_id: z.string(),
+  role: z.string().optional(),
+});
+export const UpdateCompanyMemberSchema = z.object({
+  role: z.string().optional(),
+});
+
+export type AddCompanyMemberInput = { companyId: string; data: z.infer<typeof CompanyMemberSchema> };
+export type UpdateCompanyMemberInput = { companyId: string; userId: string; data: z.infer<typeof UpdateCompanyMemberSchema> };
+export type RemoveCompanyMemberInput = { companyId: string; userId: string };
+export type GetCompanyMembersInput = { companyId: string };

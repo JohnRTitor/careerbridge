@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ApplyJobSchema = z
   .object({
-    resume_url: z.string().url().optional(),
+    resume_id: z.string().uuid().optional(),
     cover_letter: z.string().optional(),
   })
   .meta({ id: "ApplyJob" });
@@ -20,5 +20,10 @@ export type ApplyForJobInput = {
 
 export type GetApplicationInput = {
   jobId: string;
+  candidateId: string;
+};
+
+export type WithdrawApplicationInput = {
+  applicationId: string;
   candidateId: string;
 };

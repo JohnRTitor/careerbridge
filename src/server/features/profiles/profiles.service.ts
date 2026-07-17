@@ -61,6 +61,95 @@ export async function deleteExperience(input: DeleteExperienceInput) {
   if (!success) throw new NotFoundError("Experience entry not found");
 }
 
+// Certifications
+export async function addCertification(input: any) {
+  return profilesRepository.addCertification(input);
+}
+export async function updateCertification(input: any) {
+  const result = await profilesRepository.updateCertification(input);
+  if (!result) throw new NotFoundError("Certification entry not found");
+  return result;
+}
+export async function deleteCertification(input: any) {
+  const success = await profilesRepository.deleteCertification(input);
+  if (!success) throw new NotFoundError("Certification entry not found");
+}
+
+// Projects
+export async function addProject(input: any) {
+  return profilesRepository.addProject(input);
+}
+export async function updateProject(input: any) {
+  const result = await profilesRepository.updateProject(input);
+  if (!result) throw new NotFoundError("Project entry not found");
+  return result;
+}
+export async function deleteProject(input: any) {
+  const success = await profilesRepository.deleteProject(input);
+  if (!success) throw new NotFoundError("Project entry not found");
+}
+
+// Resumes
+export async function addResume(input: any) {
+  return profilesRepository.addResume(input);
+}
+export async function updateResumeEntity(input: any) {
+  const result = await profilesRepository.updateResumeEntity(input);
+  if (!result) throw new NotFoundError("Resume entry not found");
+  return result;
+}
+export async function deleteResume(input: any) {
+  const success = await profilesRepository.deleteResume(input);
+  if (!success) throw new NotFoundError("Resume entry not found");
+}
+
+// User Skills
+export async function addUserSkill(input: any) {
+  return profilesRepository.addUserSkill(input);
+}
+export async function updateUserSkill(input: any) {
+  const result = await profilesRepository.updateUserSkill(input);
+  if (!result) throw new NotFoundError("Skill entry not found");
+  return result;
+}
+export async function deleteUserSkill(input: any) {
+  const success = await profilesRepository.deleteUserSkill(input);
+  if (!success) throw new NotFoundError("Skill entry not found");
+}
+
+// User Languages
+export async function addUserLanguage(input: any) {
+  return profilesRepository.addUserLanguage(input);
+}
+export async function updateUserLanguage(input: any) {
+  const result = await profilesRepository.updateUserLanguage(input);
+  if (!result) throw new NotFoundError("Language entry not found");
+  return result;
+}
+export async function deleteUserLanguage(input: any) {
+  const success = await profilesRepository.deleteUserLanguage(input);
+  if (!success) throw new NotFoundError("Language entry not found");
+}
+
+// Social Links
+export async function addSocialLink(input: any) {
+  return profilesRepository.addSocialLink(input);
+}
+export async function updateSocialLink(input: any) {
+  const result = await profilesRepository.updateSocialLink(input);
+  if (!result) throw new NotFoundError("Social link not found");
+  return result;
+}
+export async function deleteSocialLink(input: any) {
+  const success = await profilesRepository.deleteSocialLink(input);
+  if (!success) throw new NotFoundError("Social link not found");
+}
+
+// Job Preferences
+export async function upsertJobPreferences(input: any) {
+  return profilesRepository.upsertJobPreferences(input);
+}
+
 export const profilesService = {
   getProfile,
   updateProfile,
@@ -71,4 +160,23 @@ export const profilesService = {
   addExperience,
   updateExperience,
   deleteExperience,
+  addCertification,
+  updateCertification,
+  deleteCertification,
+  addProject,
+  updateProject,
+  deleteProject,
+  addResume,
+  updateResumeEntity,
+  deleteResume,
+  addUserSkill,
+  updateUserSkill,
+  deleteUserSkill,
+  addUserLanguage,
+  updateUserLanguage,
+  deleteUserLanguage,
+  addSocialLink,
+  updateSocialLink,
+  deleteSocialLink,
+  upsertJobPreferences,
 };

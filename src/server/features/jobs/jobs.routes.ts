@@ -41,6 +41,20 @@ jobsRoutes.get(
 );
 
 jobsRoutes.get(
+  "/saved",
+  requireAuth,
+  requirePermission("bookmark", "read"),
+  describeRoute({
+    summary: "Get saved jobs",
+    tags: ["Jobs"],
+  }),
+  async (c) => {
+    const user = c.get("user");
+    const savedJobs = await jobsService.getSavedJobs({ userId: user.id });
+    return ok(c, savedJobs);
+  }
+);
+jobsRoutes.get(
   "/:id",
   describeRoute({
     summary: "Get job details",

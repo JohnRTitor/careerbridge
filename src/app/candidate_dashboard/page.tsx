@@ -2,8 +2,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { BriefcaseIcon, MenuIcon, Cancel01Icon, Location01Icon, ClockIcon, BookmarkIcon, Building01Icon, File01Icon, CalendarIcon, Tick01Icon, Alert01Icon, TrendingUp, UserIcon, Logout01Icon } from "@hugeicons/core-free-icons";
+import { BriefcaseIcon, MenuIcon, Cancel01Icon, ClockIcon, BookmarkIcon, Building01Icon, File01Icon, CalendarIcon, Tick01Icon, TrendingUp, Logout01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -84,7 +85,7 @@ const candidateStats = [
 
 export default function CandidateDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [applications, setApplications] =
+  const [applications] =
     useState<Application[]>(initialApplications);
 
   const getStatusBadge = (status: Application["status"]) => {
@@ -147,12 +148,12 @@ export default function CandidateDashboard() {
             </span>
           </a>
           <nav className="hidden items-center gap-6 md:flex">
-            <a
+            <Link
               href="/"
               className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Find Jobs
-            </a>
+            </Link>
             <span className="text-sm font-semibold text-primary">
               Candidate Dashboard
             </span>

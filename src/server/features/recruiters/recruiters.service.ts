@@ -33,6 +33,16 @@ export async function getAnalytics(input: GetAnalyticsInput) {
   return recruitersRepository.getAnalytics(input);
 }
 
+export async function getRecruiterProfile(input: any) {
+  const profile = await recruitersRepository.getRecruiterProfile(input);
+  if (!profile) return { company_id: null, designation: null, phone: null, verified: false };
+  return profile;
+}
+
+export async function upsertRecruiterProfile(input: any) {
+  return recruitersRepository.upsertRecruiterProfile(input);
+}
+
 export const recruitersService = {
   createJob,
   updateJob,
@@ -40,4 +50,6 @@ export const recruitersService = {
   getJobApplicants,
   updateApplicationStatus,
   getAnalytics,
+  getRecruiterProfile,
+  upsertRecruiterProfile,
 };

@@ -51,10 +51,15 @@ export async function getRecommendations(input: GetRecommendationsInput) {
   return jobsRepository.getRecommendations({ ...input, limit: 5 });
 }
 
+export async function getSavedJobs(input: any) {
+  return jobsRepository.getSavedJobs(input);
+}
+
 export const jobsService = {
   searchJobs,
   getJobById,
   saveJob,
   unsaveJob,
   getRecommendations,
+  getSavedJobs,
 };

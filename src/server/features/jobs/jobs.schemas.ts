@@ -36,3 +36,7 @@ export type UnsaveJobInput = {
 export type GetRecommendationsInput = {
   userId: string;
 };
+
+export type GetSavedJobsInput = {
+  userId: string;
+};

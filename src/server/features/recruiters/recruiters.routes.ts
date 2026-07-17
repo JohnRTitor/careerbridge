@@ -7,7 +7,7 @@ import { requirePermission } from "../../app/middleware/authorize";
 import { requireOwnership } from "../../app/middleware/ownership";
 import { pool } from "../../app/db";
 import { recruitersService } from "./recruiters.service";
-import { CreateJobSchema, UpdateJobSchema, UpdateApplicationStatusSchema } from "./recruiters.schemas";
+import { CreateJobSchema, UpdateJobSchema, UpdateApplicationStatusSchema, RecruiterProfileSchema } from "./recruiters.schemas";
 import { ok, created, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 
@@ -128,5 +128,27 @@ recruitersRoutes.get(
     const user = c.get("user");
     const analytics = await recruitersService.getAnalytics({ recruiterId: user.id });
     return ok(c, analytics);
+  }
+);
+
+recruitersRoutes.get(
+  "/profile",
+  describeRoute({ summary: "Get recruiter profile", tags: ["Recruiters"] }),
+  async (c) => {
+    const user = c.get("user");
+    const profile = await recruitersService.getRecruiterProfile({ userId: user.id });
+    return ok(c, profile);
+  }
+);
+
+recruitersRoutes.put(
+  "/profile",
+  describeRoute({ summary: "Upsert recruiter profile", tags: ["Recruiters"] }),
+  sValidator("json", RecruiterProfileSchema),
+  async (c) => {
+    const user = c.get("user");
+    const data = c.req.valid("json");
+    const profile = await recruitersService.upsertRecruiterProfile({ userId: user.id, data });
+    return ok(c, profile, "Profile updated successfully");
   }
 );

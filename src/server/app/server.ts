@@ -11,7 +11,7 @@ import { applicationsRoutes, jobApplicationsRoutes } from "../features/applicati
 import { recruitersRoutes } from "../features/recruiters/recruiters.routes";
 import { companiesRoutes } from "../features/companies/companies.routes";
 import { adminRoutes } from "../features/admin/admin.routes";
-
+import { metaRoutes } from "../features/meta/meta.routes";
 export const app = new Hono().basePath("/api");
 
 // ─── Feature Routes ──────────────────────────────────────────────────────────
@@ -22,6 +22,7 @@ app.route("/applications", applicationsRoutes);
 app.route("/recruiters", recruitersRoutes);
 app.route("/companies", companiesRoutes);
 app.route("/admin", adminRoutes);
+app.route("/meta", metaRoutes);
 
 // ─── Health check ────────────────────────────────────────────────────────────
 app.get("/health", async (c) => {

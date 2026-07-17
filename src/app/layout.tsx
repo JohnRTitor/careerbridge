@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist_Mono, Outfit, Public_Sans } from "next/font/google";
 import "./globals.css";
@@ -6,7 +5,6 @@ import { cn } from "@/lib/utils";
 import Providers from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
-// Fonts setup
 const publicSansHeading = Public_Sans({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -23,9 +21,6 @@ export const metadata: Metadata = {
   title: "CareerBridge",
   description:
     "The modern job portal helping people and companies grow together.",
-  icons: {
-    icon: "/icon.ico",
-  },
 };
 
 export default function RootLayout({

@@ -18,11 +18,11 @@ export async function getUserApplications(input: GetUserApplicationsInput) {
 export async function applyForJob(input: ApplyForJobInput) {
   const { jobId, candidateId, data } = input;
   const query = `
-    INSERT INTO applications (job_id, candidate_id, resume_url, cover_letter)
+    INSERT INTO applications (job_id, candidate_id, resume_id, cover_letter)
     VALUES ($1, $2, $3, $4)
     RETURNING *;
   `;
-  const result = await pool.query(query, [jobId, candidateId, data.resume_url, data.cover_letter]);
+  const result = await pool.query(query, [jobId, candidateId, data.resume_id, data.cover_letter]);
   return result.rows[0];
 }
 
@@ -36,8 +36,20 @@ export async function getApplication(input: GetApplicationInput) {
   return result.rows[0];
 }
 
+export async function withdrawApplication(input: any) {
+  const { applicationId, candidateId } = input;
+  const query = `
+    DELETE FROM applications 
+    WHERE id = $1 AND candidate_id = $2 
+    RETURNING id;
+  `;
+  const result = await pool.query(query, [applicationId, candidateId]);
+  return result.rowCount ? result.rowCount > 0 : false;
+}
+
 export const applicationsRepository = {
   getUserApplications,
   applyForJob,
   getApplication,
+  withdrawApplication,
 };
