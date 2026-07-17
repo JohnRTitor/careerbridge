@@ -1,8 +1,13 @@
 import { z } from "zod";
-import "zod-openapi";
 import { PaginationQuerySchema } from "../../shared/schemas";
 
-export const JobTypeSchema = z.enum(["full-time", "part-time", "contract", "internship", "freelance"]);
+export const JobTypeSchema = z.enum([
+  "full-time",
+  "part-time",
+  "contract",
+  "internship",
+  "freelance",
+]);
 export const JobStatusSchema = z.enum(["open", "closed", "draft"]);
 
 export const JobSearchQuerySchema = PaginationQuerySchema.extend({
