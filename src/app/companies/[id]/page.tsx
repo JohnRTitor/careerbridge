@@ -12,6 +12,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { useCompany, useFollowedCompanies } from "@/features/companies/api/queries";
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
@@ -73,13 +74,14 @@ export default function CompanyDetailsPage() {
     <div className="flex flex-col min-h-screen bg-background pb-16">
       <div className="bg-background border-b border-border pt-8 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <button 
+          <Button 
+            variant="ghost"
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 -ml-4"
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
             Back to companies
-          </button>
+          </Button>
 
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center w-full md:w-auto">
@@ -183,20 +185,22 @@ export default function CompanyDetailsPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl max-w-3xl mx-auto">
-                <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-                  <HugeiconsIcon icon={BriefcaseIcon} className="size-8" />
-                </div>
-                <h3 className="text-xl font-semibold">No open roles currently</h3>
-                <p className="text-muted-foreground mt-2">
+              <Empty className="max-w-3xl mx-auto rounded-2xl">
+                <EmptyMedia variant="icon">
+                  <HugeiconsIcon icon={BriefcaseIcon} />
+                </EmptyMedia>
+                <EmptyTitle>No open roles currently</EmptyTitle>
+                <EmptyDescription>
                   {company.name} doesn&apos;t have any open positions right now. {isCandidate && !isFollowed ? "Follow them to get notified when they post new jobs!" : "Check back later for new opportunities."}
-                </p>
+                </EmptyDescription>
                 {isCandidate && !isFollowed && (
-                  <Button onClick={handleToggleFollow} disabled={isFollowing} className="mt-6">
-                    Follow {company.name}
-                  </Button>
+                  <EmptyContent>
+                    <Button onClick={handleToggleFollow} disabled={isFollowing} className="mt-2">
+                      Follow {company.name}
+                    </Button>
+                  </EmptyContent>
                 )}
-              </div>
+              </Empty>
             )}
           </>
         )}

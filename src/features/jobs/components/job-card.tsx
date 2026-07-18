@@ -8,7 +8,7 @@ import {
   Location01Icon,
   Wallet01Icon,
 } from "@hugeicons/core-free-icons";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -78,11 +78,13 @@ export function JobCard({
               </p>
             </div>
           </div>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={handleToggleSave}
             disabled={isSaving}
-            className={`p-2 rounded-full hover:bg-muted transition-colors shrink-0 disabled:opacity-50 ${
-              isSaved ? "text-primary bg-primary/5" : "text-muted-foreground"
+            className={`rounded-full shrink-0 ${
+              isSaved ? "text-primary bg-primary/5 hover:bg-primary/10 hover:text-primary" : "text-muted-foreground"
             }`}
             aria-label={isSaved ? "Unsave job" : "Save job"}
           >
@@ -91,7 +93,7 @@ export function JobCard({
               className="size-5" 
               fill={isSaved ? "currentColor" : "none"} 
             />
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">

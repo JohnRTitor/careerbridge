@@ -11,6 +11,7 @@ import {
   EarthIcon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SelectItem } from "@/components/ui/select";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Language, AddUserLanguagePayload, UpdateUserLanguagePayload } from "@/features/profiles/api/types";
 import { useAddUserLanguage, useUpdateUserLanguage, useDeleteUserLanguage } from "@/features/profiles/api/mutations";
@@ -68,16 +69,15 @@ function LanguageForm({ language, onClose }: LanguageFormProps) {
 
       <form.AppField name="proficiency">
         {(field) => (
-          <field.NativeSelectField
+          <field.SelectField
             field={field}
             label="Proficiency"
-            options={[
-              { value: "basic", label: "Basic" },
-              { value: "conversational", label: "Conversational" },
-              { value: "fluent", label: "Fluent" },
-              { value: "native", label: "Native / Bilingual" },
-            ]}
-          />
+          >
+            <SelectItem value="basic">Basic</SelectItem>
+            <SelectItem value="conversational">Conversational</SelectItem>
+            <SelectItem value="fluent">Fluent</SelectItem>
+            <SelectItem value="native">Native / Bilingual</SelectItem>
+          </field.SelectField>
         )}
       </form.AppField>
 

@@ -12,6 +12,7 @@ import {
   Tick02Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
 import { useAppForm } from "@/hooks/use-app-form";
 import { format, parseISO } from "date-fns";
 import { useAddResume, useDeleteResume, useUpdateResumeEntity } from "@/features/profiles/api/mutations";
@@ -113,19 +114,21 @@ export function ResumesSection() {
                   <div className="w-px h-3 bg-border" />
                   {!resume.is_default && (
                     <>
-                      <button 
-                        className="text-xs flex items-center gap-1.5 text-muted-foreground hover:text-foreground font-medium transition-colors cursor-pointer"
+                      <Button 
+                        variant="link"
+                        className="h-auto p-0 text-xs flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:no-underline font-medium transition-colors cursor-pointer"
                         onClick={() => updateMutation.mutate({ id: resume.id, data: { is_default: true } })}
                         disabled={updateMutation.isPending}
                       >
                         <HugeiconsIcon icon={Tick02Icon} className="size-3.5" />
                         Set Primary
-                      </button>
+                      </Button>
                       <div className="w-px h-3 bg-border" />
                     </>
                   )}
-                  <button 
-                    className="text-xs flex items-center gap-1.5 text-destructive hover:text-destructive font-medium transition-colors cursor-pointer ml-auto"
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-xs flex items-center gap-1.5 text-destructive hover:text-destructive hover:no-underline font-medium transition-colors cursor-pointer ml-auto"
                     onClick={async () => {
                       if (window.confirm("Are you sure you want to delete this resume?")) {
                         await deleteMutation.mutateAsync(resume.id);
@@ -134,18 +137,24 @@ export function ResumesSection() {
                   >
                     <HugeiconsIcon icon={Delete02Icon} className="size-3.5" />
                     Delete
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
-            <p className="text-muted-foreground text-sm mb-4">No resumes uploaded yet.</p>
-            <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
-              Upload Resume
-            </Button>
-          </div>
+          <Empty className="rounded-xl">
+            <EmptyMedia variant="icon">
+              <HugeiconsIcon icon={DocumentAttachmentIcon} />
+            </EmptyMedia>
+            <EmptyTitle>No resumes uploaded yet.</EmptyTitle>
+            <EmptyDescription>Upload your resume to easily apply for jobs.</EmptyDescription>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="mt-2">
+                Upload Resume
+              </Button>
+            </EmptyContent>
+          </Empty>
         )}
       </CardContent>
 

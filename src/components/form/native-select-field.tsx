@@ -3,9 +3,9 @@
 import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import { NativeSelect } from "@/components/ui/native-select";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 
 type NativeSelectFieldProps<TField extends AnyFieldApi> = Omit<
   React.ComponentProps<typeof NativeSelect>,
@@ -40,32 +40,39 @@ export function NativeSelectField<TField extends AnyFieldApi>({
   const { invalid, error } = getFieldState(field);
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <NativeSelect
-          {...controlProps}
-          {...props}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        >
-          {options ? options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          )) : children}
-        </NativeSelect>
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <NativeSelect
+        id={field.name}
+        aria-invalid={invalid}
+        {...props}
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      >
+        {options ? options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        )) : children}
+      </NativeSelect>
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

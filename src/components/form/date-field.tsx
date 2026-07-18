@@ -4,7 +4,6 @@ import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 import { format } from "date-fns";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -13,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar01Icon } from "@hugeicons/core-free-icons";
@@ -48,45 +48,52 @@ export function DateField<TField extends AnyFieldApi>({
   const value = field.state.value as Date | undefined;
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <Popover>
-          <PopoverTrigger
-            render={
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !value && "text-muted-foreground",
-                  invalid && "border-destructive focus-visible:ring-destructive/30"
-                )}
-                {...controlProps}
-              />
-            }
-          >
-            <HugeiconsIcon icon={Calendar01Icon} className="mr-2" size={16} />
-            {value ? format(value, "PPP") : <span>{placeholder}</span>}
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              {...props}
-              mode="single"
-              selected={value}
-              onSelect={(date) => field.handleChange(date)}
-            />
-          </PopoverContent>
-        </Popover>
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button
+              id={field.name}
+              aria-invalid={invalid}
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !value && "text-muted-foreground",
+                invalid && "border-destructive focus-visible:ring-destructive/30"
+              )}
+            />
+          }
+        >
+          <HugeiconsIcon icon={Calendar01Icon} className="mr-2" size={16} />
+          {value ? format(value, "PPP") : <span>{placeholder}</span>}
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            {...props}
+            mode="single"
+            selected={value}
+            onSelect={(date) => field.handleChange(date)}
+          />
+        </PopoverContent>
+      </Popover>
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

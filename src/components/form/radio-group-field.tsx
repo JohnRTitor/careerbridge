@@ -3,9 +3,9 @@
 import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import { RadioGroup } from "@/components/ui/radio-group";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group";
 
 type RadioGroupFieldProps<TField extends AnyFieldApi> = Omit<
@@ -39,27 +39,34 @@ export function RadioGroupField<TField extends AnyFieldApi>({
   const { invalid, error } = getFieldState(field);
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <RadioGroup
-          {...controlProps}
-          {...props}
-          value={field.state.value}
-          onValueChange={(val) => field.handleChange(val)}
-        >
-          {children}
-        </RadioGroup>
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <RadioGroup
+        id={field.name}
+        aria-invalid={invalid}
+        {...props}
+        value={field.state.value}
+        onValueChange={(val) => field.handleChange(val)}
+      >
+        {children}
+      </RadioGroup>
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { LoadingState } from "@/components/common/loading-state";
+import { Empty, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { toast } from "sonner";
 
@@ -91,12 +94,14 @@ export default function AdminDashboard() {
               <span>Super Admin</span>
             </div>
           </div>
-          <button
-            className="flex size-10 items-center justify-center rounded-lg text-foreground md:hidden"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
             onClick={() => setMobileMenuOpen((v) => !v)}
           >
             <HugeiconsIcon icon={mobileMenuOpen ? Cancel01Icon : MenuIcon} className="size-5" />
-          </button>
+          </Button>
         </div>
       </header>
 
@@ -149,21 +154,23 @@ export default function AdminDashboard() {
             <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase bg-muted border-b border-border">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold">User</th>
-                        <th className="px-6 py-4 font-semibold">Role</th>
-                        <th className="px-6 py-4 font-semibold">Status</th>
-                        <th className="px-6 py-4 font-semibold text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                       {isLoadingUsers ? (
-                        <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">Loading users...</td></tr>
+                        <TableRow><TableCell colSpan={4}><LoadingState type="table" count={5} /></TableCell></TableRow>
+                      ) : usersData?.users.length === 0 ? (
+                        <TableRow><TableCell colSpan={4}><Empty><EmptyTitle>No users found</EmptyTitle><EmptyDescription>There are currently no users in the system.</EmptyDescription></Empty></TableCell></TableRow>
                       ) : usersData?.users.map((user) => (
-                        <tr key={user.id} className="hover:bg-muted/50">
-                          <td className="px-6 py-4">
+                        <TableRow key={user.id}>
+                          <TableCell>
                             <div className="flex items-center gap-3">
                               <div className="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase">
                                 {user.name.substring(0, 2)}
@@ -173,16 +180,16 @@ export default function AdminDashboard() {
                                 <p className="text-xs text-muted-foreground">{user.email}</p>
                               </div>
                             </div>
-                          </td>
-                          <td className="px-6 py-4">
+                          </TableCell>
+                          <TableCell>
                             <Badge variant="outline" className="capitalize">{user.role}</Badge>
-                          </td>
-                          <td className="px-6 py-4">
+                          </TableCell>
+                          <TableCell>
                             <Badge variant={!user.banned ? 'secondary' : 'destructive'} className={!user.banned ? 'bg-emerald-500/10 text-emerald-600' : ''}>
                               {!user.banned ? 'Active' : 'Banned'}
                             </Badge>
-                          </td>
-                          <td className="px-6 py-4 text-right space-x-2">
+                          </TableCell>
+                          <TableCell className="text-right space-x-2">
                             <Button 
                               variant="outline" size="sm" className="h-8 text-xs"
                               onClick={() => handleRoleChange(user.id, user.role)}
@@ -197,11 +204,11 @@ export default function AdminDashboard() {
                             >
                               {!user.banned ? 'Ban' : 'Unban'}
                             </Button>
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
@@ -211,21 +218,23 @@ export default function AdminDashboard() {
             <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase bg-muted border-b border-border">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold">Company</th>
-                        <th className="px-6 py-4 font-semibold">Industry</th>
-                        <th className="px-6 py-4 font-semibold">Verification Status</th>
-                        <th className="px-6 py-4 font-semibold text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Industry</TableHead>
+                        <TableHead>Verification Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                       {isLoadingCompanies ? (
-                        <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">Loading companies...</td></tr>
+                        <TableRow><TableCell colSpan={4}><LoadingState type="table" count={5} /></TableCell></TableRow>
+                      ) : companiesData?.companies.length === 0 ? (
+                        <TableRow><TableCell colSpan={4}><Empty><EmptyTitle>No companies found</EmptyTitle><EmptyDescription>There are currently no companies registered.</EmptyDescription></Empty></TableCell></TableRow>
                       ) : companiesData?.companies.map((company) => (
-                        <tr key={company.id} className="hover:bg-muted/50">
-                          <td className="px-6 py-4">
+                        <TableRow key={company.id}>
+                          <TableCell>
                             <div className="flex items-center gap-3">
                               <div className="size-8 rounded-lg bg-muted flex items-center justify-center font-bold text-xs">
                                 <HugeiconsIcon icon={Building01Icon} className="size-4 text-muted-foreground" />
@@ -235,16 +244,16 @@ export default function AdminDashboard() {
                                 <p className="text-xs text-muted-foreground">{company.website || "No website"}</p>
                               </div>
                             </div>
-                          </td>
-                          <td className="px-6 py-4 text-muted-foreground">{company.industry}</td>
-                          <td className="px-6 py-4">
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{company.industry}</TableCell>
+                          <TableCell>
                             {company.is_verified ? (
                               <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">Verified</Badge>
                             ) : (
                               <Badge variant="outline" className="text-muted-foreground">Unverified</Badge>
                             )}
-                          </td>
-                          <td className="px-6 py-4 text-right">
+                          </TableCell>
+                          <TableCell className="text-right">
                             <Button 
                               variant={company.is_verified ? 'outline' : 'default'} size="sm" className="h-8 text-xs"
                               onClick={() => handleVerifyCompany(company.id, company.is_verified)}
@@ -252,11 +261,11 @@ export default function AdminDashboard() {
                             >
                               {company.is_verified ? 'Revoke Verification' : 'Verify Company'}
                             </Button>
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
@@ -266,35 +275,37 @@ export default function AdminDashboard() {
             <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase bg-muted border-b border-border">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold">Time</th>
-                        <th className="px-6 py-4 font-semibold">Action</th>
-                        <th className="px-6 py-4 font-semibold">Actor ID</th>
-                        <th className="px-6 py-4 font-semibold">Target</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Time</TableHead>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Actor ID</TableHead>
+                        <TableHead>Target</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                       {isLoadingAudit ? (
-                        <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">Loading logs...</td></tr>
+                        <TableRow><TableCell colSpan={4}><LoadingState type="table" count={5} /></TableCell></TableRow>
+                      ) : auditData?.logs.length === 0 ? (
+                        <TableRow><TableCell colSpan={4}><Empty><EmptyTitle>No logs found</EmptyTitle><EmptyDescription>There are currently no audit logs.</EmptyDescription></Empty></TableCell></TableRow>
                       ) : auditData?.logs.map((log) => (
-                        <tr key={log.id} className="hover:bg-muted/50">
-                          <td className="px-6 py-4 text-muted-foreground text-xs whitespace-nowrap">
+                        <TableRow key={log.id}>
+                          <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
                             {formatDistanceToNow(parseISO(log.created_at), { addSuffix: true })}
-                          </td>
-                          <td className="px-6 py-4">
+                          </TableCell>
+                          <TableCell>
                             <Badge variant="secondary" className="bg-muted text-foreground">{log.action}</Badge>
-                          </td>
-                          <td className="px-6 py-4 font-mono text-xs text-muted-foreground">{log.actor_id.substring(0, 8)}...</td>
-                          <td className="px-6 py-4">
+                          </TableCell>
+                          <TableCell className="font-mono text-xs text-muted-foreground">{log.actor_id.substring(0, 8)}...</TableCell>
+                          <TableCell>
                             <span className="text-xs font-medium uppercase text-muted-foreground mr-1">{log.target_type}:</span>
                             <span className="font-mono text-xs">{log.target_id.substring(0, 8)}...</span>
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>

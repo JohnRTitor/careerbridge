@@ -6,12 +6,11 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon, BriefcaseIcon } from "@hugeicons/core-free-icons";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { NativeSelect } from "@/components/ui/native-select";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useCreateJob } from "@/features/recruiters/api/mutations";
 import { useRecruiterProfile } from "@/features/recruiters/api/queries";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
+import { SelectItem } from "@/components/ui/select";
 
 export default function PostJobPage() {
   const router = useRouter();
@@ -77,99 +76,62 @@ export default function PostJobPage() {
             >
               <form.AppField name="title">
                 {(field) => (
-                  <div className="space-y-2">
-                    <label htmlFor={field.name} className="text-sm font-semibold text-foreground">
-                      Job Title *
-                    </label>
-                    <Input
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="e.g. Senior Frontend Engineer"
-                      className="h-11"
-                    />
-                    {field.state.meta.errors.length > 0 && (
-                      <p className="text-sm text-destructive font-medium">{field.state.meta.errors.join(", ")}</p>
-                    )}
-                  </div>
+                  <field.TextField
+                    field={field}
+                    label="Job Title *"
+                    placeholder="e.g. Senior Frontend Engineer"
+                    className="h-11"
+                  />
                 )}
               </form.AppField>
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <form.AppField name="location">
                   {(field) => (
-                    <div className="space-y-2">
-                      <label htmlFor={field.name} className="text-sm font-semibold text-foreground">
-                        Location
-                      </label>
-                      <Input
-                        id={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="e.g. Remote, San Francisco"
-                        className="h-11"
-                      />
-                    </div>
+                    <field.TextField
+                      field={field}
+                      label="Location"
+                      placeholder="e.g. Remote, San Francisco"
+                      className="h-11"
+                    />
                   )}
                 </form.AppField>
 
                 <form.AppField name="type">
                   {(field) => (
-                    <div className="space-y-2">
-                      <label htmlFor={field.name} className="text-sm font-semibold text-foreground">
-                        Employment Type
-                      </label>
-                      <NativeSelect
-                        id={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value as "full-time" | "part-time" | "contract" | "internship" | "freelance")}
-                        className="h-11"
-                      >
-                        <option value="full-time">Full-time</option>
-                        <option value="part-time">Part-time</option>
-                        <option value="contract">Contract</option>
-                        <option value="internship">Internship</option>
-                        <option value="freelance">Freelance</option>
-                      </NativeSelect>
-                    </div>
+                    <field.SelectField
+                      field={field}
+                      label="Employment Type"
+                    >
+                      <SelectItem value="full-time">Full-time</SelectItem>
+                      <SelectItem value="part-time">Part-time</SelectItem>
+                      <SelectItem value="contract">Contract</SelectItem>
+                      <SelectItem value="internship">Internship</SelectItem>
+                      <SelectItem value="freelance">Freelance</SelectItem>
+                    </field.SelectField>
                   )}
                 </form.AppField>
               </div>
 
               <form.AppField name="salary_range">
                 {(field) => (
-                  <div className="space-y-2">
-                    <label htmlFor={field.name} className="text-sm font-semibold text-foreground">
-                      Salary Range
-                    </label>
-                    <Input
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="e.g. $120k - $150k"
-                      className="h-11"
-                    />
-                  </div>
+                  <field.TextField
+                    field={field}
+                    label="Salary Range"
+                    placeholder="e.g. $120k - $150k"
+                    className="h-11"
+                  />
                 )}
               </form.AppField>
 
               <form.AppField name="description">
                 {(field) => (
-                  <div className="space-y-2">
-                    <label htmlFor={field.name} className="text-sm font-semibold text-foreground">
-                      Job Description *
-                    </label>
-                    <textarea
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Describe the role, responsibilities, and requirements..."
-                      className="flex min-h-[250px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-                    />
-                    {field.state.meta.errors.length > 0 && (
-                      <p className="text-sm text-destructive font-medium">{field.state.meta.errors.join(", ")}</p>
-                    )}
-                  </div>
+                  <field.TextareaField
+                    field={field}
+                    label="Job Description *"
+                    placeholder="Describe the role, responsibilities, and requirements..."
+                    className="flex min-h-[250px] resize-y"
+                  />
                 )}
               </form.AppField>
 

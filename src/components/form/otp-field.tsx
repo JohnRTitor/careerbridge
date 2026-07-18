@@ -3,9 +3,9 @@
 import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import { InputOTP } from "@/components/ui/input-otp";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 
 type OTPFieldProps<TField extends AnyFieldApi> = Omit<
   React.ComponentProps<typeof InputOTP>,
@@ -38,27 +38,34 @@ export function OTPField<TField extends AnyFieldApi>({
   const { invalid, error } = getFieldState(field);
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <InputOTP
-          {...controlProps}
-          {...props}
-          value={field.state.value}
-          onChange={(val) => field.handleChange(val)}
-        >
-          {children}
-        </InputOTP>
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <InputOTP
+        id={field.name}
+        aria-invalid={invalid}
+        {...props}
+        value={field.state.value}
+        onChange={(val) => field.handleChange(val)}
+      >
+        {children}
+      </InputOTP>
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

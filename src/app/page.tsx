@@ -190,12 +190,14 @@ export default function Page() {
                 {job.company_name?.substring(0, 2) || "CO"}
               </span>
             )}
-            <button
-              className="text-muted-foreground transition-colors hover:text-primary"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground transition-colors hover:text-primary h-8 w-8"
               aria-label="Save job"
             >
               <HugeiconsIcon icon={BookmarkIcon} className="size-5" />
-            </button>
+            </Button>
           </div>
 
           <div>
@@ -337,12 +339,13 @@ export default function Page() {
                       />
                     )}
                     <span>{searchMessage.text}</span>
-                    <button
+                    <Button
+                      variant="link"
                       onClick={resetSearch}
-                      className="ml-2 text-xs underline opacity-80 hover:opacity-100"
+                      className="ml-2 h-auto p-0 text-xs underline opacity-80 hover:opacity-100 text-current hover:text-current"
                     >
                       Clear
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -350,13 +353,15 @@ export default function Page() {
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm w-full">
                 <span className="text-muted-foreground">Popular:</span>
                 {popularSearches.map((term) => (
-                  <button
+                  <Button
                     key={term}
+                    variant="outline"
+                    size="sm"
                     onClick={() => handlePopularSearch(term)}
-                    className="rounded-full border border-border bg-card px-3 py-1 text-foreground transition-colors hover:border-primary hover:text-primary"
+                    className="rounded-full h-7 px-3 text-xs transition-colors hover:border-primary hover:text-primary"
                   >
                     {term}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

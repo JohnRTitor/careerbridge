@@ -3,13 +3,13 @@
 import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import {
   Combobox,
   ComboboxInput,
   ComboboxContent,
 } from "@/components/ui/combobox";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
 
 type ComboboxFieldProps<TField extends AnyFieldApi> = Omit<
@@ -50,33 +50,40 @@ export function ComboboxField<TField extends AnyFieldApi>({
   const { invalid, error } = getFieldState(field);
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <Combobox
-          {...props}
-          value={field.state.value}
-          onValueChange={(val) => field.handleChange(val)}
-        >
-          <ComboboxInput
-            {...controlProps}
-            placeholder={placeholder}
-            className={inputClassName}
-          />
-          <ComboboxContent className={contentClassName}>
-            {children}
-          </ComboboxContent>
-        </Combobox>
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <Combobox
+        {...props}
+        value={field.state.value}
+        onValueChange={(val) => field.handleChange(val)}
+      >
+        <ComboboxInput
+          id={field.name}
+          aria-invalid={invalid}
+          placeholder={placeholder}
+          className={inputClassName}
+        />
+        <ComboboxContent className={contentClassName}>
+          {children}
+        </ComboboxContent>
+      </Combobox>
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

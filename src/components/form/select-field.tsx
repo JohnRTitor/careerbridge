@@ -3,7 +3,6 @@
 import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import {
   Select,
@@ -11,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 
 type SelectFieldProps<TField extends AnyFieldApi> = Omit<
@@ -51,34 +51,41 @@ export function SelectField<TField extends AnyFieldApi>({
   const { invalid, error } = getFieldState(field);
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <Select
-          {...props}
-          value={field.state.value}
-          onValueChange={(val) => field.handleChange(val)}
-        >
-          <SelectTrigger
-            {...controlProps}
-            className={triggerClassName}
-          >
-            <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-          <SelectContent className={contentClassName}>
-            {children}
-          </SelectContent>
-        </Select>
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <Select
+        {...props}
+        value={field.state.value}
+        onValueChange={(val) => field.handleChange(val)}
+      >
+        <SelectTrigger
+          id={field.name}
+          aria-invalid={invalid}
+          className={triggerClassName}
+        >
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent className={contentClassName}>
+          {children}
+        </SelectContent>
+      </Select>
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

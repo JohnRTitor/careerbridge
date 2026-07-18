@@ -14,7 +14,8 @@ import { JobCard } from "@/features/jobs/components/job-card";
 import { useJobs } from "@/features/jobs/api/queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { JobFilters } from "@/features/jobs/api/types";
-import { NativeSelect } from "@/components/ui/native-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
 import {
   Pagination,
   PaginationContent,
@@ -121,18 +122,22 @@ function JobSearchContent() {
             <div className="w-px bg-border hidden sm:block" />
             <div className="flex items-center flex-1 sm:max-w-[200px]">
               <HugeiconsIcon icon={FilterIcon} className="absolute ml-3 size-5 text-muted-foreground pointer-events-none z-10" />
-              <NativeSelect 
-                className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0"
+              <Select 
                 value={type}
-                onChange={(e) => setType(e.target.value)}
+                onValueChange={(val) => setType(val || "")}
               >
-                <option value="all">All Job Types</option>
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="contract">Contract</option>
-                <option value="freelance">Freelance</option>
-                <option value="internship">Internship</option>
-              </NativeSelect>
+                <SelectTrigger className="pl-10 border-0 shadow-none h-12 focus:ring-0">
+                  <SelectValue placeholder="All Job Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Job Types</SelectItem>
+                  <SelectItem value="full-time">Full-time</SelectItem>
+                  <SelectItem value="part-time">Part-time</SelectItem>
+                  <SelectItem value="contract">Contract</SelectItem>
+                  <SelectItem value="freelance">Freelance</SelectItem>
+                  <SelectItem value="internship">Internship</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <Button type="submit" size="lg" className="h-12 px-8 rounded-xl shrink-0">
               Search
@@ -165,23 +170,23 @@ function JobSearchContent() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl">
-                <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-                  <HugeiconsIcon icon={Search01Icon} className="size-8" />
-                </div>
-                <h3 className="text-xl font-semibold">No results found</h3>
-                <p className="text-muted-foreground max-w-sm mt-2">
-                  We couldn&apos;t find any jobs matching your criteria. Try adjusting your search keywords or filters.
-                </p>
-                <Button variant="outline" className="mt-6" onClick={() => {
-                  setQuery("");
-                  setLocation("");
-                  setType("all");
-                  router.push(pathname);
-                }}>
-                  Clear Filters
-                </Button>
-              </div>
+              <Empty className="bg-background rounded-2xl">
+                <EmptyMedia variant="icon">
+                  <HugeiconsIcon icon={Search01Icon} />
+                </EmptyMedia>
+                <EmptyTitle>No results found</EmptyTitle>
+                <EmptyDescription>We couldn&apos;t find any jobs matching your criteria. Try adjusting your search keywords or filters.</EmptyDescription>
+                <EmptyContent>
+                  <Button variant="outline" className="mt-2" onClick={() => {
+                    setQuery("");
+                    setLocation("");
+                    setType("all");
+                    router.push(pathname);
+                  }}>
+                    Clear Filters
+                  </Button>
+                </EmptyContent>
+              </Empty>
             )}
 
             {data && data.pagination.totalPages > 1 && (

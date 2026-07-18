@@ -11,7 +11,8 @@ import {
   KanbanIcon,
   ListViewIcon,
 } from "@hugeicons/core-free-icons";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -129,42 +130,40 @@ export default function ApplicationsTrackerPage() {
           </p>
         </div>
         <div className="flex items-center bg-muted rounded-lg p-1 border border-border shrink-0">
-          <button
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-              view === "kanban"
-                ? "bg-background text-foreground shadow-xs border border-border/50"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+          <Button
+            variant={view === "kanban" ? "secondary" : "ghost"}
+            size="sm"
+            className="flex items-center gap-1.5 h-8 text-xs font-medium"
             onClick={() => setView("kanban")}
           >
             <HugeiconsIcon icon={KanbanIcon} className="size-3.5" />
             Board
-          </button>
-          <button
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-              view === "list"
-                ? "bg-background text-foreground shadow-xs border border-border/50"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+          </Button>
+          <Button
+            variant={view === "list" ? "secondary" : "ghost"}
+            size="sm"
+            className="flex items-center gap-1.5 h-8 text-xs font-medium"
             onClick={() => setView("list")}
           >
             <HugeiconsIcon icon={ListViewIcon} className="size-3.5" />
             List
-          </button>
+          </Button>
         </div>
       </div>
 
       {applications.length === 0 ? (
-        <Card className="border-dashed flex-1 flex flex-col items-center justify-center p-12 text-center bg-muted/50">
-          <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-            <HugeiconsIcon icon={BriefcaseIcon} className="size-8" />
-          </div>
-          <h3 className="text-xl font-semibold">No applications found</h3>
-          <p className="text-muted-foreground max-w-sm mt-2">
-            You haven&apos;t applied to any jobs yet. Start exploring opportunities!
-          </p>
-          <Link href="/jobs" className={buttonVariants({ className: "mt-6" })}>Browse Jobs</Link>
-        </Card>
+        <Empty className="flex-1 bg-muted/50 mt-4">
+          <EmptyMedia variant="icon">
+            <HugeiconsIcon icon={BriefcaseIcon} />
+          </EmptyMedia>
+          <EmptyTitle>No applications found</EmptyTitle>
+          <EmptyDescription>You haven&apos;t applied to any jobs yet. Start exploring opportunities!</EmptyDescription>
+          <EmptyContent>
+            <Link href="/jobs" className={buttonVariants({ className: "mt-2" })}>
+              Browse Jobs
+            </Link>
+          </EmptyContent>
+        </Empty>
       ) : view === "kanban" ? (
         <div className="flex gap-6 overflow-x-auto pb-4 flex-1">
           <KanbanColumn

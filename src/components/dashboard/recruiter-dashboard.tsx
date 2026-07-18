@@ -15,6 +15,13 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from "@/components/ui/empty";
 import { formatDistanceToNow, parseISO } from "date-fns";
 
 import {
@@ -116,7 +123,7 @@ export default function RecruiterDashboard() {
           style={{
             backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
             backgroundSize: "24px 24px, 100% 100%",
-            backgroundBlendMode: "overlay"
+            backgroundBlendMode: "overlay",
           }}
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -189,9 +196,17 @@ export default function RecruiterDashboard() {
                 ))}
               </div>
             ) : appsData?.applications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-card rounded-xl border border-dashed border-border text-center">
-                <p className="text-muted-foreground">No recent applications.</p>
-              </div>
+              <Empty className="border">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <HugeiconsIcon icon={BriefcaseIcon} className="size-5" />
+                  </EmptyMedia>
+                  <EmptyTitle>No recent applications</EmptyTitle>
+                  <EmptyDescription>
+                    You have no new applications to review.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             ) : (
               appsData?.applications.map((app) => (
                 <Card
@@ -285,9 +300,14 @@ export default function RecruiterDashboard() {
                     <Skeleton className="h-10 w-full" />
                   </div>
                 ) : jobsData?.jobs.length === 0 ? (
-                  <div className="p-4 text-sm text-muted-foreground text-center">
-                    No active jobs.
-                  </div>
+                  <Empty className="border-0 p-4">
+                    <EmptyHeader>
+                      <EmptyTitle>No active jobs</EmptyTitle>
+                      <EmptyDescription>
+                        You don&apos;t have any active job postings.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 ) : (
                   jobsData?.jobs.map((job) => (
                     <div

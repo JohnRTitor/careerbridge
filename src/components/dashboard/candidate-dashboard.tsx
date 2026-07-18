@@ -16,6 +16,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { 
+  Empty, 
+  EmptyHeader, 
+  EmptyMedia, 
+  EmptyTitle, 
+  EmptyDescription, 
+  EmptyContent 
+} from "@/components/ui/empty";
 import { useProfile } from "@/features/profiles/api/queries";
 import { useCandidateApplications } from "@/features/applications/api/queries";
 import { useSavedJobs } from "@/features/jobs/api/queries";
@@ -235,18 +243,20 @@ export default function CandidateDashboard() {
             ))}
             
             {applications.length === 0 && (
-              <Card className="bg-card border border-dashed shadow-sm">
-                <CardContent className="p-12 flex flex-col items-center justify-center text-center">
-                  <div className="size-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-                    <HugeiconsIcon icon={BriefcaseIcon} className="size-6" />
-                  </div>
-                  <h3 className="text-lg font-semibold">No applications yet</h3>
-                  <p className="text-muted-foreground text-sm max-w-sm mt-1">
+              <Empty className="border">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <HugeiconsIcon icon={BriefcaseIcon} className="size-5" />
+                  </EmptyMedia>
+                  <EmptyTitle>No applications yet</EmptyTitle>
+                  <EmptyDescription>
                     When you apply for jobs, they will appear here so you can track your progress.
-                  </p>
-                  <Link href="/jobs" className={buttonVariants({ className: "mt-6" })}>Browse Jobs</Link>
-                </CardContent>
-              </Card>
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Link href="/jobs" className={buttonVariants({ className: "mt-4" })}>Browse Jobs</Link>
+                </EmptyContent>
+              </Empty>
             )}
           </div>
 
@@ -307,9 +317,14 @@ export default function CandidateDashboard() {
                 ))}
                 
                 {savedJobs.length === 0 && (
-                  <div className="text-center py-6 text-sm text-muted-foreground">
-                    You haven&apos;t saved any jobs yet.
-                  </div>
+                  <Empty className="border-0 p-4">
+                    <EmptyHeader>
+                      <EmptyTitle>No saved jobs</EmptyTitle>
+                      <EmptyDescription>
+                        You haven&apos;t saved any jobs yet.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 )}
               </CardContent>
             </Card>

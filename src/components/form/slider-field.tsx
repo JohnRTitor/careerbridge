@@ -3,9 +3,9 @@
 import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
-import { BaseField } from "@/components/form/base-field";
 import { getFieldState } from "@/components/form/utils";
 import { Slider } from "@/components/ui/slider";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 
 type SliderFieldProps<TField extends AnyFieldApi> = Omit<
   React.ComponentProps<typeof Slider>,
@@ -35,25 +35,32 @@ export function SliderField<TField extends AnyFieldApi>({
   const { invalid, error } = getFieldState(field);
 
   return (
-    <BaseField
-      id={field.name}
-      label={label}
-      description={description}
-      error={error}
-      invalid={invalid}
-      className={className}
-      labelClassName={labelClassName}
-      descriptionClassName={descriptionClassName}
-      errorClassName={errorClassName}
-    >
-      {(controlProps) => (
-        <Slider
-          {...controlProps}
-          {...props}
-          value={field.state.value}
-          onValueChange={(val) => field.handleChange(val)}
-        />
+    <Field className={className} data-invalid={invalid}>
+      {label && (
+        <FieldLabel htmlFor={field.name} className={labelClassName}>
+          {label}
+        </FieldLabel>
       )}
-    </BaseField>
+
+      <Slider
+        id={field.name}
+        aria-invalid={invalid}
+        {...props}
+        value={field.state.value}
+        onValueChange={(val) => field.handleChange(val)}
+      />
+
+      {!error && description && (
+        <FieldDescription className={descriptionClassName}>
+          {description}
+        </FieldDescription>
+      )}
+
+      {error && (
+        <FieldError className={errorClassName}>
+          {error}
+        </FieldError>
+      )}
+    </Field>
   );
 }

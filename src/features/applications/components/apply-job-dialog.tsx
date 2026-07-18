@@ -8,7 +8,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import { useProfile } from "@/features/profiles/api/queries";
 import { useApplyForJob } from "@/features/applications/api/mutations";
 import { toast } from "sonner";
-import { NativeSelect } from "@/components/ui/native-select";
+import { SelectItem } from "@/components/ui/select";
 import type { Resume } from "@/features/profiles/api/types";
 
 interface ApplyJobDialogProps {
@@ -80,54 +80,39 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
             }}
             className="space-y-4 pt-4"
           >
-            <form.AppField name="resume_id">
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium leading-none">
-                    Select Resume *
-                  </label>
-                  {resumes.length > 0 ? (
-                    <NativeSelect
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    >
-                      {resumes.map((resume) => (
-                        <option key={resume.id} value={resume.id}>
-                          {resume.title} {resume.is_default ? "(Primary)" : ""}
-                        </option>
-                      ))}
-                    </NativeSelect>
-                  ) : (
-                    <div className="border border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-center bg-muted/50">
-                      <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-6 text-muted-foreground mb-2" />
-                      <p className="text-sm font-medium">No resumes found</p>
-                      <p className="text-xs text-muted-foreground mt-1 mb-3">
-                        You need to upload a resume to your profile before applying.
-                      </p>
-                    </div>
-                  )}
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-sm text-destructive">{field.state.meta.errors.join(", ")}</p>
-                  )}
-                </div>
-              )}
-            </form.AppField>
+            {resumes.length > 0 ? (
+              <form.AppField name="resume_id">
+                {(field) => (
+                  <field.SelectField 
+                    field={field}
+                    label="Select Resume *"
+                  >
+                    {resumes.map((resume) => (
+                      <SelectItem key={resume.id} value={resume.id}>
+                        {resume.title} {resume.is_default ? "(Primary)" : ""}
+                      </SelectItem>
+                    ))}
+                  </field.SelectField>
+                )}
+              </form.AppField>
+            ) : (
+              <div className="border border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-center bg-muted/50">
+                <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-6 text-muted-foreground mb-2" />
+                <p className="text-sm font-medium">No resumes found</p>
+                <p className="text-xs text-muted-foreground mt-1 mb-3">
+                  You need to upload a resume to your profile before applying.
+                </p>
+              </div>
+            )}
 
             <form.AppField name="cover_letter">
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium leading-none">
-                    Cover Letter (Optional)
-                  </label>
-                  <textarea
-                    id={field.name}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-                    placeholder={`Tell ${companyName} why you're a great fit for this role...`}
-                  />
-                </div>
+                <field.TextareaField
+                  field={field}
+                  label="Cover Letter (Optional)"
+                  placeholder={`Tell ${companyName} why you're a great fit for this role...`}
+                  className="resize-y"
+                />
               )}
             </form.AppField>
 

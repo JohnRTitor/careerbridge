@@ -14,6 +14,7 @@ import {
 import type { Profile } from "@/features/profiles/api/types";
 import { useAppForm } from "@/hooks/use-app-form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SelectItem } from "@/components/ui/select";
 import { useUpdateProfile } from "@/features/profiles/api/mutations";
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
@@ -117,14 +118,13 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
             <form.AppField name="visibility">
               {(field) => (
-                <field.NativeSelectField
+                <field.SelectField
                   field={field}
                   label="Profile Visibility"
-                  options={[
-                    { label: "Public", value: "public" },
-                    { label: "Private", value: "private" },
-                  ]}
-                />
+                >
+                  <SelectItem value="public">Public</SelectItem>
+                  <SelectItem value="private">Private</SelectItem>
+                </field.SelectField>
               )}
             </form.AppField>
 

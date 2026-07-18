@@ -11,6 +11,7 @@ import {
   Settings02Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SelectItem } from "@/components/ui/select";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Skill, AddUserSkillPayload, UpdateUserSkillPayload } from "@/features/profiles/api/types";
 import { useAddUserSkill, useUpdateUserSkill, useDeleteUserSkill } from "@/features/profiles/api/mutations";
@@ -72,16 +73,15 @@ function SkillForm({ skill, onClose }: SkillFormProps) {
       <div className="grid gap-4 sm:grid-cols-2">
         <form.AppField name="proficiency">
           {(field) => (
-            <field.NativeSelectField
+            <field.SelectField
               field={field}
               label="Proficiency"
-              options={[
-                { value: "beginner", label: "Beginner" },
-                { value: "intermediate", label: "Intermediate" },
-                { value: "advanced", label: "Advanced" },
-                { value: "expert", label: "Expert" },
-              ]}
-            />
+            >
+              <SelectItem value="beginner">Beginner</SelectItem>
+              <SelectItem value="intermediate">Intermediate</SelectItem>
+              <SelectItem value="advanced">Advanced</SelectItem>
+              <SelectItem value="expert">Expert</SelectItem>
+            </field.SelectField>
           )}
         </form.AppField>
         
