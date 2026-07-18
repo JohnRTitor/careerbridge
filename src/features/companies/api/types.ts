@@ -1,14 +1,12 @@
-import { z } from "zod";
-import { 
-  CompaniesQuerySchema, 
-  CompanySchema, 
-  UpdateCompanySchema,
-  CompanyMemberSchema,
-  UpdateCompanyMemberSchema
+import type { 
+  CompaniesQuery as CompanyFilters, 
+  Company as BaseCompany, 
+  UpdateCompany as UpdateCompanyPayload,
+  CompanyMember as AddCompanyMemberPayload,
+  UpdateCompanyMember as UpdateCompanyMemberPayload
 } from "@server/features/companies/companies.schemas";
 
-// Since base schemas map nicely to entities here, we can use z.infer
-export type Company = z.infer<typeof CompanySchema> & {
+export type Company = BaseCompany & {
   id: string;
   is_verified: boolean;
   created_at: string;
@@ -16,10 +14,11 @@ export type Company = z.infer<typeof CompanySchema> & {
   open_jobs_count?: number;
 };
 
-export type CompanyFilters = z.infer<typeof CompaniesQuerySchema>;
-export type CreateCompanyPayload = z.infer<typeof CompanySchema>;
-export type UpdateCompanyPayload = z.infer<typeof UpdateCompanySchema>;
+export type CreateCompanyPayload = BaseCompany;
 
-export type AddCompanyMemberPayload = z.infer<typeof CompanyMemberSchema>;
-export type UpdateCompanyMemberPayload = z.infer<typeof UpdateCompanyMemberSchema>;
-
+export type { 
+  CompanyFilters, 
+  UpdateCompanyPayload, 
+  AddCompanyMemberPayload, 
+  UpdateCompanyMemberPayload 
+};

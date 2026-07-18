@@ -16,7 +16,7 @@ export const searchJobs = async (filters: JobFilters) => {
     throw new Error("message" in error ? error.message : "Failed to search jobs");
   }
   const json = await res.json();
-  return json.data as unknown as { jobs: Job[]; pagination: { total: number; page: number; limit: number; totalPages: number } };
+  return json.data;
 };
 
 export const getRecommendations = async () => {
@@ -26,7 +26,7 @@ export const getRecommendations = async () => {
     throw new Error("message" in error ? error.message : "Failed to fetch recommendations");
   }
   const json = await res.json();
-  return json.data as Job[];
+  return json.data;
 };
 
 export const getJobById = async (id: string) => {
@@ -36,7 +36,7 @@ export const getJobById = async (id: string) => {
     throw new Error("message" in error ? error.message : "Failed to fetch job");
   }
   const json = await res.json();
-  return json.data as Job;
+  return json.data;
 };
 
 export const saveJob = async (id: string) => {
@@ -64,5 +64,5 @@ export const getSavedJobs = async () => {
     throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch saved jobs");
   }
   const json = await res.json();
-  return json.data as SavedJob[];
+  return json.data;
 };

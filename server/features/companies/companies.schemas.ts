@@ -5,17 +5,21 @@ export const CompanySchema = z
   .object({
     name: z.string().min(1, "Name is required"),
     description: z.string().optional(),
-    logo_url: z.string().url().optional().or(z.literal("")),
-    website: z.string().url().optional().or(z.literal("")),
+    logo_url: z.url().optional().or(z.literal("")),
+    website: z.url().optional().or(z.literal("")),
     industry: z.string().optional(),
     size: z.string().optional(),
     location: z.string().optional(),
   })
   .meta({ id: "Company" });
 
+export type Company = z.infer<typeof CompanySchema>;
+
 export const UpdateCompanySchema = CompanySchema.partial().meta({
   id: "UpdateCompany",
 });
+
+export type UpdateCompany = z.infer<typeof UpdateCompanySchema>;
 
 export const VerifyCompanySchema = z
   .object({
@@ -23,12 +27,16 @@ export const VerifyCompanySchema = z
   })
   .meta({ id: "VerifyCompany" });
 
+export type VerifyCompany = z.infer<typeof VerifyCompanySchema>;
+
 export const CompaniesQuerySchema = PaginationQuerySchema.extend({
   query: z.string().optional(),
 }).meta({ id: "CompaniesQuery" });
 
+export type CompaniesQuery = z.infer<typeof CompaniesQuerySchema>;
+
 // Input Types
-export type ListCompaniesInput = z.infer<typeof CompaniesQuerySchema>;
+export type ListCompaniesInput = CompaniesQuery;
 
 export type GetCompanyInput = {
   companyId: string;
@@ -63,9 +71,12 @@ export const CompanyMemberSchema = z.object({
   user_id: z.string(),
   role: z.string().optional(),
 });
+export type CompanyMember = z.infer<typeof CompanyMemberSchema>;
+
 export const UpdateCompanyMemberSchema = z.object({
   role: z.string().optional(),
 });
+export type UpdateCompanyMember = z.infer<typeof UpdateCompanyMemberSchema>;
 
 export type AddCompanyMemberInput = { companyId: string; data: z.infer<typeof CompanyMemberSchema> };
 export type UpdateCompanyMemberInput = { companyId: string; userId: string; data: z.infer<typeof UpdateCompanyMemberSchema> };

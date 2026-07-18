@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { JobSearchQuerySchema } from "@server/features/jobs/jobs.schemas";
+import type { JobSearchQuery as JobFilters } from "@server/features/jobs/jobs.schemas";
 export type Job = {
   id: string;
   company_id: string;
@@ -26,4 +25,4 @@ export type SavedJob = Job & {
   saved_at: string;
 };
 
-export type JobFilters = z.infer<typeof JobSearchQuerySchema>;
+export type { JobFilters };

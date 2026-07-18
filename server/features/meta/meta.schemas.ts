@@ -13,6 +13,10 @@ export const CreateLanguageSchema = z.object({
   name: z.string().min(1).max(255),
 });
 
-export type SearchMetaInput = z.infer<typeof SearchMetaSchema>;
-export type CreateSkillInput = z.infer<typeof CreateSkillSchema>;
-export type CreateLanguageInput = z.infer<typeof CreateLanguageSchema>;
+export type SearchMeta = z.infer<typeof SearchMetaSchema>;
+export type CreateSkill = z.infer<typeof CreateSkillSchema>;
+export type CreateLanguage = z.infer<typeof CreateLanguageSchema>;
+
+export type SearchMetaInput = SearchMeta;
+export type CreateSkillInput = CreateSkill;
+export type CreateLanguageInput = CreateLanguage;

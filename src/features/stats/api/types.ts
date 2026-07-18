@@ -1,8 +1,6 @@
-import { z } from "zod";
-import { 
-  HomepageStatsSchema, 
-  JobCategorySchema 
+import type { 
+  HomepageStats, 
+  JobCategory 
 } from "@server/features/stats/stats.schemas";
 
-export type HomepageStats = z.infer<typeof HomepageStatsSchema>;
-export type JobCategory = z.infer<typeof JobCategorySchema>;
+export type { HomepageStats, JobCategory };

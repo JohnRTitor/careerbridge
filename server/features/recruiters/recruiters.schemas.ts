@@ -8,7 +8,7 @@ export const CreateJobSchema = z
     description: z
       .string()
       .min(10, "Description must be at least 10 characters"),
-    company_id: z.string().uuid().optional(),
+    company_id: z.uuid().optional(),
     location: z.string().optional(),
     type: JobTypeSchema.optional().default("full-time"),
     salary_range: z.string().optional(),
@@ -16,9 +16,13 @@ export const CreateJobSchema = z
   })
   .meta({ id: "CreateJob" });
 
+export type CreateJob = z.infer<typeof CreateJobSchema>;
+
 export const UpdateJobSchema = CreateJobSchema.partial().meta({
   id: "UpdateJob",
 });
+
+export type UpdateJob = z.infer<typeof UpdateJobSchema>;
 
 export const ApplicationStatusSchema = z.enum([
   "pending",
@@ -28,11 +32,17 @@ export const ApplicationStatusSchema = z.enum([
   "hired",
 ]);
 
+export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>;
+
 export const UpdateApplicationStatusSchema = z
   .object({
     status: ApplicationStatusSchema,
   })
   .meta({ id: "UpdateApplicationStatus" });
+
+export type UpdateApplicationStatus = z.infer<
+  typeof UpdateApplicationStatusSchema
+>;
 
 // Input Types
 export type CreateJobInput = {
@@ -66,8 +76,12 @@ export type GetAnalyticsInput = {
   recruiterId: string;
 };
 
-export const GetRecruiterJobsSchema = PaginationQuerySchema.extend({}).meta({ id: "GetRecruiterJobsQuery" });
-export const GetRecruiterApplicationsSchema = PaginationQuerySchema.extend({}).meta({ id: "GetRecruiterApplicationsQuery" });
+export const GetRecruiterJobsSchema = PaginationQuerySchema.extend({}).meta({
+  id: "GetRecruiterJobsQuery",
+});
+export const GetRecruiterApplicationsSchema = PaginationQuerySchema.extend(
+  {},
+).meta({ id: "GetRecruiterApplicationsQuery" });
 
 export type GetRecruiterJobsInput = {
   recruiterId: string;
@@ -79,11 +93,16 @@ export type GetRecruiterApplicationsInput = {
 
 // Recruiter Profile
 export const RecruiterProfileSchema = z.object({
-  company_id: z.string().uuid().optional(),
+  company_id: z.uuid().optional(),
   designation: z.string().optional(),
   phone: z.string().optional(),
 });
+export type RecruiterProfile = z.infer<typeof RecruiterProfileSchema>;
+
 export const UpdateRecruiterProfileSchema = RecruiterProfileSchema.partial();
+export type UpdateRecruiterProfile = z.infer<
+  typeof UpdateRecruiterProfileSchema
+>;
 
 export type GetRecruiterProfileInput = {
   userId: string;

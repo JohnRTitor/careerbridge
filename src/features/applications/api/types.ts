@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { ApplyJobSchema } from "@server/features/applications/applications.schemas";
+import type { ApplyJob as ApplyJobPayload } from "@server/features/applications/applications.schemas";
+
 export type Application = {
   id: string;
   job_id: string;
@@ -14,4 +14,4 @@ export type Application = {
   company_logo: string | null;
 };
 
-export type ApplyJobPayload = z.infer<typeof ApplyJobSchema>;
+export type { ApplyJobPayload };

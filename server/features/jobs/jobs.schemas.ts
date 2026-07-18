@@ -8,7 +8,9 @@ export const JobTypeSchema = z.enum([
   "internship",
   "freelance",
 ]);
+export type JobType = z.infer<typeof JobTypeSchema>;
 export const JobStatusSchema = z.enum(["open", "closed", "draft"]);
+export type JobStatus = z.infer<typeof JobStatusSchema>;
 
 export const JobSearchQuerySchema = PaginationQuerySchema.extend({
   query: z.string().optional(),
@@ -21,9 +23,10 @@ export const JobSearchQuerySchema = PaginationQuerySchema.extend({
     .optional(),
   status: JobStatusSchema.optional(),
 }).meta({ id: "JobSearchQuery" });
+export type JobSearchQuery = z.infer<typeof JobSearchQuerySchema>;
 
 // Input Types
-export type SearchJobsInput = z.infer<typeof JobSearchQuerySchema>;
+export type SearchJobsInput = JobSearchQuery;
 
 export type GetJobByIdInput = {
   jobId: string;

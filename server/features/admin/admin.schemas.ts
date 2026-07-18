@@ -7,6 +7,8 @@ export const UpdateUserRoleSchema = z
   })
   .meta({ id: "UpdateUserRole" });
 
+export type UpdateUserRole = z.infer<typeof UpdateUserRoleSchema>;
+
 export const UpdateUserStatusSchema = z
   .object({
     banned: z.boolean(),
@@ -14,13 +16,16 @@ export const UpdateUserStatusSchema = z
   })
   .meta({ id: "UpdateUserStatus" });
 
+export type UpdateUserStatus = z.infer<typeof UpdateUserStatusSchema>;
+
 export const UsersQuerySchema = PaginationQuerySchema.extend({
   query: z.string().optional(),
   role: z.string().optional(),
 }).meta({ id: "UsersQuery" });
+export type UsersQuery = z.infer<typeof UsersQuerySchema>;
 
 // Input Types
-export type ListUsersInput = z.infer<typeof UsersQuerySchema>;
+export type ListUsersInput = UsersQuery;
 
 export type UpdateUserRoleInput = {
   userId: string;

@@ -21,7 +21,7 @@ export const listCompanies = async (filters: CompanyFilters) => {
     throw new Error("message" in error ? error.message : "Failed to fetch companies");
   }
   const json = await res.json();
-  return json.data as unknown as { companies: Company[]; pagination: { total: number; page: number; limit: number; totalPages: number } };
+  return json.data;
 };
 
 export const getCompany = async (id: string) => {
@@ -33,7 +33,7 @@ export const getCompany = async (id: string) => {
     throw new Error("message" in error ? error.message : "Failed to fetch company");
   }
   const json = await res.json();
-  return json.data as Company;
+  return json.data;
 };
 
 export const createCompany = async (data: CreateCompanyPayload) => {

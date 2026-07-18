@@ -35,7 +35,7 @@ export async function getProfile(input: GetProfileInput) {
   const { userId } = input;
   const profile = await profilesRepository.getProfile({ userId });
   if (!profile) {
-    return { headline: null, about: null, visibility: "public", resume_url: null, portfolio_url: null };
+    return { user_id: "", name: null, email: "", image: null, headline: null, about: null, visibility: "public", resume_url: null, portfolio_url: null, education: [], experience: [], certifications: [], projects: [], skills: [], languages: [], social_links: [], resumes: [] };
   }
   const education = await profilesRepository.getEducation({ userId });
   const experience = await profilesRepository.getExperience({ userId });
@@ -73,7 +73,7 @@ export async function getPublicProfile(input: GetProfileInput) {
       name: profile.name,
       image: profile.image,
       visibility: profile.visibility,
-      is_private: true
+      is_private: true as const
     };
   }
 
@@ -90,7 +90,7 @@ export async function getPublicProfile(input: GetProfileInput) {
 
   return { 
     ...safeProfile, 
-    is_private: false,
+    is_private: false as const,
     education, 
     experience,
     certifications,
@@ -259,3 +259,6 @@ export const profilesService = {
   deleteSocialLink,
   upsertJobPreferences,
 };
+
+export type ProfileResponse = Awaited<ReturnType<typeof getProfile>>;
+export type PublicProfileResponse = Awaited<ReturnType<typeof getPublicProfile>>;

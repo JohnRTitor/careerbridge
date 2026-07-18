@@ -48,7 +48,7 @@ export default function SignUpPage() {
         className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
         style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
       
       <div className="relative z-10 w-full max-w-md space-y-6">
         <div className="flex flex-col items-center text-center">

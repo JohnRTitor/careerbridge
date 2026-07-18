@@ -9,7 +9,7 @@ export const getHomepageStats = async () => {
     throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch homepage stats");
   }
   const json = await res.json();
-  return json.data as HomepageStats;
+  return json.data;
 };
 
 export const getJobCategories = async () => {
@@ -19,5 +19,5 @@ export const getJobCategories = async () => {
     throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch job categories");
   }
   const json = await res.json();
-  return json.data as JobCategory[];
+  return json.data;
 };

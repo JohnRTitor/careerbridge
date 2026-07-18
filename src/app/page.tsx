@@ -1,7 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  HugeiconsIcon,
+  type IconSvgElement as IconSvgObject,
+} from "@hugeicons/react";
 import {
   BriefcaseIcon,
   SearchIcon,
@@ -28,10 +31,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 
-import { useHomepageStats, useJobCategories } from "@/features/stats/api/queries";
+import {
+  useHomepageStats,
+  useJobCategories,
+} from "@/features/stats/api/queries";
 import { useFeaturedJobs, useJobs } from "@/features/jobs/api/queries";
 import { usePopularCompanies } from "@/features/companies/api/queries";
-import { JobCardSkeleton, CategoryCardSkeleton, CompanyCardSkeleton, StatSkeleton } from "@/components/common/skeletons";
+import {
+  JobCardSkeleton,
+  CategoryCardSkeleton,
+  CompanyCardSkeleton,
+  StatSkeleton,
+} from "@/components/common/skeletons";
 import type { Job } from "@/features/jobs/api/types";
 
 const popularSearches = [
@@ -41,16 +52,16 @@ const popularSearches = [
   "Marketing",
 ];
 
-const categoryIcons: Record<string, React.ElementType> = {
-  "Engineering": CodeIcon,
-  "Technology": CodeIcon,
-  "Design": PenToolIcon,
-  "Marketing": MegaphoneIcon,
-  "Finance": ChartBarLineIcon,
-  "Healthcare": StethoscopeIcon,
-  "Education": GraduationCapIcon,
+const categoryIcons: Record<string, IconSvgObject> = {
+  Engineering: CodeIcon,
+  Technology: CodeIcon,
+  Design: PenToolIcon,
+  Marketing: MegaphoneIcon,
+  Finance: ChartBarLineIcon,
+  Healthcare: StethoscopeIcon,
+  Education: GraduationCapIcon,
   "Real Estate": Building01Icon,
-  "Support": HeadphonesIcon,
+  Support: HeadphonesIcon,
 };
 
 const steps = [
@@ -78,16 +89,22 @@ export default function Page() {
   // Search states
   const [searchTitle, setSearchTitle] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  
+
   // Applied search states (to pass to useJobs)
-  const [appliedSearch, setAppliedSearch] = useState<{ query: string; location: string } | null>(null);
+  const [appliedSearch, setAppliedSearch] = useState<{
+    query: string;
+    location: string;
+  } | null>(null);
 
   // Data Hooks
   const { data: statsData, isLoading: isLoadingStats } = useHomepageStats();
-  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
-  const { data: featuredJobsData, isLoading: isLoadingFeatured } = useFeaturedJobs();
-  const { data: popularCompaniesData, isLoading: isLoadingCompanies } = usePopularCompanies();
-  
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useJobCategories();
+  const { data: featuredJobsData, isLoading: isLoadingFeatured } =
+    useFeaturedJobs();
+  const { data: popularCompaniesData, isLoading: isLoadingCompanies } =
+    usePopularCompanies();
+
   // Search Hook
   const { data: searchResultsData, isLoading: isLoadingSearch } = useJobs({
     query: appliedSearch?.query || undefined,
@@ -99,7 +116,7 @@ export default function Page() {
 
   // We show search results if appliedSearch is not null. Otherwise we show featured jobs.
   const isSearching = appliedSearch !== null;
-  
+
   const searchMessage = (() => {
     if (isSearching && searchResultsData) {
       if (searchResultsData.jobs.length > 0) {
@@ -116,7 +133,7 @@ export default function Page() {
     }
     return { type: null, text: "" };
   })();
-  
+
   const handleSearch = () => {
     const query = searchTitle.trim();
     const location = searchLocation.trim();
@@ -145,7 +162,9 @@ export default function Page() {
 
   const renderJobCards = (jobs: Job[], isLoading: boolean) => {
     if (isLoading) {
-      return Array.from({ length: 6 }).map((_, i) => <JobCardSkeleton key={i} />);
+      return Array.from({ length: 6 }).map((_, i) => (
+        <JobCardSkeleton key={i} />
+      ));
     }
 
     if (jobs.length === 0) {
@@ -160,8 +179,12 @@ export default function Page() {
         <CardContent className="flex h-full flex-col gap-4 p-6">
           <div className="flex items-start justify-between">
             {job.company_logo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={job.company_logo} alt={job.company_name || ""} className="size-12 rounded-xl object-cover border" />
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={job.company_logo}
+                alt={job.company_name || ""}
+                className="size-12 rounded-xl object-cover border"
+              />
             ) : (
               <span className="flex size-12 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-secondary-foreground uppercase">
                 {job.company_name?.substring(0, 2) || "CO"}
@@ -191,14 +214,16 @@ export default function Page() {
             </span>
             <span className="flex items-center gap-1">
               <HugeiconsIcon icon={ClockIcon} className="size-4" />
-              {formatDistanceToNow(new Date(job.created_at), { addSuffix: true })}
+              {formatDistanceToNow(new Date(job.created_at), {
+                addSuffix: true,
+              })}
             </span>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-auto">
-             <Badge variant="secondary" className="font-normal capitalize">
-               {job.type.replace("-", " ")}
-             </Badge>
+            <Badge variant="secondary" className="font-normal capitalize">
+              {job.type.replace("-", " ")}
+            </Badge>
           </div>
 
           <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
@@ -224,9 +249,12 @@ export default function Page() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-background">
-          <div 
+          <div
             className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
-            style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
+            style={{
+              backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`,
+              backgroundSize: "24px 24px",
+            }}
           />
           <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
           <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
@@ -236,7 +264,9 @@ export default function Page() {
               ) : (
                 <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
                   <span className="size-2 rounded-full bg-primary" />
-                  Over {statsData?.total_open_jobs?.toLocaleString() || "1000+"} active jobs available
+                  Over {statsData?.total_open_jobs?.toLocaleString() ||
+                    "1000+"}{" "}
+                  active jobs available
                 </span>
               )}
 
@@ -349,15 +379,25 @@ export default function Page() {
 
           <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {isLoadingCategories ? (
-              Array.from({ length: 8 }).map((_, i) => <CategoryCardSkeleton key={i} />)
+              Array.from({ length: 8 }).map((_, i) => (
+                <CategoryCardSkeleton key={i} />
+              ))
             ) : categoriesData && categoriesData.length > 0 ? (
               categoriesData.map((category) => {
-                const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
+                const IconComponent =
+                  categoryIcons[category.industry] || BriefcaseIcon;
                 return (
-                  <button key={category.industry} onClick={() => handlePopularSearch(category.industry)} className="text-left w-full cursor-pointer">
+                  <button
+                    key={category.industry}
+                    onClick={() => handlePopularSearch(category.industry)}
+                    className="text-left w-full cursor-pointer"
+                  >
                     <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
                       <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                        <HugeiconsIcon icon={IconComponent} className="size-6" />
+                        <HugeiconsIcon
+                          icon={IconComponent}
+                          className="size-6"
+                        />
                       </span>
                       <div>
                         <h3 className="font-semibold">{category.industry}</h3>
@@ -405,48 +445,67 @@ export default function Page() {
                   <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {renderJobCards([], true)}
                   </div>
-                ) : searchResultsData?.jobs && searchResultsData.jobs.length > 0 ? (
+                ) : searchResultsData?.jobs &&
+                  searchResultsData.jobs.length > 0 ? (
                   <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {renderJobCards(searchResultsData.jobs, false)}
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
-                    <HugeiconsIcon icon={Alert01Icon} className="size-12 text-muted-foreground stroke-1 mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground">No matches listed</h3>
+                    <HugeiconsIcon
+                      icon={Alert01Icon}
+                      className="size-12 text-muted-foreground stroke-1 mb-4"
+                    />
+                    <h3 className="text-lg font-semibold text-foreground">
+                      No matches listed
+                    </h3>
                     <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                      We couldn&apos;t find anything matching your exact text. Double check spelling or try looking with empty parameters to view everything.
+                      We couldn&apos;t find anything matching your exact text.
+                      Double check spelling or try looking with empty parameters
+                      to view everything.
                     </p>
-                    <Button className="mt-6" variant="outline" onClick={resetSearch}>
+                    <Button
+                      className="mt-6"
+                      variant="outline"
+                      onClick={resetSearch}
+                    >
                       Browse All Postings
                     </Button>
                   </div>
                 )
+              ) : // Featured Jobs
+              isLoadingFeatured ? (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {renderJobCards([], true)}
+                </div>
+              ) : featuredJobsData?.jobs && featuredJobsData.jobs.length > 0 ? (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {renderJobCards(featuredJobsData.jobs, false)}
+                </div>
               ) : (
-                // Featured Jobs
-                isLoadingFeatured ? (
-                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {renderJobCards([], true)}
-                  </div>
-                ) : featuredJobsData?.jobs && featuredJobsData.jobs.length > 0 ? (
-                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {renderJobCards(featuredJobsData.jobs, false)}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
-                    <HugeiconsIcon icon={BriefcaseIcon} className="size-12 text-muted-foreground stroke-1 mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground">No featured jobs</h3>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                      There are no featured jobs at the moment. Please check back later or use the search above to find open positions.
-                    </p>
-                  </div>
-                )
+                <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
+                  <HugeiconsIcon
+                    icon={BriefcaseIcon}
+                    className="size-12 text-muted-foreground stroke-1 mb-4"
+                  />
+                  <h3 className="text-lg font-semibold text-foreground">
+                    No featured jobs
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                    There are no featured jobs at the moment. Please check back
+                    later or use the search above to find open positions.
+                  </p>
+                </div>
               )}
             </div>
           </div>
         </section>
 
         {/* How it works */}
-        <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <section
+          id="how-it-works"
+          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
+        >
           <div className="flex flex-col items-center text-center">
             <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
               How it works
@@ -486,25 +545,33 @@ export default function Page() {
                   <p className="text-3xl font-bold text-primary sm:text-4xl">
                     {statsData?.total_open_jobs?.toLocaleString() || "0"}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Active jobs
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-primary sm:text-4xl">
                     {statsData?.total_companies?.toLocaleString() || "0"}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">Companies</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Companies
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-primary sm:text-4xl">
                     {statsData?.total_users?.toLocaleString() || "0"}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Job seekers
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-primary sm:text-4xl">
                     {statsData?.total_applications?.toLocaleString() || "0"}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Applications sent
+                  </p>
                 </div>
               </>
             )}
@@ -512,7 +579,10 @@ export default function Page() {
         </section>
 
         {/* Top companies */}
-        <section id="companies" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <section
+          id="companies"
+          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
+        >
           <div className="flex flex-col items-center text-center">
             <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
               Top companies hiring
@@ -524,14 +594,25 @@ export default function Page() {
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {isLoadingCompanies ? (
-              Array.from({ length: 6 }).map((_, i) => <CompanyCardSkeleton key={i} />)
-            ) : popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <CompanyCardSkeleton key={i} />
+              ))
+            ) : popularCompaniesData?.companies &&
+              popularCompaniesData.companies.length > 0 ? (
               popularCompaniesData.companies.map((company) => (
-                <Link key={company.id} href={`/companies/${company.id}`} className="block">
+                <Link
+                  key={company.id}
+                  href={`/companies/${company.id}`}
+                  className="block"
+                >
                   <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">
                     {company.logo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={company.logo_url} alt={company.name} className="size-14 shrink-0 rounded-xl object-cover border" />
+                      <img
+                        src={company.logo_url}
+                        alt={company.name}
+                        className="size-14 shrink-0 rounded-xl object-cover border"
+                      />
                     ) : (
                       <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-base font-bold text-secondary-foreground uppercase">
                         {company.name.substring(0, 2)}

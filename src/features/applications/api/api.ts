@@ -9,7 +9,7 @@ export const getUserApplications = async () => {
     throw new Error("message" in error ? error.message : "Failed to fetch applications");
   }
   const json = await res.json();
-  return json.data as Application[];
+  return json.data;
 };
 
 export const applyForJob = async (jobId: string, data: ApplyJobPayload) => {

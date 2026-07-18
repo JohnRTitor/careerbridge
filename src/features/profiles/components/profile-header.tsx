@@ -24,7 +24,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
     defaultValues: {
       headline: profile.headline || "",
       portfolio_url: profile.portfolio_url || "",
-      visibility: profile.visibility || "public",
+      visibility: (profile.visibility as "public" | "private") || "public",
     },
     onSubmit: async ({ value }) => {
       await updateProfile.mutateAsync(value);

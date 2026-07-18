@@ -27,7 +27,13 @@ import type {
   AddSocialLinkInput,
   UpdateSocialLinkInput,
   DeleteSocialLinkInput,
-  UpsertJobPreferenceInput
+  UpsertJobPreferenceInput,
+  Education,
+  Experience,
+  Certification,
+  Project,
+  UserSkill,
+  UserLanguage,
 } from "./profiles.schemas";
 
 export async function getProfile(input: GetProfileInput) {
@@ -38,7 +44,7 @@ export async function getProfile(input: GetProfileInput) {
     JOIN "user" u ON p.user_id = u.id
     WHERE p.user_id = $1
   `;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<{ id: string, user_id: string, name: string | null, email: string, image: string | null, headline: string | null, about: string | null, visibility: "public" | "private", resume_url: string | null, portfolio_url: string | null }>(query, [userId]);
   return result.rows[0];
 }
 
@@ -80,7 +86,7 @@ export async function updateResume(input: UpdateResumeInput) {
 export async function getEducation(input: GetProfileInput) {
   const { userId } = input;
   const query = `SELECT * FROM education WHERE user_id = $1 ORDER BY start_date DESC`;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<Education & { id: string }>(query, [userId]);
   return result.rows;
 }
 
@@ -140,7 +146,7 @@ export async function deleteEducation(input: DeleteEducationInput) {
 export async function getExperience(input: GetProfileInput) {
   const { userId } = input;
   const query = `SELECT * FROM experience WHERE user_id = $1 ORDER BY start_date DESC`;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<Experience & { id: string }>(query, [userId]);
   return result.rows;
 }
 
@@ -200,7 +206,7 @@ export async function deleteExperience(input: DeleteExperienceInput) {
 export async function getCertifications(input: GetProfileInput) {
   const { userId } = input;
   const query = `SELECT * FROM certifications WHERE user_id = $1 ORDER BY issue_date DESC NULLS LAST`;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<Certification & { id: string }>(query, [userId]);
   return result.rows;
 }
 
@@ -243,7 +249,7 @@ export async function deleteCertification(input: DeleteCertificationInput) {
 export async function getProjects(input: GetProfileInput) {
   const { userId } = input;
   const query = `SELECT * FROM projects WHERE user_id = $1 ORDER BY start_date DESC NULLS LAST`;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<Project & { id: string }>(query, [userId]);
   return result.rows;
 }
 
@@ -330,7 +336,7 @@ export async function getUserSkills(input: GetProfileInput) {
     JOIN skills s ON us.skill_id = s.id
     WHERE us.user_id = $1
   `;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<UserSkill & { skill_name: string }>(query, [userId]);
   return result.rows;
 }
 
@@ -377,7 +383,7 @@ export async function getUserLanguages(input: GetProfileInput) {
     JOIN languages l ON ul.language_id = l.id
     WHERE ul.user_id = $1
   `;
-  const result = await pool.query(query, [userId]);
+  const result = await pool.query<UserLanguage & { language_name: string }>(query, [userId]);
   return result.rows;
 }
 

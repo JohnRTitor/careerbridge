@@ -160,7 +160,7 @@ async function main() {
       }
       
       if (status === "shortlisted") {
-         auditLogsData.push([uuidv4(), null, "interview_scheduled", "application", jobId, JSON.stringify({ type: "video", date: faker.date.soon({ days: 7, refDate: reviewedAt }) }), reviewedAt]);
+         auditLogsData.push([uuidv4(), null, "interview_scheduled", "application", jobId, JSON.stringify({ type: "video", date: faker.date.soon({ days: 7, refDate: reviewedAt ?? undefined }) }), reviewedAt]);
       }
     }
 

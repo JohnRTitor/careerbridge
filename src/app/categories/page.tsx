@@ -2,7 +2,7 @@
 
 import { useJobCategories } from "@/features/stats/api/queries";
 import { Card } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon, type IconSvgElement as IconSvgObject } from "@hugeicons/react";
 import {
   CodeIcon,
   PenToolIcon,
@@ -19,7 +19,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const categoryIcons: Record<string, React.ElementType> = {
+const categoryIcons: Record<string, IconSvgObject> = {
   Engineering: CodeIcon,
   Technology: CodeIcon,
   Design: PenToolIcon,
@@ -32,7 +32,8 @@ const categoryIcons: Record<string, React.ElementType> = {
 };
 
 function CategoriesContent() {
-  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useJobCategories();
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-background">
@@ -42,7 +43,8 @@ function CategoriesContent() {
             Browse by Category
           </h1>
           <p className="mt-2 text-primary-foreground/80 text-sm sm:text-base max-w-2xl mx-auto">
-            Explore opportunities across the fields you care about most. Find roles that match your expertise.
+            Explore opportunities across the fields you care about most. Find
+            roles that match your expertise.
           </p>
         </div>
       </div>
@@ -50,12 +52,19 @@ function CategoriesContent() {
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {isLoadingCategories ? (
-            Array.from({ length: 8 }).map((_, i) => <CategoryCardSkeleton key={i} />)
+            Array.from({ length: 8 }).map((_, i) => (
+              <CategoryCardSkeleton key={i} />
+            ))
           ) : categoriesData && categoriesData.length > 0 ? (
             categoriesData.map((category) => {
-              const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
+              const IconComponent =
+                categoryIcons[category.industry] || BriefcaseIcon;
               return (
-                <Link key={category.industry} href={`/jobs?query=${encodeURIComponent(category.industry)}`} className="block w-full">
+                <Link
+                  key={category.industry}
+                  href={`/jobs?query=${encodeURIComponent(category.industry)}`}
+                  className="block w-full"
+                >
                   <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full bg-card">
                     <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                       <HugeiconsIcon icon={IconComponent} className="size-6" />
@@ -72,7 +81,10 @@ function CategoriesContent() {
             })
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center text-center text-muted-foreground py-16 border rounded-2xl bg-background shadow-sm border-dashed">
-              <HugeiconsIcon icon={BriefcaseIcon} className="size-12 mb-4 opacity-50" />
+              <HugeiconsIcon
+                icon={BriefcaseIcon}
+                className="size-12 mb-4 opacity-50"
+              />
               <p className="text-lg font-medium">No categories available</p>
               <p className="text-sm">Check back later for new opportunities.</p>
             </div>
@@ -85,7 +97,13 @@ function CategoriesContent() {
 
 export default function CategoriesPage() {
   return (
-    <Suspense fallback={<div className="h-screen flex items-center justify-center"><Skeleton className="size-12 rounded-full" /></div>}>
+    <Suspense
+      fallback={
+        <div className="h-screen flex items-center justify-center">
+          <Skeleton className="size-12 rounded-full" />
+        </div>
+      }
+    >
       <CategoriesContent />
     </Suspense>
   );
