@@ -1,4 +1,5 @@
-import type { ProfileResponse } from "@server/features/profiles/profiles.service";
+import { rpcClient } from "@/lib/api/rpc";
+import { InferResponseType } from "hono/client";
 import type { 
   UpdateProfile as UpdateProfilePayload, 
   ResumeUpload as ResumeUploadPayload, 
@@ -21,17 +22,23 @@ import type {
   JobPreference as JobPreferencePayload
 } from "@server/features/profiles/profiles.schemas";
 
-export type Education = AddEducationPayload & { id: string; created_at?: string; updated_at?: string };
-export type Experience = AddExperiencePayload & { id: string; created_at?: string; updated_at?: string };
-export type Certification = AddCertificationPayload & { id: string; created_at?: string; updated_at?: string };
-export type Project = AddProjectPayload & { id: string; created_at?: string; updated_at?: string };
-export type Resume = AddResumePayload & { id: string; uploaded_at?: string; updated_at?: string };
+type ProfileRoute = typeof rpcClient.api.users.profile.$get;
+type Res = InferResponseType<ProfileRoute, 200>;
 
-export type Skill = AddUserSkillPayload & { skill_name: string; created_at?: string; updated_at?: string };
-export type Language = AddUserLanguagePayload & { language_name: string; created_at?: string; updated_at?: string };
-export type SocialLink = AddSocialLinkPayload & { id: string; created_at?: string; updated_at?: string };
+export type Profile = NonNullable<Res extends { data: infer D } ? D : never>;
 
-export type Profile = NonNullable<ProfileResponse>;
+type ArrayElement<ArrayType extends readonly unknown[] | undefined> = 
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
+export type Education = ArrayElement<Profile["education"]>;
+export type Experience = ArrayElement<Profile["experience"]>;
+export type Certification = ArrayElement<Profile["certifications"]>;
+export type Project = ArrayElement<Profile["projects"]>;
+export type Resume = ArrayElement<Profile["resumes"]>;
+export type Skill = ArrayElement<Profile["skills"]>;
+export type Language = ArrayElement<Profile["languages"]>;
+export type SocialLink = ArrayElement<Profile["social_links"]>;
+
 export type {
   UpdateProfilePayload,
   ResumeUploadPayload,

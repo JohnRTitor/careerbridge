@@ -1,8 +1,8 @@
 import { jobsRepository } from "./jobs.repository";
 import { NotFoundError } from "../../shared/errors";
-import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput } from "./jobs.schemas";
+import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput, Job, SavedJob } from "./jobs.schemas";
 
-export async function searchJobs(input: SearchJobsInput) {
+export async function searchJobs(input: SearchJobsInput): Promise<{ jobs: Job[]; pagination: { total: number; page: number; limit: number; totalPages: number } }> {
   const { page = 1, limit = 10 } = input;
   const offset = (page - 1) * limit;
 
@@ -13,7 +13,7 @@ export async function searchJobs(input: SearchJobsInput) {
   });
 
   return {
-    jobs: data,
+    jobs: data as Job[],
     pagination: {
       total,
       page,
@@ -23,12 +23,12 @@ export async function searchJobs(input: SearchJobsInput) {
   };
 }
 
-export async function getJobById(input: GetJobByIdInput) {
+export async function getJobById(input: GetJobByIdInput): Promise<Job> {
   const job = await jobsRepository.getJobById(input);
   if (!job) {
     throw new NotFoundError("Job not found");
   }
-  return job;
+  return job as Job;
 }
 
 export async function saveJob(input: SaveJobInput) {
@@ -47,12 +47,14 @@ export async function unsaveJob(input: UnsaveJobInput) {
   return { saved: false };
 }
 
-export async function getRecommendations(input: GetRecommendationsInput) {
-  return jobsRepository.getRecommendations({ ...input, limit: 5 });
+export async function getRecommendations(input: GetRecommendationsInput): Promise<Job[]> {
+  const data = await jobsRepository.getRecommendations({ ...input, limit: 5 });
+  return data as Job[];
 }
 
-export async function getSavedJobs(input: GetSavedJobsInput) {
-  return jobsRepository.getSavedJobs(input);
+export async function getSavedJobs(input: GetSavedJobsInput): Promise<SavedJob[]> {
+  const data = await jobsRepository.getSavedJobs(input);
+  return data as SavedJob[];
 }
 
 export const jobsService = {

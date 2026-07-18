@@ -1,4 +1,4 @@
-import { rpcClient } from "@/lib/api/rpc";
+import { rpcClient, handleRpcError } from "@/lib/api/rpc";
 import type { 
   UserFilters, 
   UpdateUserRolePayload, 
@@ -14,10 +14,7 @@ export const getUsers = async (filters: UserFilters) => {
     limit: filters.limit?.toString(),
   };
   const res = await rpcClient.api.admin.users.$get({ query });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to fetch users");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -27,10 +24,7 @@ export const updateUserRole = async (userId: string, data: UpdateUserRolePayload
     param: { id: userId },
     json: data,
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to update role");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -40,10 +34,7 @@ export const updateUserStatus = async (userId: string, data: UpdateUserStatusPay
     param: { id: userId },
     json: data,
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to update status");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -55,10 +46,7 @@ export const getAuditLogs = async (filters: AuditLogFilters) => {
     limit: filters.limit?.toString(),
   };
   const res = await rpcClient.api.admin["audit-logs"].$get({ query });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to fetch audit logs");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -68,10 +56,7 @@ export const verifyCompany = async (companyId: string, data: VerifyCompanyPayloa
     param: { id: companyId },
     json: data,
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to verify company");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };

@@ -1,5 +1,4 @@
-import type { ErrorResponse } from "@server/shared/responses";
-import { rpcClient } from "@/lib/api/rpc";
+import { rpcClient, handleRpcError } from "@/lib/api/rpc";
 import type { 
   CreateJobPayload, 
   UpdateJobPayload, 
@@ -9,30 +8,21 @@ import type {
 
 export const getRecruiterProfile = async () => {
   const res = await rpcClient.api.recruiters.profile.$get();
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch profile");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const upsertRecruiterProfile = async (data: UpdateRecruiterProfilePayload) => {
   const res = await rpcClient.api.recruiters.profile.$put({ json: data });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to update profile");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const createJob = async (data: CreateJobPayload) => {
   const res = await rpcClient.api.recruiters.jobs.$post({ json: data });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to create job");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -42,10 +32,7 @@ export const updateJob = async (id: string, data: UpdateJobPayload) => {
     param: { id },
     json: data,
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to update job");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -54,20 +41,14 @@ export const deleteJob = async (id: string) => {
   const res = await rpcClient.api.recruiters.jobs[":id"].$delete({
     param: { id },
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to delete job");
-  }
+  if (!res.ok) return handleRpcError(res);
 };
 
 export const getJobApplicants = async (jobId: string) => {
   const res = await rpcClient.api.recruiters.jobs[":id"].applicants.$get({
     param: { id: jobId },
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch applicants");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -77,20 +58,14 @@ export const updateApplicationStatus = async (appId: string, data: UpdateApplica
     param: { id: appId },
     json: data,
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to update status");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const getAnalytics = async () => {
   const res = await rpcClient.api.recruiters.analytics.$get();
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch analytics");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -101,10 +76,7 @@ export const getRecruiterJobs = async (filters: { page?: number; limit?: number 
     limit: filters.limit?.toString(),
   };
   const res = await rpcClient.api.recruiters.jobs.$get({ query });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch jobs");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
@@ -115,10 +87,7 @@ export const getRecruiterApplications = async (filters: { page?: number; limit?:
     limit: filters.limit?.toString(),
   };
   const res = await rpcClient.api.recruiters.applications.$get({ query });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch applications");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };

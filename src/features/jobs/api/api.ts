@@ -1,6 +1,5 @@
-import { rpcClient } from "@/lib/api/rpc";
+import { rpcClient, handleRpcError } from "@/lib/api/rpc";
 import type { JobFilters, Job, SavedJob } from "./types";
-import type { ErrorResponse } from "@server/shared/responses";
 
 export const searchJobs = async (filters: JobFilters) => {
   const query = {
@@ -11,58 +10,40 @@ export const searchJobs = async (filters: JobFilters) => {
     is_featured: filters.is_featured !== undefined ? String(filters.is_featured) : undefined,
   };
   const res = await rpcClient.api.jobs.$get({ query });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to search jobs");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const getRecommendations = async () => {
   const res = await rpcClient.api.jobs.recommendations.$get();
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to fetch recommendations");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const getJobById = async (id: string) => {
   const res = await rpcClient.api.jobs[":id"].$get({ param: { id } });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to fetch job");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const saveJob = async (id: string) => {
   const res = await rpcClient.api.jobs[":id"].save.$post({ param: { id } });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error("message" in error ? error.message : "Failed to save job");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
 
 export const unsaveJob = async (id: string) => {
   const res = await rpcClient.api.jobs[":id"].save.$delete({ param: { id } });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to unsave job");
-  }
+  if (!res.ok) return handleRpcError(res);
 };
 
 export const getSavedJobs = async () => {
   const res = await rpcClient.api.jobs.saved.$get();
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error && typeof error === "object" && "message" in error ? String((error as unknown as ErrorResponse).message) : "Failed to fetch saved jobs");
-  }
+  if (!res.ok) return handleRpcError(res);
   const json = await res.json();
   return json.data;
 };
