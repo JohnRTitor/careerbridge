@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 
 import {
@@ -262,7 +263,7 @@ export default function Page() {
           <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
             <div className="mx-auto max-w-3xl text-center flex flex-col items-center">
               {isLoadingStats ? (
-                <div className="h-8 w-64 bg-primary/10 rounded-full animate-pulse" />
+                <Skeleton className="h-8 w-64 rounded-full" />
               ) : (
                 <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
                   <span className="size-2 rounded-full bg-primary" />

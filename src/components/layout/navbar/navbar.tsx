@@ -8,6 +8,7 @@ import { MobileNav } from "./mobile-nav";
 import { AuthButtons } from "./auth-buttons";
 import { UserMenu } from "./user-menu";
 import { ThemeToggle } from "@/components/theme/theme-toggle"; // Need to ensure path is correct, wait we have one in src/components/theme/theme-toggle.tsx? Yes, saw in history.
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Navbar() {
   const { data: session, isPending } = useSession();
@@ -29,7 +30,7 @@ export default function Navbar() {
           <ThemeToggle />
           <div className="hidden md:flex items-center">
             {isPending ? (
-              <div className="w-24 h-9 bg-muted animate-pulse rounded-md" />
+              <Skeleton className="w-24 h-9" />
             ) : session?.user ? (
               <UserMenu user={{
                 id: session.user.id,
@@ -44,7 +45,7 @@ export default function Navbar() {
           
           <MobileNav links={links}>
             {isPending ? (
-               <div className="w-full h-9 bg-muted animate-pulse rounded-md" />
+               <Skeleton className="w-full h-9" />
             ) : session?.user ? (
                <div className="flex flex-col gap-4">
                   {/* For mobile, you could render a simpler user summary or the same UserMenu logic */}

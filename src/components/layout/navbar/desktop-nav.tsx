@@ -31,14 +31,17 @@ export function DesktopNav({ links }: DesktopNavProps) {
           return (
             <NavigationMenuItem key={link.href}>
               <NavigationMenuLink
+                href={link.href}
+                render={<Link href={link.href} />}
                 data-active={isActive}
                 className={cn(
                   "bg-transparent hover:bg-transparent focus:bg-transparent",
                   "text-sm font-medium transition-colors hover:text-primary",
                   isActive ? "text-primary" : "text-muted-foreground",
                 )}
-                render={<Link href={link.href}>{link.label}</Link>}
-              ></NavigationMenuLink>
+              >
+                {link.label}
+              </NavigationMenuLink>
             </NavigationMenuItem>
           );
         })}
