@@ -104,7 +104,7 @@ function CompaniesSearchContent() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <Skeleton key={i} className="h-[200px] rounded-xl w-full" />
+              <Skeleton key={i} className="h-50 rounded-xl w-full" />
             ))}
           </div>
         ) : (

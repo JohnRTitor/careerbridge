@@ -91,7 +91,7 @@ function ProjectForm({ project, onClose }: ProjectFormProps) {
             field={field}
             label="Description *"
             required
-            className="min-h-[100px]"
+            className="min-h-25"
           />
         )}
       </form.AppField>
@@ -226,10 +226,10 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
           projects.map((proj, index) => (
             <div key={proj.id} className="group relative">
               {index !== projects.length - 1 && (
-                <div className="absolute left-[19px] top-12 bottom-[-24px] w-px bg-border/60 hidden sm:block" />
+                <div className="absolute left-4.75 top-12 -bottom-6 w-px bg-border/60 hidden sm:block" />
               )}
               <div className="flex gap-4 items-start">
-                <div className="size-10 rounded-full bg-muted flex items-center justify-center shrink-0 border border-border sm:flex hidden z-10">
+                <div className="size-10 rounded-full bg-muted hidden items-center justify-center shrink-0 border border-border sm:flex z-10">
                   <HugeiconsIcon icon={Folder01Icon} className="size-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 space-y-1.5">

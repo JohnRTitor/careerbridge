@@ -120,7 +120,7 @@ function JobSearchContent() {
               />
             </div>
             <div className="w-px bg-border hidden sm:block" />
-            <div className="flex items-center flex-1 sm:max-w-[200px]">
+            <div className="flex items-center flex-1 sm:max-w-50">
               <HugeiconsIcon icon={FilterIcon} className="absolute ml-3 size-5 text-muted-foreground pointer-events-none z-10" />
               <Select 
                 value={type}
@@ -158,7 +158,7 @@ function JobSearchContent() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <Skeleton key={i} className="h-[200px] rounded-xl w-full" />
+              <Skeleton key={i} className="h-50 rounded-xl w-full" />
             ))}
           </div>
         ) : (
