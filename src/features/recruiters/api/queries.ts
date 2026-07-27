@@ -19,14 +19,14 @@ export const useRecruiterAnalytics = () =>
   useQuery(recruiterAnalyticsQueryOptions());
 
 export const recruiterProfileQueryOptions = () => queryOptions({
-  queryKey: [...recruiterKeys.all, "profile"],
+  queryKey: recruiterKeys.profile(),
   queryFn: api.getRecruiterProfile,
 });
 
 export const useRecruiterProfile = () => useQuery(recruiterProfileQueryOptions());
 
 export const recruiterJobsQueryOptions = (filters: { page?: number; limit?: number }) => queryOptions({
-  queryKey: [...recruiterKeys.all, "jobs", filters],
+  queryKey: recruiterKeys.jobList(filters),
   queryFn: () => api.getRecruiterJobs(filters),
 });
 
@@ -34,7 +34,7 @@ export const useRecruiterJobs = (filters: { page?: number; limit?: number } = {}
   useQuery(recruiterJobsQueryOptions(filters));
 
 export const recruiterApplicationsQueryOptions = (filters: { page?: number; limit?: number }) => queryOptions({
-  queryKey: [...recruiterKeys.all, "applications", filters],
+  queryKey: recruiterKeys.applicationList(filters),
   queryFn: () => api.getRecruiterApplications(filters),
 });
 

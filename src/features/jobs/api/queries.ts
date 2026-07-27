@@ -40,7 +40,7 @@ export const useJob = (id: string) =>
   useQuery(jobDetailQueryOptions(id));
 
 export const savedJobsQueryOptions = () => queryOptions({
-  queryKey: [...jobsKeys.all, "saved"],
+  queryKey: jobsKeys.saved(),
   queryFn: api.getSavedJobs,
 });
 

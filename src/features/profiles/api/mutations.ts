@@ -17,7 +17,7 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: api.updateProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -27,7 +27,7 @@ export const useUpdateResume = () => {
   return useMutation({
     mutationFn: api.updateResume,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -37,7 +37,7 @@ export const useAddEducation = () => {
   return useMutation({
     mutationFn: api.addEducation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -48,7 +48,7 @@ export const useUpdateEducation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateEducationPayload }) =>
       api.updateEducation(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -58,7 +58,7 @@ export const useDeleteEducation = () => {
   return useMutation({
     mutationFn: api.deleteEducation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -68,7 +68,7 @@ export const useAddExperience = () => {
   return useMutation({
     mutationFn: api.addExperience,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -79,7 +79,7 @@ export const useUpdateExperience = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateExperiencePayload }) =>
       api.updateExperience(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -89,7 +89,7 @@ export const useDeleteExperience = () => {
   return useMutation({
     mutationFn: api.deleteExperience,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -99,7 +99,7 @@ export const useAddCertification = () => {
   return useMutation({
     mutationFn: api.addCertification,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -110,7 +110,7 @@ export const useUpdateCertification = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateCertificationPayload }) =>
       api.updateCertification(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -120,7 +120,7 @@ export const useDeleteCertification = () => {
   return useMutation({
     mutationFn: api.deleteCertification,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -130,7 +130,7 @@ export const useAddProject = () => {
   return useMutation({
     mutationFn: api.addProject,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -141,7 +141,7 @@ export const useUpdateProject = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateProjectPayload }) =>
       api.updateProject(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -151,7 +151,7 @@ export const useDeleteProject = () => {
   return useMutation({
     mutationFn: api.deleteProject,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -161,8 +161,8 @@ export const useAddResume = () => {
   return useMutation({
     mutationFn: api.addResume,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
-      queryClient.invalidateQueries({ queryKey: [...profileKeys.profile(), "resumes"] });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.resumes() });
     },
   });
 };
@@ -173,8 +173,8 @@ export const useUpdateResumeEntity = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateResumeEntityPayload }) =>
       api.updateResumeEntity(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
-      queryClient.invalidateQueries({ queryKey: [...profileKeys.profile(), "resumes"] });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.resumes() });
     },
   });
 };
@@ -184,8 +184,8 @@ export const useDeleteResume = () => {
   return useMutation({
     mutationFn: api.deleteResume,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
-      queryClient.invalidateQueries({ queryKey: [...profileKeys.profile(), "resumes"] });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.resumes() });
     },
   });
 };
@@ -195,7 +195,7 @@ export const useAddUserSkill = () => {
   return useMutation({
     mutationFn: api.addUserSkill,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -206,7 +206,7 @@ export const useUpdateUserSkill = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateUserSkillPayload }) =>
       api.updateUserSkill(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -216,7 +216,7 @@ export const useDeleteUserSkill = () => {
   return useMutation({
     mutationFn: api.deleteUserSkill,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -226,7 +226,7 @@ export const useAddUserLanguage = () => {
   return useMutation({
     mutationFn: api.addUserLanguage,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -237,7 +237,7 @@ export const useUpdateUserLanguage = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateUserLanguagePayload }) =>
       api.updateUserLanguage(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -247,7 +247,7 @@ export const useDeleteUserLanguage = () => {
   return useMutation({
     mutationFn: api.deleteUserLanguage,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -257,7 +257,7 @@ export const useAddSocialLink = () => {
   return useMutation({
     mutationFn: api.addSocialLink,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -268,7 +268,7 @@ export const useUpdateSocialLink = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateSocialLinkPayload }) =>
       api.updateSocialLink(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -278,7 +278,7 @@ export const useDeleteSocialLink = () => {
   return useMutation({
     mutationFn: api.deleteSocialLink,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
     },
   });
 };
@@ -288,8 +288,8 @@ export const useUpdateJobPreferences = () => {
   return useMutation({
     mutationFn: api.updateJobPreferences,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
-      queryClient.invalidateQueries({ queryKey: [...profileKeys.profile(), "preferences"] });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
+      queryClient.invalidateQueries({ queryKey: profileKeys.preferences() });
     },
   });
 };

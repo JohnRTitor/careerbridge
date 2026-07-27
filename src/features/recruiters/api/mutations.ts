@@ -10,7 +10,7 @@ export const useCreateJob = () => {
     mutationFn: api.createJob,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: [...recruiterKeys.all, "jobs"] });
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.jobs() });
       queryClient.invalidateQueries({ queryKey: recruiterKeys.analytics() });
     },
   });
@@ -45,7 +45,9 @@ export const useUpdateApplicationStatus = () => {
     mutationFn: ({ appId, data }: { appId: string; data: UpdateApplicationStatusPayload }) => 
       api.updateApplicationStatus(appId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: recruiterKeys.all });
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.applications() });
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.applicantsAll() });
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.analytics() });
     },
   });
 };
@@ -54,7 +56,7 @@ export const useUpdateRecruiterProfile = () => {
   return useMutation({
     mutationFn: api.upsertRecruiterProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...recruiterKeys.all, "profile"] });
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.profile() });
     },
   });
 };

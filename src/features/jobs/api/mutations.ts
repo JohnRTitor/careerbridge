@@ -9,6 +9,7 @@ export const useSaveJob = () => {
     onSuccess: (_, jobId) => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.detail(jobId) });
       queryClient.invalidateQueries({ queryKey: jobsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: jobsKeys.saved() });
     },
   });
 };
@@ -20,6 +21,7 @@ export const useUnsaveJob = () => {
     onSuccess: (_, jobId) => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.detail(jobId) });
       queryClient.invalidateQueries({ queryKey: jobsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: jobsKeys.saved() });
     },
   });
 };

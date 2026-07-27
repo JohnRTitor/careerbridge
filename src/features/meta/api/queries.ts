@@ -2,12 +2,12 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import { metaKeys } from "./query-keys";
 import * as api from "./api";
 export const skillsQueryOptions = (query?: string) => queryOptions({
-  queryKey: metaKeys.skills(query),
+  queryKey: metaKeys.skillList(query),
   queryFn: () => api.searchSkills({ query, limit: 50 }),
 });
 
 export const languagesQueryOptions = (query?: string) => queryOptions({
-  queryKey: metaKeys.languages(query),
+  queryKey: metaKeys.languageList(query),
   queryFn: () => api.searchLanguages({ query, limit: 50 }),
 });
 

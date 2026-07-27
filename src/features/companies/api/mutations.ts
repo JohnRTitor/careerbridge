@@ -44,7 +44,7 @@ export const useFollowCompany = () => {
   return useMutation({
     mutationFn: api.followCompany,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...companyKeys.all, "followed"] });
+      queryClient.invalidateQueries({ queryKey: companyKeys.followed() });
     },
   });
 };
@@ -54,7 +54,7 @@ export const useUnfollowCompany = () => {
   return useMutation({
     mutationFn: api.unfollowCompany,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...companyKeys.all, "followed"] });
+      queryClient.invalidateQueries({ queryKey: companyKeys.followed() });
     },
   });
 };
@@ -64,7 +64,7 @@ export const useAddCompanyMember = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: AddCompanyMemberPayload }) => api.addCompanyMember(id, data),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: [...companyKeys.detail(id), "members"] });
+      queryClient.invalidateQueries({ queryKey: companyKeys.members(id) });
     },
   });
 };
@@ -74,7 +74,7 @@ export const useUpdateCompanyMember = () => {
   return useMutation({
     mutationFn: ({ id, userId, data }: { id: string; userId: string; data: UpdateCompanyMemberPayload }) => api.updateCompanyMember(id, userId, data),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: [...companyKeys.detail(id), "members"] });
+      queryClient.invalidateQueries({ queryKey: companyKeys.members(id) });
     },
   });
 };
@@ -84,7 +84,7 @@ export const useRemoveCompanyMember = () => {
   return useMutation({
     mutationFn: ({ id, userId }: { id: string; userId: string }) => api.removeCompanyMember(id, userId),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: [...companyKeys.detail(id), "members"] });
+      queryClient.invalidateQueries({ queryKey: companyKeys.members(id) });
     },
   });
 };

@@ -3,28 +3,28 @@ import { profileKeys } from "./query-keys";
 import { getProfile, getResumes, getJobPreferences, getPublicProfile } from "./api";
 
 export const profileQueryOptions = () => queryOptions({
-  queryKey: profileKeys.profile(),
+  queryKey: profileKeys.detail(),
   queryFn: getProfile,
 });
 
 export const useProfile = () => useQuery(profileQueryOptions());
 
 export const resumesQueryOptions = () => queryOptions({
-  queryKey: [...profileKeys.profile(), "resumes"],
+  queryKey: profileKeys.resumes(),
   queryFn: getResumes,
 });
 
 export const useResumes = () => useQuery(resumesQueryOptions());
 
 export const jobPreferencesQueryOptions = () => queryOptions({
-  queryKey: [...profileKeys.profile(), "preferences"],
+  queryKey: profileKeys.preferences(),
   queryFn: getJobPreferences,
 });
 
 export const useJobPreferences = () => useQuery(jobPreferencesQueryOptions());
 
 export const publicProfileQueryOptions = (userId: string) => queryOptions({
-  queryKey: ["publicProfile", userId],
+  queryKey: profileKeys.publicDetail(userId),
   queryFn: () => getPublicProfile(userId),
 });
 
