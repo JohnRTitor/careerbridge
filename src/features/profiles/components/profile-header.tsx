@@ -121,6 +121,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
                 <field.SelectField
                   field={field}
                   label="Profile Visibility"
+                  description="Private profiles are hidden from search, but recruiters can still view your full profile if you apply to their jobs."
                 >
                   <SelectItem value="public">Public</SelectItem>
                   <SelectItem value="private">Private</SelectItem>

@@ -47,9 +47,21 @@ export async function withdrawApplication(input: WithdrawApplicationInput) {
   return result.rowCount ? result.rowCount > 0 : false;
 }
 
+export async function hasCandidateAppliedToRecruiter(candidateId: string, recruiterId: string) {
+  const query = `
+    SELECT 1 FROM applications a
+    JOIN jobs j ON a.job_id = j.id
+    WHERE a.candidate_id = $1 AND j.created_by = $2
+    LIMIT 1
+  `;
+  const result = await pool.query(query, [candidateId, recruiterId]);
+  return result.rowCount ? result.rowCount > 0 : false;
+}
+
 export const applicationsRepository = {
   getUserApplications,
   applyForJob,
   getApplication,
   withdrawApplication,
+  hasCandidateAppliedToRecruiter,
 };

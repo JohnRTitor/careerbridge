@@ -1,4 +1,5 @@
 import { profilesRepository } from "./profiles.repository";
+import { applicationsRepository } from "../applications/applications.repository";
 import { NotFoundError } from "../../shared/errors";
 import type { 
   GetProfileInput, 
@@ -60,14 +61,28 @@ export async function getProfile(input: GetProfileInput) {
 }
 
 export async function getPublicProfile(input: GetProfileInput) {
-  const { userId } = input;
+  const { userId, requester } = input;
   const profile = await profilesRepository.getProfile({ userId });
   
   if (!profile) {
     throw new NotFoundError("Profile not found");
   }
   
-  if (profile.visibility === "private") {
+  let canView = profile.visibility === "public";
+  if (requester) {
+    if (requester.id === userId) {
+      canView = true;
+    } else if (requester.role === "admin") {
+      canView = true;
+    } else if (requester.role === "recruiter") {
+      const hasApplied = await applicationsRepository.hasCandidateAppliedToRecruiter(userId, requester.id);
+      if (hasApplied) {
+        canView = true;
+      }
+    }
+  }
+
+  if (!canView) {
     return {
       user_id: profile.user_id,
       name: profile.name,

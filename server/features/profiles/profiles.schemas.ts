@@ -68,6 +68,7 @@ export type UpdateExperience = z.infer<typeof UpdateExperienceSchema>;
 // Input Types
 export type GetProfileInput = {
   userId: string;
+  requester?: { id: string; role?: string | null };
 };
 
 export type UpdateProfileInput = {

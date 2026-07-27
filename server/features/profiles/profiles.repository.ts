@@ -52,7 +52,7 @@ export async function upsertProfile(input: UpdateProfileInput) {
   const { userId, data } = input;
   const query = `
     INSERT INTO user_profile (user_id, headline, about, visibility, portfolio_url, updated_at)
-    VALUES ($1, $2, $3, COALESCE($4::visibility, 'private'::visibility), $5, now())
+    VALUES ($1, $2, $3, COALESCE($4::visibility, 'public'::visibility), $5, now())
     ON CONFLICT (user_id) DO UPDATE SET
       headline = COALESCE($2, user_profile.headline),
       about = COALESCE($3, user_profile.about),
