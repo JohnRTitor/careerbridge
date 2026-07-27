@@ -2,25 +2,46 @@ import { z } from "zod";
 import { JobTypeSchema, JobStatusSchema } from "../jobs/jobs.schemas";
 import { PaginationQuerySchema } from "../../shared/schemas";
 
-export const CreateJobSchema = z
-  .object({
-    title: z.string().min(1, "Title is required"),
-    description: z
-      .string()
-      .min(10, "Description must be at least 10 characters"),
-    company_id: z.uuid().optional(),
-    location: z.string().optional(),
-    type: JobTypeSchema.optional().default("full-time"),
-    salary_range: z.string().optional(),
-    status: JobStatusSchema.optional().default("open"),
-  })
+export const CreateJobBaseSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters"),
+  company_id: z.uuid().optional(),
+  location: z.string().optional(),
+  type: JobTypeSchema.optional().default("full-time"),
+  minimum_salary: z.number().positive().optional(),
+  maximum_salary: z.number().positive().optional(),
+  currency: z.string().length(3).optional(),
+  status: JobStatusSchema.optional().default("open"),
+});
+
+const validateSalaryRange = (
+  data: { minimum_salary?: number; maximum_salary?: number },
+  ctx: z.RefinementCtx
+) => {
+  if (
+    data.minimum_salary !== undefined &&
+    data.maximum_salary !== undefined &&
+    data.minimum_salary > data.maximum_salary
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Maximum salary must be greater than or equal to minimum salary",
+      path: ["maximum_salary"],
+    });
+  }
+};
+
+export const CreateJobSchema = CreateJobBaseSchema
+  .superRefine(validateSalaryRange)
   .meta({ id: "CreateJob" });
 
 export type CreateJob = z.infer<typeof CreateJobSchema>;
 
-export const UpdateJobSchema = CreateJobSchema.partial().meta({
-  id: "UpdateJob",
-});
+export const UpdateJobSchema = CreateJobBaseSchema.partial()
+  .superRefine(validateSalaryRange)
+  .meta({ id: "UpdateJob" });
 
 export type UpdateJob = z.infer<typeof UpdateJobSchema>;
 

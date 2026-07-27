@@ -41,3 +41,10 @@ export const createLanguage = async (data: CreateLanguagePayload) => {
   const json = await res.json();
   return json.data;
 };
+
+export const getCurrencies = async () => {
+  const res = await rpcClient.api.meta.currencies.$get();
+  if (!res.ok) return handleRpcError(res);
+  const json = await res.json();
+  return json.data;
+};

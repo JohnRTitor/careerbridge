@@ -11,5 +11,12 @@ export const languagesQueryOptions = (query?: string) => queryOptions({
   queryFn: () => api.searchLanguages({ query, limit: 50 }),
 });
 
+export const currenciesQueryOptions = () => queryOptions({
+  queryKey: metaKeys.currencies(),
+  queryFn: () => api.getCurrencies(),
+  staleTime: Infinity, // currencies don't change often
+});
+
 export const useSkills = (query?: string) => useQuery(skillsQueryOptions(query));
 export const useLanguages = (query?: string) => useQuery(languagesQueryOptions(query));
+export const useCurrencies = () => useQuery(currenciesQueryOptions());

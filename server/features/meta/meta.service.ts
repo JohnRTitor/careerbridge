@@ -17,4 +17,8 @@ export const metaService = {
   createLanguage: async (input: CreateLanguageInput) => {
     return await metaRepository.createLanguage(input);
   },
+
+  getCurrencies: async () => {
+    return await metaRepository.getCurrencies();
+  },
 };

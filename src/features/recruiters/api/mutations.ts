@@ -10,6 +10,8 @@ export const useCreateJob = () => {
     mutationFn: api.createJob,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: [...recruiterKeys.all, "jobs"] });
+      queryClient.invalidateQueries({ queryKey: recruiterKeys.analytics() });
     },
   });
 };

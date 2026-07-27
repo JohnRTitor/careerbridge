@@ -65,9 +65,16 @@ export async function createLanguage(input: CreateLanguageInput) {
   return result.rows[0];
 }
 
+export async function getCurrencies() {
+  const query = `SELECT unnest(enum_range(NULL::currency_code))::text AS currency;`;
+  const result = await pool.query(query);
+  return result.rows.map(r => r.currency);
+}
+
 export const metaRepository = {
   searchSkills,
   createSkill,
   searchLanguages,
   createLanguage,
+  getCurrencies,
 };

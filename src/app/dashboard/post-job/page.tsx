@@ -11,11 +11,13 @@ import { useCreateJob } from "@/features/recruiters/api/mutations";
 import { useRecruiterProfile } from "@/features/recruiters/api/queries";
 import { toast } from "sonner";
 import { SelectItem } from "@/components/ui/select";
+import { useCurrencies } from "@/features/meta/api/queries";
 
 export default function PostJobPage() {
   const router = useRouter();
   const createJobMutation = useCreateJob();
   const { data: profile } = useRecruiterProfile();
+  const { data: currencies = [], isLoading: isLoadingCurrencies } = useCurrencies();
 
   const form = useAppForm({
     defaultValues: {
@@ -23,12 +25,16 @@ export default function PostJobPage() {
       description: "",
       location: "",
       type: "full-time" as "full-time" | "part-time" | "contract" | "internship" | "freelance",
-      salary_range: "",
+      minimum_salary: undefined as number | undefined,
+      maximum_salary: undefined as number | undefined,
+      currency: "USD",
     },
     onSubmit: async ({ value }) => {
       try {
         await createJobMutation.mutateAsync({
           ...value,
+          minimum_salary: value.minimum_salary ? Number(value.minimum_salary) : undefined,
+          maximum_salary: value.maximum_salary ? Number(value.maximum_salary) : undefined,
           status: "open",
           company_id: profile?.company_id || undefined,
         });
@@ -88,7 +94,7 @@ export default function PostJobPage() {
               <div className="grid sm:grid-cols-2 gap-6">
                 <form.AppField name="location">
                   {(field) => (
-                    <field.TextField
+                     <field.TextField
                       field={field}
                       label="Location"
                       placeholder="e.g. Remote, San Francisco"
@@ -113,16 +119,46 @@ export default function PostJobPage() {
                 </form.AppField>
               </div>
 
-              <form.AppField name="salary_range">
-                {(field) => (
-                  <field.TextField
-                    field={field}
-                    label="Salary Range"
-                    placeholder="e.g. $120k - $150k"
-                    className="h-11"
-                  />
-                )}
-              </form.AppField>
+              <div className="grid sm:grid-cols-3 gap-6">
+                <form.AppField name="minimum_salary">
+                  {(field) => (
+                    <field.NumberField
+                      field={field}
+                      label="Minimum Salary"
+                      placeholder="e.g. 120000"
+                      className="h-11"
+                    />
+                  )}
+                </form.AppField>
+
+                <form.AppField name="maximum_salary">
+                  {(field) => (
+                    <field.NumberField
+                      field={field}
+                      label="Maximum Salary"
+                      placeholder="e.g. 150000"
+                      className="h-11"
+                    />
+                  )}
+                </form.AppField>
+
+                <form.AppField name="currency">
+                  {(field) => (
+                    <field.SelectField
+                      field={field}
+                      label="Currency"
+                      placeholder={isLoadingCurrencies ? "Loading..." : "Select currency"}
+                      disabled={isLoadingCurrencies}
+                    >
+                      {currencies.map((currency) => (
+                        <SelectItem key={currency} value={currency}>
+                          {currency}
+                        </SelectItem>
+                      ))}
+                    </field.SelectField>
+                  )}
+                </form.AppField>
+              </div>
 
               <form.AppField name="description">
                 {(field) => (
@@ -130,7 +166,7 @@ export default function PostJobPage() {
                     field={field}
                     label="Job Description *"
                     placeholder="Describe the role, responsibilities, and requirements..."
-                    className="flex min-h-[250px] resize-y"
+                    className="flex min-h-62.5 resize-y"
                   />
                 )}
               </form.AppField>

@@ -65,4 +65,16 @@ export const metaRoutes = app
       const language = await metaService.createLanguage(data);
       return created(c, language, "Language created successfully");
     }
+  )
+  // -- Currencies --
+  .get(
+    "/currencies",
+    describeRoute({
+      summary: "Get all currencies",
+      tags: ["Meta"],
+    }),
+    async (c) => {
+      const currencies = await metaService.getCurrencies();
+      return ok(c, currencies);
+    }
   );

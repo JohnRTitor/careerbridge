@@ -31,6 +31,15 @@ CREATE TYPE work_mode AS ENUM (
   'onsite'
 );
 
+CREATE TYPE currency_code AS ENUM (
+  'USD',
+  'EUR',
+  'GBP',
+  'CAD',
+  'AUD',
+  'INR'
+);
+
 CREATE TABLE "user" (
   "id" TEXT NOT NULL PRIMARY KEY,
   "name" TEXT NOT NULL,
@@ -312,7 +321,7 @@ CREATE TABLE jobs (
   work_mode work_mode,
   minimum_salary NUMERIC,
   maximum_salary NUMERIC,
-  currency CHAR(3),
+  currency currency_code,
   experience_min INTEGER,
   experience_max INTEGER,
   education_level TEXT,

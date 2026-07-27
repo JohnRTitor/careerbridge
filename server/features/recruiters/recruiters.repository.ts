@@ -4,8 +4,8 @@ import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsIn
 export async function createJob(input: CreateJobInput) {
   const { recruiterId, data } = input;
   const query = `
-    INSERT INTO jobs (title, description, created_by, company_id, location, type, salary_range, status)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    INSERT INTO jobs (title, description, created_by, company_id, location, type, minimum_salary, maximum_salary, currency, status)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     RETURNING *;
   `;
   const result = await pool.query(query, [
@@ -15,7 +15,9 @@ export async function createJob(input: CreateJobInput) {
     data.company_id,
     data.location,
     data.type,
-    data.salary_range,
+    data.minimum_salary,
+    data.maximum_salary,
+    data.currency,
     data.status,
   ]);
   return result.rows[0];
@@ -30,8 +32,10 @@ export async function updateJob(input: UpdateJobInput) {
       company_id = COALESCE($5, company_id),
       location = COALESCE($6, location),
       type = COALESCE($7, type),
-      salary_range = COALESCE($8, salary_range),
-      status = COALESCE($9, status),
+      minimum_salary = COALESCE($8, minimum_salary),
+      maximum_salary = COALESCE($9, maximum_salary),
+      currency = COALESCE($10, currency),
+      status = COALESCE($11, status),
       updated_at = now()
     WHERE id = $1 AND created_by = $2
     RETURNING *;
@@ -44,7 +48,9 @@ export async function updateJob(input: UpdateJobInput) {
     data.company_id,
     data.location,
     data.type,
-    data.salary_range,
+    data.minimum_salary,
+    data.maximum_salary,
+    data.currency,
     data.status,
   ]);
   return result.rows[0];
