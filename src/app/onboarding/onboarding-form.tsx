@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { SelectItem } from "@/components/ui/select";
 import { useAppForm } from "@/hooks/use-app-form";
 import { onboardingSchema } from "@/lib/zod-schemas";
-import { submitOnboardingAction } from "@/app/actions/auth.actions";
+import { submitOnboardingAction } from "@/features/auth/actions";
 
 export function OnboardingForm({ user }: { user: { name: string; email: string } }) {
   const router = useRouter();
