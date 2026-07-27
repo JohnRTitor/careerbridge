@@ -12,6 +12,17 @@ import {
   Tick02Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
 import { useAppForm } from "@/hooks/use-app-form";
 import { format, parseISO } from "date-fns";
@@ -126,18 +137,36 @@ export function ResumesSection() {
                       <div className="w-px h-3 bg-border" />
                     </>
                   )}
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 text-xs flex items-center gap-1.5 text-destructive hover:text-destructive hover:no-underline font-medium transition-colors cursor-pointer ml-auto"
-                    onClick={async () => {
-                      if (window.confirm("Are you sure you want to delete this resume?")) {
-                        await deleteMutation.mutateAsync(resume.id);
-                      }
-                    }}
-                  >
-                    <HugeiconsIcon icon={Delete02Icon} className="size-3.5" />
-                    Delete
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger render={
+                      <Button
+                        variant="link"
+                        className="h-auto p-0 text-xs flex items-center gap-1.5 text-destructive hover:text-destructive hover:no-underline font-medium transition-colors cursor-pointer ml-auto"
+                      />
+                    }>
+                      <HugeiconsIcon icon={Delete02Icon} className="size-3.5" />
+                      Delete
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Resume</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this resume? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          variant="destructive"
+                          onClick={async () => {
+                            await deleteMutation.mutateAsync(resume.id);
+                          }}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             ))}

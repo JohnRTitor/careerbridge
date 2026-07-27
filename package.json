@@ -9,16 +9,16 @@
     "lint": "eslint",
     "db:reset": "tsx --env-file=.env server/scripts/reset-db.ts",
     "db:seed": "tsx --env-file=.env server/scripts/seed.ts",
-    "seed": "tsx --env-file=.env server/scripts/seed.ts",
     "db:setup": "pnpm db:reset && pnpm db:seed",
-    "seed:candidate": "tsx --env-file=.env server/scripts/seed-candidate.ts",
-    "seed:recruiter": "tsx --env-file=.env server/scripts/seed-recruiter.ts"
+    "db:seed:candidate": "tsx --env-file=.env server/scripts/seed-candidate.ts",
+    "db:seed:recruiter": "tsx --env-file=.env server/scripts/seed-recruiter.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@hono/standard-validator": "^0.2.2",
     "@hugeicons/core-free-icons": "^4.2.1",
     "@hugeicons/react": "^1.1.7",
+    "@reactuses/core": "^6.4.0",
     "@shadcn/react": "^0.2.1",
     "@tanstack/react-form": "^1.33.0",
     "@tanstack/react-query": "^5.101.0",

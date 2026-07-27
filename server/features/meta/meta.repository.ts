@@ -21,10 +21,16 @@ export async function searchSkills(input: SearchMetaInput) {
 export async function createSkill(input: CreateSkillInput) {
   const { name } = input;
   const query = `
-    INSERT INTO skills (name) 
-    VALUES ($1) 
-    ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name 
-    RETURNING *;
+    WITH e AS (
+      INSERT INTO skills (name) 
+      VALUES ($1) 
+      ON CONFLICT (LOWER(name)) DO NOTHING 
+      RETURNING *
+    )
+    SELECT * FROM e
+    UNION ALL
+    SELECT * FROM skills WHERE LOWER(name) = LOWER($1)
+    LIMIT 1;
   `;
   const result = await pool.query(query, [name]);
   return result.rows[0];

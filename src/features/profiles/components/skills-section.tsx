@@ -11,10 +11,25 @@ import {
   Settings02Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { SelectItem } from "@/components/ui/select";
+import { ComboboxList, ComboboxItem, ComboboxEmpty } from "@/components/ui/combobox";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Skill, AddUserSkillPayload, UpdateUserSkillPayload } from "@/features/profiles/api/types";
 import { useAddUserSkill, useUpdateUserSkill, useDeleteUserSkill } from "@/features/profiles/api/mutations";
+import { useSkills } from "@/features/meta/api/queries";
+import { useCreateSkill } from "@/features/meta/api/mutations";
+import { useDebounce } from "@reactuses/core";
 
 type SkillFormProps = {
   skill?: Skill;
@@ -25,16 +40,30 @@ function SkillForm({ skill, onClose }: SkillFormProps) {
   const addMutation = useAddUserSkill();
   const updateMutation = useUpdateUserSkill();
   const deleteMutation = useDeleteUserSkill();
+  const createSkillMutation = useCreateSkill();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedQuery = useDebounce(searchQuery, 300);
+  const { data: suggestions = [] } = useSkills(debouncedQuery);
 
   const form = useAppForm({
     defaultValues: {
+      skill: skill ? { value: skill.skill_id, label: skill.skill_name } : null as { value: string, label: string } | null,
       skill_name: skill?.skill_name || "",
-      proficiency: skill?.proficiency || "intermediate",
+      proficiency: typeof skill?.proficiency === 'number' ? ["beginner", "intermediate", "advanced", "expert"][skill.proficiency - 1] : (skill?.proficiency || "intermediate"),
       years_of_experience: skill?.years_of_experience || 1,
     },
     onSubmit: async ({ value }) => {
+      let finalSkillId = value.skill?.value;
+      
+      // If no valid UUID is present but we have a name, it means it's a new skill added by the user
+      if (!finalSkillId || finalSkillId === "new") {
+        const newSkill = await createSkillMutation.mutateAsync({ name: value.skill_name });
+        finalSkillId = newSkill.id;
+      }
+
       const payload = {
-        skill_id: "00000000-0000-0000-0000-000000000000", // TODO: Implement meta autocomplete
+        skill_id: finalSkillId,
         years_of_experience: Number(value.years_of_experience),
         // value.proficiency is string like "intermediate" but we map to number for now or change schema later
         proficiency: ["beginner", "intermediate", "advanced", "expert"].indexOf(value.proficiency as string) + 1,
@@ -58,15 +87,37 @@ function SkillForm({ skill, onClose }: SkillFormProps) {
       }}
       className="space-y-4 pt-4"
     >
-      <form.AppField name="skill_name">
+      <form.AppField name="skill">
         {(field) => (
-          <field.TextField
+          <field.ComboboxField
             field={field}
             label="Skill Name *"
             disabled={!!skill}
-            required
-            placeholder="e.g. React, TypeScript, Figma"
-          />
+            placeholder="Search or add skill..."
+            onInputValueChange={(val) => {
+              setSearchQuery(val);
+              // Also update the hidden name field so we can submit it if it's new
+              form.setFieldValue("skill_name", val);
+            }}
+            isItemEqualToValue={(item: unknown, val: unknown) => (item as { value: string })?.value === (val as { value: string })?.value}
+            itemToStringLabel={(item: unknown) => (item as { label: string })?.label || ""}
+          >
+            <ComboboxList>
+              {suggestions.map((s) => (
+                <ComboboxItem key={s.id} value={{ value: s.id, label: s.name }}>
+                  {s.name}
+                </ComboboxItem>
+              ))}
+              {searchQuery && !suggestions.find(s => s.name.toLowerCase() === searchQuery.toLowerCase()) && (
+                <ComboboxItem value={{ value: "new", label: searchQuery }}>
+                  Add &quot;{searchQuery}&quot;
+                </ComboboxItem>
+              )}
+              {suggestions.length === 0 && !searchQuery && (
+                <ComboboxEmpty>Start typing to search...</ComboboxEmpty>
+              )}
+            </ComboboxList>
+          </field.ComboboxField>
         )}
       </form.AppField>
 
@@ -99,19 +150,31 @@ function SkillForm({ skill, onClose }: SkillFormProps) {
 
       <div className="flex justify-between pt-4 border-t border-border mt-4">
         {skill ? (
-          <Button 
-            type="button" 
-            variant="destructive" 
-            size="icon"
-            onClick={async () => {
-              if (window.confirm("Are you sure you want to delete this skill?")) {
-                await deleteMutation.mutateAsync(skill.skill_id);
-                onClose();
-              }
-            }}
-          >
-            <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger render={<Button type="button" variant="destructive" size="icon" />}>
+              <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Skill</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove this skill from your profile? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await deleteMutation.mutateAsync(skill.skill_id);
+                    onClose();
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : (
           <div />
         )}
@@ -166,7 +229,7 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
                 <div>
                   <h4 className="font-semibold text-foreground text-sm">{skill.skill_name || "Unknown"}</h4>
                   <p className="text-xs text-muted-foreground capitalize mt-0.5">
-                    {skill.proficiency} · {skill.years_of_experience} yrs
+                    {typeof skill.proficiency === 'number' ? ["beginner", "intermediate", "advanced", "expert"][skill.proficiency - 1] : skill.proficiency} · {skill.years_of_experience} yrs
                   </p>
                 </div>
                 <Button 

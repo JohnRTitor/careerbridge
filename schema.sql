@@ -192,8 +192,10 @@ CREATE TABLE projects (
 
 CREATE TABLE skills (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT UNIQUE NOT NULL
+  name TEXT NOT NULL
 );
+
+CREATE UNIQUE INDEX skills_name_lower_idx ON skills (LOWER(name));
 
 CREATE TABLE user_skills (
   user_id TEXT REFERENCES "user"(id) ON DELETE CASCADE,

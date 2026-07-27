@@ -6,6 +6,17 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Briefcase01Icon, PlusSignIcon, PencilEdit01Icon, Delete02Icon, Calendar01Icon, Location01Icon } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Experience, AddExperiencePayload, UpdateExperiencePayload } from "@/features/profiles/api/types";
 import { useAddExperience, useUpdateExperience, useDeleteExperience } from "@/features/profiles/api/mutations";
@@ -119,19 +130,31 @@ function ExperienceForm({ experience, onClose }: ExperienceFormProps) {
 
       <div className="flex justify-between pt-4 border-t border-border mt-4">
         {experience ? (
-          <Button 
-            type="button" 
-            variant="destructive" 
-            size="icon"
-            onClick={async () => {
-              if (window.confirm("Are you sure you want to delete this experience?")) {
-                await deleteMutation.mutateAsync(experience.id);
-                onClose();
-              }
-            }}
-          >
-            <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger render={<Button type="button" variant="destructive" size="icon" />}>
+              <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Experience</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove this experience from your profile? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await deleteMutation.mutateAsync(experience.id);
+                    onClose();
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : (
           <div />
         )}

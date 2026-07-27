@@ -12,6 +12,17 @@ import {
   Mortarboard01Icon 
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Education, AddEducationPayload, UpdateEducationPayload } from "@/features/profiles/api/types";
 import { useAddEducation, useUpdateEducation, useDeleteEducation } from "@/features/profiles/api/mutations";
@@ -126,19 +137,31 @@ function EducationForm({ education, onClose }: EducationFormProps) {
 
       <div className="flex justify-between pt-4 border-t border-border mt-4">
         {education ? (
-          <Button 
-            type="button" 
-            variant="destructive" 
-            size="icon"
-            onClick={async () => {
-              if (window.confirm("Are you sure you want to delete this education entry?")) {
-                await deleteMutation.mutateAsync(education.id);
-                onClose();
-              }
-            }}
-          >
-            <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger render={<Button type="button" variant="destructive" size="icon" />}>
+              <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Education</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove this education entry from your profile? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await deleteMutation.mutateAsync(education.id);
+                    onClose();
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : (
           <div />
         )}

@@ -14,6 +14,17 @@ import {
   Calendar01Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Project, AddProjectPayload, UpdateProjectPayload } from "@/features/profiles/api/types";
 import { useAddProject, useUpdateProject, useDeleteProject } from "@/features/profiles/api/mutations";
@@ -130,19 +141,31 @@ function ProjectForm({ project, onClose }: ProjectFormProps) {
 
       <div className="flex justify-between pt-4 border-t border-border mt-4">
         {project ? (
-          <Button 
-            type="button" 
-            variant="destructive" 
-            size="icon"
-            onClick={async () => {
-              if (window.confirm("Are you sure you want to delete this project?")) {
-                await deleteMutation.mutateAsync(project.id);
-                onClose();
-              }
-            }}
-          >
-            <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger render={<Button type="button" variant="destructive" size="icon" />}>
+              <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove this project from your profile? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await deleteMutation.mutateAsync(project.id);
+                    onClose();
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : (
           <div />
         )}

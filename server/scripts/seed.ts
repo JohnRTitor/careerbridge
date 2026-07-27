@@ -78,9 +78,15 @@ async function createSkillsAndLanguages(config: SeedConfig, state: SeedState) {
     state.skillIds.push(id);
     return [id, s];
   });
-  await batchInsert("skills", ["id", "name"], skillData, "DO NOTHING");
+  await batchInsert("skills", ["id", "name"], skillData, "(LOWER(name)) DO NOTHING");
 
-  const languages = ["English", "Spanish", "French", "German", "Mandarin", "Japanese", "Hindi", "Arabic", "Portuguese", "Russian"];
+  const languages = [
+    "English", "Spanish", "French", "German", "Mandarin", "Japanese", "Hindi", "Arabic", 
+    "Portuguese", "Russian", "Bengali", "Punjabi", "Javanese", "Wu", "Telugu", "Marathi", 
+    "Turkish", "Korean", "Vietnamese", "Tamil", "Italian", "Urdu", "Gujarati", "Polish", 
+    "Ukrainian", "Persian", "Malayalam", "Kannada", "Oriya", "Sundanese", "Hausa", 
+    "Romanian", "Dutch", "Thai", "Amharic", "Sindhi", "Greek", "Czech", "Swedish"
+  ];
   const langData = languages.map((l) => {
     const id = uuidv4();
     state.languageIds.push(id);
@@ -449,16 +455,21 @@ async function seed() {
   const startTime = Date.now();
 
   try {
+    const isRefOnly = process.argv.includes("--ref-only");
+
     console.log("Generating Skills & Languages...");
     await createSkillsAndLanguages(config, state);
-    console.log(`Generating ${config.companies} Companies...`);
-    await createCompanies(config, state);
-    console.log(`Generating ${config.candidates} Candidates and ${config.employers} Employers...`);
-    await createUsers(config, state);
-    console.log(`Generating ${config.jobs} Jobs...`);
-    await createJobs(config, state);
-    console.log(`Generating ${config.applications} Applications...`);
-    await createApplications(config, state);
+    
+    if (!isRefOnly) {
+      console.log(`Generating ${config.companies} Companies...`);
+      await createCompanies(config, state);
+      console.log(`Generating ${config.candidates} Candidates and ${config.employers} Employers...`);
+      await createUsers(config, state);
+      console.log(`Generating ${config.jobs} Jobs...`);
+      await createJobs(config, state);
+      console.log(`Generating ${config.applications} Applications...`);
+      await createApplications(config, state);
+    }
     
     await verifyCounts();
 

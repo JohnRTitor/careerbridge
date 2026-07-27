@@ -11,10 +11,24 @@ import {
   EarthIcon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { SelectItem } from "@/components/ui/select";
+import { ComboboxList, ComboboxItem, ComboboxEmpty } from "@/components/ui/combobox";
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Language, AddUserLanguagePayload, UpdateUserLanguagePayload } from "@/features/profiles/api/types";
 import { useAddUserLanguage, useUpdateUserLanguage, useDeleteUserLanguage } from "@/features/profiles/api/mutations";
+import { useLanguages } from "@/features/meta/api/queries";
+import { useDebounce } from "@reactuses/core";
 
 type LanguageFormProps = {
   language?: Language;
@@ -26,15 +40,19 @@ function LanguageForm({ language, onClose }: LanguageFormProps) {
   const updateMutation = useUpdateUserLanguage();
   const deleteMutation = useDeleteUserLanguage();
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedQuery = useDebounce(searchQuery, 300);
+  const { data: suggestions = [] } = useLanguages(debouncedQuery);
+
   const form = useAppForm({
     defaultValues: {
-      language_name: language?.language_name || "",
-      proficiency: language?.proficiency || "conversational",
+      language: language ? { value: language.language_id, label: language.language_name } : null as { value: string, label: string } | null,
+      proficiency: language?.proficiency || "professional",
     },
     onSubmit: async ({ value }) => {
       const payload = {
-        language_id: "00000000-0000-0000-0000-000000000000", // TODO: Implement meta autocomplete
-        proficiency: value.proficiency,
+        language_id: value.language!.value,
+        proficiency: value.proficiency as string,
       };
 
       if (language) {
@@ -55,15 +73,32 @@ function LanguageForm({ language, onClose }: LanguageFormProps) {
       }}
       className="space-y-4 pt-4"
     >
-      <form.AppField name="language_name">
+      <form.AppField name="language"
+        validators={{
+          onChange: ({ value }) => !value ? "Language is required" : undefined,
+        }}
+      >
         {(field) => (
-          <field.TextField
+          <field.ComboboxField
             field={field}
             label="Language *"
             disabled={!!language}
-            required
-            placeholder="e.g. English, Spanish, French"
-          />
+            placeholder="Search language..."
+            onInputValueChange={(val) => setSearchQuery(val)}
+            isItemEqualToValue={(item: unknown, val: unknown) => (item as { value: string })?.value === (val as { value: string })?.value}
+            itemToStringLabel={(item: unknown) => (item as { label: string })?.label || ""}
+          >
+            <ComboboxList>
+              {suggestions.map((l) => (
+                <ComboboxItem key={l.id} value={{ value: l.id, label: l.name }}>
+                  {l.name}
+                </ComboboxItem>
+              ))}
+              {suggestions.length === 0 && (
+                <ComboboxEmpty>No language found...</ComboboxEmpty>
+              )}
+            </ComboboxList>
+          </field.ComboboxField>
         )}
       </form.AppField>
 
@@ -73,29 +108,42 @@ function LanguageForm({ language, onClose }: LanguageFormProps) {
             field={field}
             label="Proficiency"
           >
-            <SelectItem value="basic">Basic</SelectItem>
-            <SelectItem value="conversational">Conversational</SelectItem>
+            <SelectItem value="native">Native or Bilingual</SelectItem>
             <SelectItem value="fluent">Fluent</SelectItem>
-            <SelectItem value="native">Native / Bilingual</SelectItem>
+            <SelectItem value="professional">Full Professional</SelectItem>
+            <SelectItem value="conversational">Conversational</SelectItem>
+            <SelectItem value="basic">Elementary</SelectItem>
           </field.SelectField>
         )}
       </form.AppField>
 
       <div className="flex justify-between pt-4 border-t border-border mt-4">
         {language ? (
-          <Button 
-            type="button" 
-            variant="destructive" 
-            size="icon"
-            onClick={async () => {
-              if (window.confirm("Are you sure you want to delete this language?")) {
-                await deleteMutation.mutateAsync(language.language_id);
-                onClose();
-              }
-            }}
-          >
-            <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger render={<Button type="button" variant="destructive" size="icon" />}>
+              <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Language</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove this language from your profile? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await deleteMutation.mutateAsync(language.language_id);
+                    onClose();
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : (
           <div />
         )}
