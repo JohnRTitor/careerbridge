@@ -22,13 +22,13 @@ import { useCandidateApplications } from "@/features/applications/api/queries";
 import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ApplyJobDialog } from "@/features/applications/components/apply-job-dialog";
-import { usePermission } from "@/hooks/use-permission";
+import { useAppPermission } from "@/hooks/use-app-permission";
 
 export default function JobDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const { can } = usePermission();
+  const { can } = useAppPermission();
 
   const { data: job, isLoading, error } = useJob(id);
   const { data: savedJobs = [] } = useSavedJobs();

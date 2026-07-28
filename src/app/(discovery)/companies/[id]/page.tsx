@@ -18,14 +18,14 @@ import { useCompany, useFollowedCompanies } from "@/features/companies/api/queri
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
 import { useJobs } from "@/features/jobs/api/queries";
 import { JobCard } from "@/features/jobs/components/job-card";
-import { usePermission } from "@/hooks/use-permission";
+import { useAppPermission } from "@/hooks/use-app-permission";
 import type { Company } from "@/features/companies/api/types";
 
 export default function CompanyDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const { can } = usePermission();
+  const { can } = useAppPermission();
 
   const { data: company, isLoading, error } = useCompany(id);
   const { data: followedCompanies = [] } = useFollowedCompanies();
