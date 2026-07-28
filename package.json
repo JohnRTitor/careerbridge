@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint",
     "db:reset": "tsx --env-file=.env server/scripts/reset-db.ts",
     "db:seed": "tsx --env-file=.env server/scripts/seed.ts",
@@ -59,6 +60,6 @@
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
-    "typescript": "^5"
+    "typescript": "^6"
   }
 }
