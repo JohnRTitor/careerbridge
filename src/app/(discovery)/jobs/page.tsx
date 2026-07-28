@@ -26,16 +26,39 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { generatePagination } from "@/lib/utils";
+import { useAppForm } from "@/hooks/use-app-form";
+
 function JobSearchContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Initialize state from URL
-  const [query, setQuery] = useState(searchParams.get("query") || "");
-  const [location, setLocation] = useState(searchParams.get("location") || "");
-  const [type, setType] = useState(searchParams.get("type") || "");
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
+
+  const form = useAppForm({
+    defaultValues: {
+      query: searchParams.get("query") || "",
+      location: searchParams.get("location") || "",
+      type: searchParams.get("type") || "",
+    },
+    onSubmit: ({ value }) => {
+      const params = new URLSearchParams(searchParams);
+      if (value.query) params.set("query", value.query);
+      else params.delete("query");
+
+      if (value.location) params.set("location", value.location);
+      else params.delete("location");
+
+      if (value.type && value.type !== "all") params.set("type", value.type);
+      else params.delete("type");
+
+      // Reset to page 1 on new search
+      params.set("page", "1");
+      setPage(1);
+
+      router.push(`${pathname}?${params.toString()}`);
+    },
+  });
 
   // Derive active filters from URL to trigger queries
   const filters: JobFilters = {
@@ -47,27 +70,6 @@ function JobSearchContent() {
   };
 
   const { data, isLoading } = useJobs(filters);
-
-  // Sync state with URL when user types/selects and hits 'Search'
-  const handleSearch = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    
-    const params = new URLSearchParams(searchParams);
-    if (query) params.set("query", query);
-    else params.delete("query");
-    
-    if (location) params.set("location", location);
-    else params.delete("location");
-    
-    if (type && type !== "all") params.set("type", type);
-    else params.delete("type");
-    
-    // Reset to page 1 on new search
-    params.set("page", "1");
-    setPage(1);
-    
-    router.push(`${pathname}?${params.toString()}`);
-  };
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
@@ -97,48 +99,69 @@ function JobSearchContent() {
             </p>
           </div>
 
-          <form onSubmit={handleSearch} className="bg-background p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-4xl mx-auto">
-            <div className="relative flex-1 flex items-center">
-              <HugeiconsIcon icon={Search01Icon} className="absolute left-3 size-5 text-muted-foreground" />
-              <Input 
-                type="text" 
-                placeholder="Job title, keywords, or company" 
-                className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="bg-background p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-4xl mx-auto"
+          >
+            <form.AppField name="query">
+              {(field) => (
+                <div className="relative flex-1 flex items-center">
+                  <HugeiconsIcon icon={Search01Icon} className="absolute left-3 size-5 text-muted-foreground pointer-events-none z-10" />
+                  <Input 
+                    type="text" 
+                    placeholder="Job title, keywords, or company" 
+                    className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                  />
+                </div>
+              )}
+            </form.AppField>
             <div className="w-px bg-border hidden sm:block" />
-            <div className="relative flex-1 flex items-center">
-              <HugeiconsIcon icon={Location01Icon} className="absolute left-3 size-5 text-muted-foreground" />
-              <Input 
-                type="text" 
-                placeholder="City, state, zip, or Remote" 
-                className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-            </div>
+            <form.AppField name="location">
+              {(field) => (
+                <div className="relative flex-1 flex items-center">
+                  <HugeiconsIcon icon={Location01Icon} className="absolute left-3 size-5 text-muted-foreground pointer-events-none z-10" />
+                  <Input 
+                    type="text" 
+                    placeholder="City, state, zip, or Remote" 
+                    className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                  />
+                </div>
+              )}
+            </form.AppField>
             <div className="w-px bg-border hidden sm:block" />
-            <div className="flex items-center flex-1 sm:max-w-50">
-              <HugeiconsIcon icon={FilterIcon} className="absolute ml-3 size-5 text-muted-foreground pointer-events-none z-10" />
-              <Select 
-                value={type}
-                onValueChange={(val) => setType(val || "")}
-              >
-                <SelectTrigger className="pl-10 border-0 shadow-none h-12 focus:ring-0">
-                  <SelectValue placeholder="All Job Types" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Job Types</SelectItem>
-                  <SelectItem value="full-time">Full-time</SelectItem>
-                  <SelectItem value="part-time">Part-time</SelectItem>
-                  <SelectItem value="contract">Contract</SelectItem>
-                  <SelectItem value="freelance">Freelance</SelectItem>
-                  <SelectItem value="internship">Internship</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <form.AppField name="type">
+              {(field) => (
+                <div className="flex items-center flex-1 sm:max-w-50 relative">
+                  <HugeiconsIcon icon={FilterIcon} className="absolute ml-3 size-5 text-muted-foreground pointer-events-none z-10" />
+                  <Select 
+                    value={field.state.value}
+                    onValueChange={(val) => field.handleChange(val || "")}
+                  >
+                    <SelectTrigger className="pl-10 border-0 shadow-none h-12 focus:ring-0">
+                      <SelectValue placeholder="All Job Types" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Job Types</SelectItem>
+                      <SelectItem value="full-time">Full-time</SelectItem>
+                      <SelectItem value="part-time">Part-time</SelectItem>
+                      <SelectItem value="contract">Contract</SelectItem>
+                      <SelectItem value="freelance">Freelance</SelectItem>
+                      <SelectItem value="internship">Internship</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </form.AppField>
             <Button type="submit" size="lg" className="h-12 px-8 rounded-xl shrink-0">
               Search
             </Button>
@@ -178,9 +201,7 @@ function JobSearchContent() {
                 <EmptyDescription>We couldn&apos;t find any jobs matching your criteria. Try adjusting your search keywords or filters.</EmptyDescription>
                 <EmptyContent>
                   <Button variant="outline" className="mt-2" onClick={() => {
-                    setQuery("");
-                    setLocation("");
-                    setType("all");
+                    form.reset({ query: "", location: "", type: "all" });
                     router.push(pathname);
                   }}>
                     Clear Filters

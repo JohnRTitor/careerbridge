@@ -20,13 +20,30 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { generatePagination } from "@/lib/utils";
+import { useAppForm } from "@/hooks/use-app-form";
+
 function CompaniesSearchContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [query, setQuery] = useState(searchParams.get("query") || "");
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
+
+  const form = useAppForm({
+    defaultValues: {
+      query: searchParams.get("query") || "",
+    },
+    onSubmit: ({ value }) => {
+      const params = new URLSearchParams(searchParams);
+      if (value.query) params.set("query", value.query);
+      else params.delete("query");
+
+      params.set("page", "1");
+      setPage(1);
+
+      router.push(`${pathname}?${params.toString()}`);
+    },
+  });
 
   const filters: CompanyFilters = {
     query: searchParams.get("query") || undefined,
@@ -35,19 +52,6 @@ function CompaniesSearchContent() {
   };
 
   const { data, isLoading } = useCompanies(filters);
-
-  const handleSearch = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    
-    const params = new URLSearchParams(searchParams);
-    if (query) params.set("query", query);
-    else params.delete("query");
-    
-    params.set("page", "1");
-    setPage(1);
-    
-    router.push(`${pathname}?${params.toString()}`);
-  };
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
@@ -74,17 +78,29 @@ function CompaniesSearchContent() {
             Explore companies, read about their culture, and find your next dream team.
           </p>
 
-          <form onSubmit={handleSearch} className="bg-background p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto mt-8">
-            <div className="relative flex-1 flex items-center">
-              <HugeiconsIcon icon={Search01Icon} className="absolute left-3 size-5 text-muted-foreground" />
-              <Input 
-                type="text" 
-                placeholder="Search for companies by name or industry..." 
-                className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="bg-background p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto mt-8"
+          >
+            <form.AppField name="query">
+              {(field) => (
+                <div className="relative flex-1 flex items-center">
+                  <HugeiconsIcon icon={Search01Icon} className="absolute left-3 size-5 text-muted-foreground pointer-events-none z-10" />
+                  <Input 
+                    type="text" 
+                    placeholder="Search for companies by name or industry..." 
+                    className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                  />
+                </div>
+              )}
+            </form.AppField>
             <Button type="submit" size="lg" className="h-12 px-8 rounded-xl shrink-0">
               Search
             </Button>
@@ -125,7 +141,7 @@ function CompaniesSearchContent() {
                   We couldn&apos;t find any companies matching your search. Try adjusting your query.
                 </p>
                 <Button variant="outline" className="mt-6" onClick={() => {
-                  setQuery("");
+                  form.reset({ query: "" });
                   router.push(pathname);
                 }}>
                   Clear Search
