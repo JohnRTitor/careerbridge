@@ -194,7 +194,7 @@ export type DeleteResumeInput = { resumeId: string; userId: string };
 // -- Skills --
 export const UserSkillSchema = z.object({
   skill_id: z.uuid(),
-  years_of_experience: z.number().int().nonnegative().optional(),
+  years_of_experience: z.number().nonnegative().optional(),
   proficiency: z.number().int().min(1).max(5).optional(),
 });
 export type UserSkill = z.infer<typeof UserSkillSchema>;
