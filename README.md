@@ -6,7 +6,7 @@ CareerBridge is a unified platform designed for job discovery, recruitment manag
 
 This project is built using modern web technologies:
 
-- **Framework**: [Next.js](https://nextjs.org/) (SSR/SPA)
+- **Framework**: [Next.js](https://nextjs.org/) (SSR)
 - **UI & Styling**: [Tailwind CSS v4](https://tailwindcss.com/), [Shadcn UI](https://ui.shadcn.com/), [Base UI](https://base-ui.com/)
 - **API & Routing**: [Hono](https://hono.dev/)
 - **Authentication**: [Better Auth](https://better-auth.com/)
