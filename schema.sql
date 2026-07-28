@@ -371,3 +371,6 @@ CREATE TABLE audit_logs (
   details JSONB,
   created_at TIMESTAMP NOT NULL DEFAULT now()
 );
+
+ALTER TABLE user_skills
+ALTER COLUMN years_of_experience TYPE NUMERIC(3,1);

@@ -267,16 +267,29 @@ export default function RecruiterDashboard() {
                             </Button>
                           )}
                           {app.status === "reviewing" && (
-                            <Button
-                              size="sm"
-                              className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700"
-                              onClick={() =>
-                                handleUpdateStatus(app.id, "shortlisted")
-                              }
-                              disabled={updateStatusMutation.isPending}
-                            >
-                              Shortlist
-                            </Button>
+                            <>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="h-8 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive"
+                                onClick={() =>
+                                  handleUpdateStatus(app.id, "rejected")
+                                }
+                                disabled={updateStatusMutation.isPending}
+                              >
+                                Reject
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700"
+                                onClick={() =>
+                                  handleUpdateStatus(app.id, "shortlisted")
+                                }
+                                disabled={updateStatusMutation.isPending}
+                              >
+                                Shortlist
+                              </Button>
+                            </>
                           )}
                         </div>
                       </div>
