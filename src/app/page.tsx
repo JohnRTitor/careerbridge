@@ -9,8 +9,6 @@ import {
   BriefcaseIcon,
   SearchIcon,
   Location01Icon,
-  ClockIcon,
-  BookmarkIcon,
   CodeIcon,
   PenToolIcon,
   MegaphoneIcon,
@@ -27,10 +25,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDistanceToNow } from "date-fns";
 
 import {
   useHomepageStats,
@@ -38,6 +34,7 @@ import {
 } from "@/features/stats/api/queries";
 import { useFeaturedJobs, useJobs } from "@/features/jobs/api/queries";
 import { usePopularCompanies } from "@/features/companies/api/queries";
+import { JobCard } from "@/features/jobs/components/job-card";
 import {
   JobCardSkeleton,
   CategoryCardSkeleton,
@@ -173,77 +170,7 @@ export default function Page() {
     }
 
     return jobs.map((job) => (
-      <Card
-        key={job.id}
-        className="transition-all hover:border-primary hover:shadow-md bg-background flex flex-col justify-between"
-      >
-        <CardContent className="flex h-full flex-col gap-4 p-6">
-          <div className="flex items-start justify-between">
-            {job.company_logo ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={job.company_logo}
-                alt={job.company_name || ""}
-                className="size-12 rounded-xl object-cover border"
-              />
-            ) : (
-              <span className="flex size-12 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-secondary-foreground uppercase">
-                {job.company_name?.substring(0, 2) || "CO"}
-              </span>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground transition-colors hover:text-primary h-8 w-8"
-              aria-label="Save job"
-            >
-              <HugeiconsIcon icon={BookmarkIcon} className="size-5" />
-            </Button>
-          </div>
-
-          <div>
-            <h3 className="font-semibold leading-snug line-clamp-2">
-              {job.title}
-            </h3>
-            <p className="text-sm text-muted-foreground line-clamp-1">
-              {job.company_name || "Unknown Company"}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <HugeiconsIcon icon={Location01Icon} className="size-4" />
-              {job.location || "Remote"}
-            </span>
-            <span className="flex items-center gap-1">
-              <HugeiconsIcon icon={ClockIcon} className="size-4" />
-              {formatDistanceToNow(new Date(job.created_at), {
-                addSuffix: true,
-              })}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mt-auto">
-            <Badge variant="secondary" className="font-normal capitalize">
-              {job.type.replace("-", " ")}
-            </Badge>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-            <div>
-              <p className="font-semibold text-foreground">
-                {job.salary_min && job.salary_max
-                  ? `${job.currency || "$"}${(job.salary_min / 1000).toFixed(0)}k - ${(job.salary_max / 1000).toFixed(0)}k`
-                  : "Competitive"}
-              </p>
-              <p className="text-xs text-muted-foreground capitalize">
-                {job.type.replace("-", " ")}
-              </p>
-            </div>
-            <Button size="sm">Apply</Button>
-          </div>
-        </CardContent>
-      </Card>
+      <JobCard key={job.id} job={job} />
     ));
   };
 
