@@ -12,6 +12,7 @@ import { useRecruiterProfile } from "@/features/recruiters/api/queries";
 import { toast } from "sonner";
 import { SelectItem } from "@/components/ui/select";
 import { useCurrencies } from "@/features/meta/api/queries";
+import { CreateJobSchema } from "@server/features/recruiters/recruiters.schemas";
 
 export default function PostJobPage() {
   const router = useRouter();
@@ -28,6 +29,10 @@ export default function PostJobPage() {
       minimum_salary: undefined as number | undefined,
       maximum_salary: undefined as number | undefined,
       currency: "USD",
+    },
+    validators: {
+      // @ts-expect-error - schema fields are optional but form requires them
+      onChange: CreateJobSchema,
     },
     onSubmit: async ({ value }) => {
       try {
