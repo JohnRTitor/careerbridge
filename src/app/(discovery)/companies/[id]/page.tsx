@@ -18,7 +18,7 @@ import { useCompany, useFollowedCompanies } from "@/features/companies/api/queri
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
 import { useJobs } from "@/features/jobs/api/queries";
 import { JobCard } from "@/features/jobs/components/job-card";
-import { useAppPermission } from "@/hooks/use-app-permission";
+import { useAppPermission } from "@/features/auth/api/queries";
 import type { Company } from "@/features/companies/api/types";
 
 export default function CompanyDetailsPage() {

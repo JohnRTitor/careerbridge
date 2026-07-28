@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { LogOut, User, LayoutDashboard, Settings } from "lucide-react";
-import { signOut } from "@/lib/auth-client";
+import { signOut } from "@/features/auth/api/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,

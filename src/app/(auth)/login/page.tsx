@@ -9,8 +9,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
-import { loginSchema } from "@/lib/zod-schemas";
-import { authClient } from "@/lib/auth-client";
+import { loginSchema } from "@/features/auth/schemas";
+import { authClient } from "@/features/auth/api/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
