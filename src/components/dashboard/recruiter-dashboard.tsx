@@ -118,15 +118,25 @@ export default function RecruiterDashboard() {
     <div className="flex min-h-screen flex-col bg-background">
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-        <div
-          className="rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8"
-          style={{
-            backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
-            backgroundSize: "24px 24px, 100% 100%",
-            backgroundBlendMode: "overlay",
-          }}
-        >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8">
+          {/* Light mode pattern */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-20 dark:hidden"
+            style={{
+              backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px)`,
+              backgroundSize: "24px 24px",
+            }}
+          />
+          {/* Dark mode pattern (original) */}
+          <div
+            className="absolute inset-0 pointer-events-none hidden dark:block"
+            style={{
+              backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
+              backgroundSize: "24px 24px, 100% 100%",
+              backgroundBlendMode: "overlay",
+            }}
+          />
+          <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 Talent Acquisition Portal
