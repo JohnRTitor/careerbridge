@@ -209,7 +209,7 @@ CREATE UNIQUE INDEX skills_name_lower_idx ON skills (LOWER(name));
 CREATE TABLE user_skills (
   user_id TEXT REFERENCES "user"(id) ON DELETE CASCADE,
   skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
-  years_of_experience INTEGER,
+  years_of_experience NUMERIC(3, 1),
   proficiency SMALLINT CHECK (
     proficiency BETWEEN 1 AND 5
   ),
@@ -371,6 +371,3 @@ CREATE TABLE audit_logs (
   details JSONB,
   created_at TIMESTAMP NOT NULL DEFAULT now()
 );
-
-ALTER TABLE user_skills
-ALTER COLUMN years_of_experience TYPE NUMERIC(3,1);
