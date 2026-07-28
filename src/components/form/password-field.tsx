@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { EyeIcon, EyeOffIcon } from "@hugeicons/core-free-icons";
 
+import { useToggle } from "@reactuses/core";
+
 type PasswordFieldProps<TField extends AnyFieldApi> = Omit<
   React.ComponentProps<typeof Input>,
   "id" | "value" | "onChange" | "onBlur" | "type"
@@ -39,7 +41,7 @@ export function PasswordField<TField extends AnyFieldApi>({
   errorClassName,
   ...props
 }: PasswordFieldProps<TField>) {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, toggleShowPassword] = useToggle(false);
 
   const { invalid, error } = getFieldState(field);
 
@@ -84,7 +86,7 @@ export function PasswordField<TField extends AnyFieldApi>({
           type="button"
           variant="ghost"
           size="icon"
-          onClick={() => setShowPassword((value) => !value)}
+          onClick={() => toggleShowPassword()}
           className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground transition-colors hover:text-foreground hover:bg-transparent"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >

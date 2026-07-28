@@ -13,10 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import type { Company } from "@/features/companies/api/types";
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
 import { useFollowedCompanies } from "@/features/companies/api/queries";
-import { usePermission } from "@/hooks/use-permission";
+import { useAppPermission } from "@/hooks/use-app-permission";
 
 export function CompanyCard({ company }: { company: Company }) {
-  const { can } = usePermission();
+  const { can } = useAppPermission();
   const { data: followedCompanies = [] } = useFollowedCompanies();
   const followMutation = useFollowCompany();
   const unfollowMutation = useUnfollowCompany();

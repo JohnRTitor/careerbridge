@@ -2,16 +2,16 @@ import { useSession } from "@/lib/auth-client";
 import { can, cannot } from "@server/shared/auth/authorization";
 
 /**
- * Hook for checking user permissions on the client side.
+ * Hook for checking application user permissions on the client side.
  * Relies on the user's role stored in the active session.
  * 
  * @example
- * const { can, isLoading } = usePermission();
+ * const { can, isLoading } = useAppPermission();
  * 
  * if (isLoading) return <Loading />;
  * if (can("job", "create")) return <CreateJobButton />;
  */
-export function usePermission() {
+export function useAppPermission() {
   const { data: session, isPending, error } = useSession();
 
   const role = session?.user?.role;
