@@ -12,7 +12,7 @@ export default async function proxy(request: NextRequest) {
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || request.nextUrl.origin}/api/auth/get-session`,
+    `${process.env.NEXT_PUBLIC_API_URL || request.nextUrl.origin}/api/auth/get-session`,
     {
       headers: {
         cookie: request.headers.get("cookie") || "",

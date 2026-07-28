@@ -4,7 +4,7 @@ import { ac, user, candidate, recruiter, admin } from "./permissions";
 import { pool } from "../app/db";
 
 export const auth = betterAuth({
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: pool,
   emailAndPassword: {

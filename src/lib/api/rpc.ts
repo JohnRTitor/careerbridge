@@ -1,8 +1,14 @@
 import { hc } from "hono/client";
 import type { AppType } from "../../../server/app/server";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+function getBaseUrl() {
+  if (typeof window !== "undefined") return ""; // browser should use relative url
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3000";
+}
 
+const BASE_URL = getBaseUrl();
 export const rpcClient = hc<AppType>(BASE_URL);
 
 /**
