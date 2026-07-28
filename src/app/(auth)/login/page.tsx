@@ -1,7 +1,12 @@
 "use client";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MailIcon, LockIcon, ArrowRightIcon, Shield02Icon } from "@hugeicons/core-free-icons";
+import {
+  MailIcon,
+  LockIcon,
+  ArrowRightIcon,
+  Shield02Icon,
+} from "@hugeicons/core-free-icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
 import { loginSchema } from "@/lib/zod-schemas";
@@ -36,7 +41,7 @@ export default function SignInPage() {
       }
 
       toast.success("Login successful!");
-      
+
       const userRole = data?.user?.role;
       if (!userRole) {
         router.push("/onboarding");
@@ -48,12 +53,15 @@ export default function SignInPage() {
 
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] justify-center overflow-hidden bg-background px-4 py-12 sm:py-20">
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
-        style={{ backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`, backgroundSize: "24px 24px" }}
+        style={{
+          backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`,
+          backgroundSize: "24px 24px",
+        }}
       />
       <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
-      
+
       <div className="relative z-10 w-full max-w-md space-y-6">
         {/* Main Logo & Platform Context */}
         <div className="flex flex-col items-center text-center">
@@ -66,7 +74,6 @@ export default function SignInPage() {
         </div>
 
         <Card className="bg-card border-border shadow-md rounded-2xl overflow-hidden">
-
           <CardContent className="p-6 sm:p-8">
             <form
               onSubmit={(e) => {
@@ -76,39 +83,48 @@ export default function SignInPage() {
               }}
               className="space-y-4"
             >
-              {/* Email Fields */}
+              {/* Email Field */}
               <form.AppField name="email">
                 {(field) => (
                   <field.TextField
                     field={field}
                     label="Email Address"
                     labelClassName="text-xs font-semibold text-muted-foreground"
-                    startIcon={<HugeiconsIcon icon={MailIcon} className="size-4 text-muted-foreground" />}
+                    startIcon={
+                      <HugeiconsIcon
+                        icon={MailIcon}
+                        className="size-4 text-muted-foreground"
+                      />
+                    }
                     placeholder="name@example.com"
                   />
                 )}
               </form.AppField>
 
-              {/* Password Fields */}
+              {/* Password Field */}
               <form.AppField name="password">
                 {(field) => (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label htmlFor={field.name} className="text-xs font-semibold text-muted-foreground">
-                        Password
-                      </label>
-                      <span
-                        className="text-[11px] font-medium text-muted-foreground"
-                      >
-                        Forgot?
-                      </span>
-                    </div>
+                  <div className="relative">
+                    {/* Position the Forgot link over the right side of the label area */}
+                    <Link
+                      href="/forgot-password"
+                      className="absolute right-0 top-0 text-[11px] font-medium text-muted-foreground hover:text-primary hover:underline z-10"
+                    >
+                      Forgot?
+                    </Link>
+
+                    {/* Allow PasswordField to render its native structure so the eye button works */}
                     <field.PasswordField
                       field={field}
-                      startIcon={<HugeiconsIcon icon={LockIcon} className="size-4 text-muted-foreground" />}
+                      label="Password"
+                      labelClassName="text-xs font-semibold text-muted-foreground"
+                      startIcon={
+                        <HugeiconsIcon
+                          icon={LockIcon}
+                          className="size-4 text-muted-foreground"
+                        />
+                      }
                       placeholder="••••••••"
-                      label=""
-                      labelClassName="hidden"
                     />
                   </div>
                 )}
@@ -121,7 +137,9 @@ export default function SignInPage() {
                   disabled={loading}
                 >
                   {loading ? "Signing In..." : "Sign In"}
-                  {!loading && <HugeiconsIcon icon={ArrowRightIcon} className="size-4" />}
+                  {!loading && (
+                    <HugeiconsIcon icon={ArrowRightIcon} className="size-4" />
+                  )}
                 </form.SubmitButton>
               </form.AppForm>
             </form>
@@ -142,7 +160,10 @@ export default function SignInPage() {
 
         {/* Security context disclaimer footer */}
         <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-          <HugeiconsIcon icon={Shield02Icon} className="size-3.5 text-emerald-600" />
+          <HugeiconsIcon
+            icon={Shield02Icon}
+            className="size-3.5 text-emerald-600"
+          />
           <span>Secured by 256-bit SSL encryption</span>
         </div>
       </div>
