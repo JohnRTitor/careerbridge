@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Company } from "@/features/companies/api/types";
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
 import { useFollowedCompanies } from "@/features/companies/api/queries";
-import { useAppPermission } from "@/hooks/use-app-permission";
+import { useAppPermission } from "@/features/auth/api/queries";
 
 export function CompanyCard({ company }: { company: Company }) {
   const { can } = useAppPermission();

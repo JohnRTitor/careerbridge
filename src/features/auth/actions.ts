@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 
 
 import { pool } from "@server/app/db";
-import { OnboardingInput } from "@/lib/zod-schemas";
+import { OnboardingInput } from "@/features/auth/schemas";
 
 export async function submitOnboardingAction(data: OnboardingInput) {
   try {

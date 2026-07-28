@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/features/auth/api/auth-client";
 import { getLinksForRole } from "./nav-links";
 import { Logo } from "./logo";
 import { DesktopNav } from "./desktop-nav";

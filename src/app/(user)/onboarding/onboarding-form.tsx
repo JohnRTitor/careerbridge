@@ -9,7 +9,7 @@ import { ArrowRightIcon } from "@hugeicons/core-free-icons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { SelectItem } from "@/components/ui/select";
 import { useAppForm } from "@/hooks/use-app-form";
-import { onboardingSchema } from "@/lib/zod-schemas";
+import { onboardingSchema } from "@/features/auth/schemas";
 import { submitOnboardingAction } from "@/features/auth/actions";
 
 export function OnboardingForm({ user }: { user: { name: string; email: string } }) {

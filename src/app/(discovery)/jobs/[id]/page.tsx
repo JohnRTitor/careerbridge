@@ -22,7 +22,7 @@ import { useCandidateApplications } from "@/features/applications/api/queries";
 import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ApplyJobDialog } from "@/features/applications/components/apply-job-dialog";
-import { useAppPermission } from "@/hooks/use-app-permission";
+import { useAppPermission } from "@/features/auth/api/queries";
 
 export default function JobDetailsPage() {
   const params = useParams();

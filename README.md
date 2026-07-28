@@ -66,8 +66,8 @@ This project is built using modern web technologies:
   - `--mode=standard` (default): Realistic dataset (500+ users, 2500 jobs, 10000+ apps) for everyday development.
   - `--mode=large`: Massive dataset (1500+ users, 15000 jobs, 50000+ apps) for performance testing, QA, and pagination.
 - **`pnpm db:setup`**: Runs `db:reset` followed immediately by `db:seed`.
-- **`pnpm seed:candidate --user=<id>`**: Populates realistic scenario data for a specific candidate ID. Generates missing profile information, creates applications to open jobs, and populates the activity timeline. Useful for testing the candidate dashboard. Options: `--applications=<num>`, `--seed=<num>`, `--dry-run`.
-- **`pnpm seed:recruiter --user=<id>`**: Populates realistic scenario data for a specific employer/recruiter ID. Generates jobs, applicants, and recruiter activity for their ATS view. Useful for testing the recruiter dashboard. Options: `--jobs=<num>`, `--applications=<num>`, `--seed=<num>`, `--dry-run`.
+- **`pnpm db:seed:candidate --user=<id>`**: Populates realistic scenario data for a specific candidate ID. Generates missing profile information, creates applications to open jobs, and populates the activity timeline. Useful for testing the candidate dashboard. Options: `--applications=<num>`, `--seed=<num>`, `--dry-run`.
+- **`pnpm db:seed:recruiter --user=<id>`**: Populates realistic scenario data for a specific employer/recruiter ID. Generates jobs, applicants, and recruiter activity for their ATS view. Useful for testing the recruiter dashboard. Options: `--jobs=<num>`, `--applications=<num>`, `--seed=<num>`, `--dry-run`.
 
 ## Development Checklist
 

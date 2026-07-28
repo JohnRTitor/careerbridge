@@ -1,4 +1,4 @@
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/features/auth/api/auth-client";
 import { can, cannot } from "@server/shared/auth/authorization";
 
 /**
