@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { NavLink } from "./nav-links";
 
@@ -32,7 +33,7 @@ export function MobileNav({ links, children }: MobileNavProps) {
         <SheetTrigger
           render={<Button variant="ghost" size="icon" className="md:hidden" />}
         >
-          <Menu className="h-5 w-5" />
+          <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
           <span className="sr-only">Toggle Menu</span>
         </SheetTrigger>
         <SheetContent side="right" className="w-[300px] sm:w-[350px] flex flex-col">

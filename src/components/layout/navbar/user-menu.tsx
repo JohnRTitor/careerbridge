@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, User, LayoutDashboard, Settings } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Logout01Icon, UserIcon, DashboardSquare02Icon, Settings02Icon } from "@hugeicons/core-free-icons";
 import { signOut } from "@/features/auth/api/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -50,15 +51,15 @@ export function UserMenu({ user }: UserMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem render={<Link href={profileUrl} className="w-full cursor-pointer" />}>
-            <User className="mr-2 h-4 w-4" />
+            <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
             <span>My Profile</span>
           </DropdownMenuItem>
           <DropdownMenuItem render={<Link href="/dashboard" className="w-full cursor-pointer" />}>
-            <LayoutDashboard className="mr-2 h-4 w-4" />
+            <HugeiconsIcon icon={DashboardSquare02Icon} className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
           </DropdownMenuItem>
           <DropdownMenuItem render={<Link href="/dashboard/profile" className="w-full cursor-pointer" />}>
-            <Settings className="mr-2 h-4 w-4" />
+            <HugeiconsIcon icon={Settings02Icon} className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -75,7 +76,7 @@ export function UserMenu({ user }: UserMenuProps) {
             });
           }}
         >
-          <LogOut className="mr-2 h-4 w-4" />
+          <HugeiconsIcon icon={Logout01Icon} className="mr-2 h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -2,10 +2,12 @@
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { queryClient } from "@/lib/api/query-client";
+import { getQueryClient } from "@/lib/api/query-client";
 import { ThemeProvider } from "./theme-provider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider

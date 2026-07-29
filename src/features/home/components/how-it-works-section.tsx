@@ -1,0 +1,95 @@
+"use client";
+
+import { HugeiconsIcon } from "@hugeicons/react";
+import { UserAdd01Icon, SearchIcon, SentIcon } from "@hugeicons/core-free-icons";
+import { useHomepageStats } from "@/features/stats/api/queries";
+import { StatSkeleton } from "@/components/common/skeletons";
+
+const steps = [
+  {
+    icon: UserAdd01Icon,
+    title: "Create your profile",
+    description:
+      "Sign up and build a standout profile that showcases your skills and experience.",
+  },
+  {
+    icon: SearchIcon,
+    title: "Discover matches",
+    description:
+      "Browse curated roles and get smart recommendations tailored to your goals.",
+  },
+  {
+    icon: SentIcon,
+    title: "Apply with ease",
+    description:
+      "Apply in a single click and track every application from one dashboard.",
+  },
+];
+
+export function HowItWorksSection() {
+  const { data: statsData, isLoading: isLoadingStats } = useHomepageStats();
+
+  return (
+    <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <div className="flex flex-col items-center text-center">
+        <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          How it works
+        </h2>
+        <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+          Get from search to offer in three simple steps.
+        </p>
+      </div>
+
+      <div className="mt-12 grid gap-8 md:grid-cols-3">
+        {steps.map((step, i) => (
+          <div key={step.title} className="relative flex flex-col items-center text-center">
+            <span className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <HugeiconsIcon icon={step.icon} className="size-7" />
+            </span>
+            <span className="mt-4 font-mono text-sm font-semibold text-primary">
+              Step {i + 1}
+            </span>
+            <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
+            <p className="mt-2 max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+              {step.description}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Stats Display Block */}
+      <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
+        {isLoadingStats ? (
+          Array.from({ length: 4 }).map((_, i) => <StatSkeleton key={i} />)
+        ) : (
+          <>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-primary sm:text-4xl">
+                {statsData?.total_open_jobs?.toLocaleString() || "0"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-primary sm:text-4xl">
+                {statsData?.total_companies?.toLocaleString() || "0"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">Companies</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-primary sm:text-4xl">
+                {statsData?.total_users?.toLocaleString() || "0"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-primary sm:text-4xl">
+                {statsData?.total_applications?.toLocaleString() || "0"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}

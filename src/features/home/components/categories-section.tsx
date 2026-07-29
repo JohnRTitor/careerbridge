@@ -1,0 +1,83 @@
+"use client";
+
+import { HugeiconsIcon, type IconSvgElement as IconSvgObject } from "@hugeicons/react";
+import {
+  CodeIcon,
+  PenToolIcon,
+  MegaphoneIcon,
+  ChartBarLineIcon,
+  StethoscopeIcon,
+  GraduationCapIcon,
+  Building01Icon,
+  HeadphonesIcon,
+  BriefcaseIcon,
+} from "@hugeicons/core-free-icons";
+import { Card } from "@/components/ui/card";
+import { useJobCategories } from "@/features/stats/api/queries";
+import { CategoryCardSkeleton } from "@/components/common/skeletons";
+
+const categoryIcons: Record<string, IconSvgObject> = {
+  Engineering: CodeIcon,
+  Technology: CodeIcon,
+  Design: PenToolIcon,
+  Marketing: MegaphoneIcon,
+  Finance: ChartBarLineIcon,
+  Healthcare: StethoscopeIcon,
+  Education: GraduationCapIcon,
+  "Real Estate": Building01Icon,
+  Support: HeadphonesIcon,
+};
+
+interface CategoriesSectionProps {
+  handlePopularSearch: (term: string) => void;
+}
+
+export function CategoriesSection({ handlePopularSearch }: CategoriesSectionProps) {
+  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+
+  return (
+    <section id="categories" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <div className="flex flex-col items-center text-center">
+        <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          Browse by category
+        </h2>
+        <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+          Explore opportunities across the fields you care about most.
+        </p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {isLoadingCategories ? (
+          Array.from({ length: 8 }).map((_, i) => <CategoryCardSkeleton key={i} />)
+        ) : categoriesData && categoriesData.length > 0 ? (
+          categoriesData.map((category) => {
+            const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
+            return (
+              <button
+                key={category.industry}
+                onClick={() => handlePopularSearch(category.industry)}
+                className="text-left w-full cursor-pointer"
+              >
+                <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
+                  <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    <HugeiconsIcon icon={IconComponent} className="size-6" />
+                  </span>
+                  <div>
+                    <h3 className="font-semibold">{category.industry}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {category.job_count.toLocaleString()} open jobs
+                    </p>
+                  </div>
+                </Card>
+              </button>
+            );
+          })
+        ) : (
+          <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-background shadow-sm">
+            No categories available yet.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
