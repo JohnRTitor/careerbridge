@@ -2,6 +2,12 @@ import { faker } from "@faker-js/faker";
 import { pool } from "../app/db";
 import { randomUUID as uuidv4 } from "node:crypto";
 import { JOB_TYPES, WORK_MODES, VISIBILITIES, randomDate, batchInsert } from "./seed-utils";
+import { 
+  INDUSTRIES, YOE_DISTRIBUTION, 
+  getWeightedRandom, getRandomLocation, generateUserIdentity, 
+  generateCompanyContext, generateJobContext, generateCareerTimeline, 
+  calculateSalary 
+} from "./seed-generators";
 
 faker.seed(12345);
 
@@ -40,12 +46,12 @@ export const SeedProfiles: Record<string, SeedConfig> = {
 
 // --- State ---
 type SeedState = {
-  skillIds: string[];
+  skillIds: Record<string, string>;
   languageIds: string[];
-  companyIds: string[];
-  candidateIds: string[];
-  employerIds: string[];
-  jobIds: string[];
+  companies: { id: string, industry: any, sizeCategory: any, location: any }[];
+  candidates: { id: string, location: any, industry: any, yoe: number, skills: string[] }[];
+  employers: { id: string, companyId: string }[];
+  jobs: { id: string, companyId: string | null, skills: string[], location: any, industry: any }[];
   candidateResumes: Record<string, string[]>;
   baseDate: Date;
 }
@@ -62,22 +68,19 @@ function getMode(): string {
 // --- Modules ---
 
 async function createSkillsAndLanguages(config: SeedConfig, state: SeedState) {
-  const skills = [
-    "Rust", "Go", "TypeScript", "Java", "Kotlin", "Python", "C#", "C++", "Swift",
-    "React", "Next.js", "Vue", "Angular", "Tailwind", "Svelte",
-    "Hono", "Express", "NestJS", "Spring", "Django", "FastAPI",
-    "AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform",
-    "PostgreSQL", "MySQL", "MongoDB", "Redis", "Elasticsearch",
-    "PyTorch", "TensorFlow", "LLM", "LangChain", "Vector Databases", "RAG",
-    "Figma", "UI/UX", "Product Management", "Agile", "Scrum",
-    "Cybersecurity", "Blockchain", "Solidity"
-  ];
+  const skills = new Set<string>();
+  for (const ind of INDUSTRIES) {
+    for (const skill of ind.skills) {
+      skills.add(skill);
+    }
+  }
 
-  const skillData = skills.map((s) => {
+  const skillData = [];
+  for (const s of skills) {
     const id = uuidv4();
-    state.skillIds.push(id);
-    return [id, s];
-  });
+    state.skillIds[s] = id;
+    skillData.push([id, s]);
+  }
   await batchInsert("skills", ["id", "name"], skillData, "(LOWER(name)) DO NOTHING");
 
   const languages = [
@@ -96,23 +99,25 @@ async function createSkillsAndLanguages(config: SeedConfig, state: SeedState) {
 }
 
 async function createCompanies(config: SeedConfig, state: SeedState) {
-  const industries = ["Technology", "Healthcare", "Fintech", "E-commerce", "Education", "Manufacturing", "Gaming", "Cybersecurity", "Consulting", "Biotech", "AI"];
-  
   const companyData = [];
   for (let i = 0; i < config.companies; i++) {
     const id = uuidv4();
-    state.companyIds.push(id);
     const createdAt = randomDate(state.baseDate, new Date());
+    const context = generateCompanyContext();
+    const location = getRandomLocation();
+    
+    state.companies.push({ id, industry: context.industry, sizeCategory: context.sizeCategory, location });
+
     companyData.push([
       id,
       faker.company.name(),
       faker.company.catchPhrase() + ". " + faker.lorem.paragraph(),
-      faker.image.url(),
+      context.logoUrl,
       faker.internet.url(),
-      faker.helpers.arrayElement(industries),
-      faker.helpers.arrayElement(["1-10", "11-50", "51-200", "201-500", "500+", "1000+"]),
-      faker.location.city() + ", " + faker.location.country(),
-      faker.datatype.boolean(0.7), // 70% verified
+      context.industry.name,
+      context.sizeCategory.size,
+      location.city + ", " + location.country,
+      context.sizeCategory.isEnterprise || faker.datatype.boolean(0.5), // Enterprises verified, others 50%
       createdAt,
       createdAt
     ]);
@@ -123,8 +128,8 @@ async function createCompanies(config: SeedConfig, state: SeedState) {
 async function createUsers(config: SeedConfig, state: SeedState) {
   const userData = [];
   const profileData = [];
-  const educationData = [];
-  const experienceData = [];
+  const educationData: any[] = [];
+  const experienceData: any[] = [];
   const certificationsData = [];
   const projectsData = [];
   const userSkillsData = [];
@@ -141,20 +146,16 @@ async function createUsers(config: SeedConfig, state: SeedState) {
   for (let i = 0; i < totalUsers; i++) {
     const id = uuidv4();
     const isCandidate = i < config.candidates;
-    if (isCandidate) state.candidateIds.push(id);
-    else state.employerIds.push(id);
-
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
+    const identity = generateUserIdentity(isCandidate);
     const createdAt = randomDate(state.baseDate, new Date());
     
     // User Record
     userData.push([
       id,
-      `${firstName} ${lastName}`,
-      faker.internet.email({ firstName, lastName, provider: isCandidate ? 'gmail.com' : 'workmail.com' }) + uuidv4().slice(0, 4), // ensure unique
+      `${identity.firstName} ${identity.lastName}`,
+      identity.email + uuidv4().slice(0, 4), // ensure unique
       true,
-      faker.image.avatar(),
+      identity.avatarUrl,
       createdAt,
       createdAt,
       isCandidate ? "candidate" : "employer",
@@ -164,51 +165,47 @@ async function createUsers(config: SeedConfig, state: SeedState) {
     ]);
 
     if (isCandidate) {
+      const yoeConfig = getWeightedRandom(YOE_DISTRIBUTION);
+      const yoe = faker.number.int({ min: yoeConfig.min, max: yoeConfig.max });
+      const industry = faker.helpers.arrayElement(INDUSTRIES);
+      const location = getRandomLocation();
+      const salary = calculateSalary(yoe, location.city, false);
+      const timeline = generateCareerTimeline(id, yoe, industry, state.baseDate, createdAt);
+      
+      const candidateSkills = faker.helpers.arrayElements(industry.skills, faker.number.int({ min: 3, max: 10 }));
+      
+      state.candidates.push({ id, location, industry, yoe, skills: candidateSkills });
+      
       // Profile
       profileData.push([
         id,
-        faker.person.jobTitle(),
+        timeline.title,
         faker.lorem.paragraphs(2),
-        firstName,
-        lastName,
+        identity.firstName,
+        identity.lastName,
         faker.phone.number(),
-        faker.date.birthdate({ min: 18, max: 65, mode: 'age' }),
+        timeline.dob,
         faker.person.sex(),
-        faker.location.country(),
-        faker.location.state(),
-        faker.location.city(),
+        location.country,
+        location.state,
+        location.city,
         faker.location.streetAddress(),
         faker.location.zipCode(),
-        faker.image.avatar(),
+        identity.avatarUrl,
         faker.helpers.arrayElement(VISIBILITIES),
-        faker.internet.url(),
-        faker.internet.url(),
+        identity.portfolio,
+        faker.internet.url(), // resume_url
         faker.datatype.boolean(0.8), // 80% open to work
         faker.datatype.boolean(0.5), // 50% willing to relocate
-        faker.number.int({ min: 40000, max: 150000 }), // expected salary
-        faker.number.int({ min: 35000, max: 140000 }), // current salary
-        faker.number.int({ min: 0, max: 20 }), // YOE
+        salary.expected,
+        salary.current,
+        yoe,
         createdAt,
         createdAt
       ]);
 
-      // Education (1-3 records)
-      const numEd = faker.number.int({ min: 1, max: 3 });
-      for (let j = 0; j < numEd; j++) {
-        educationData.push([
-          uuidv4(), id, faker.company.name() + " University", faker.helpers.arrayElement(["BSc", "MSc", "PhD", "Associate", "Diploma"]),
-          faker.person.jobArea(), faker.date.past({ years: 10 }), faker.date.recent(), faker.lorem.sentences(2), createdAt, createdAt
-        ]);
-      }
-
-      // Experience (0-4 records)
-      const numExp = faker.number.int({ min: 0, max: 4 });
-      for (let j = 0; j < numExp; j++) {
-        experienceData.push([
-          uuidv4(), id, faker.person.jobTitle(), faker.company.name(), faker.location.city(),
-          faker.date.past({ years: 8 }), faker.datatype.boolean() ? faker.date.recent() : null, faker.lorem.paragraph(), createdAt, createdAt
-        ]);
-      }
+      educationData.push(...timeline.educationData);
+      experienceData.push(...timeline.experienceData);
 
       // Certifications
       if (faker.datatype.boolean()) {
@@ -226,55 +223,58 @@ async function createUsers(config: SeedConfig, state: SeedState) {
         ]);
       }
 
-      // Skills (3-10)
-      const userSkills = faker.helpers.arrayElements(state.skillIds, faker.number.int({ min: 3, max: 10 }));
-      for (const skillId of userSkills) {
-        userSkillsData.push([id, skillId, faker.number.int({ min: 1, max: 10 }), faker.number.int({ min: 1, max: 5 })]);
+      // Skills
+      for (const skill of candidateSkills) {
+        if (state.skillIds[skill]) {
+          userSkillsData.push([id, state.skillIds[skill], faker.number.int({ min: 1, max: yoe || 1 }), faker.number.int({ min: 1, max: 5 })]);
+        }
       }
 
-      // Languages (1-3)
+      // Languages
       const userLangs = faker.helpers.arrayElements(state.languageIds, faker.number.int({ min: 1, max: 3 }));
       for (const langId of userLangs) {
         userLangsData.push([id, langId, faker.helpers.arrayElement(["Beginner", "Intermediate", "Advanced", "Native"])]);
       }
 
       // Social Links
-      socialLinksData.push([uuidv4(), id, "LinkedIn", `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}`]);
-      socialLinksData.push([uuidv4(), id, "GitHub", `https://github.com/${firstName.toLowerCase()}${lastName.toLowerCase()}`]);
+      socialLinksData.push([uuidv4(), id, "LinkedIn", identity.linkedin]);
+      socialLinksData.push([uuidv4(), id, "GitHub", identity.github]);
 
       // Job Prefs
       jobPrefsData.push([
-        id, faker.helpers.arrayElement(JOB_TYPES), faker.helpers.arrayElement(WORK_MODES), faker.location.city(),
-        faker.number.int({ min: 50000, max: 200000 }), faker.number.int({ min: 0, max: 90 }), faker.datatype.boolean(), createdAt
+        id, faker.helpers.arrayElement(JOB_TYPES), faker.helpers.arrayElement(WORK_MODES), location.city,
+        salary.expected, faker.number.int({ min: 0, max: 90 }), faker.datatype.boolean(), createdAt
       ]);
 
-      // Resumes (1-3) - 95% of candidates have resumes, 5% edge case no resume
+      // Resumes
       if (faker.datatype.boolean(0.95)) {
-        const numResumes = faker.number.int({ min: 1, max: 3 });
+        const numResumes = faker.number.int({ min: 1, max: 2 });
         state.candidateResumes[id] = [];
         for (let j = 0; j < numResumes; j++) {
           const resId = uuidv4();
           state.candidateResumes[id].push(resId);
           resumesData.push([
-            resId, id, `${firstName}'s Resume v${j+1}`, faker.internet.url(), j === 0, createdAt
+            resId, id, `${identity.firstName}'s Resume v${j+1}`, faker.internet.url(), j === 0, createdAt
           ]);
         }
       }
 
       // Follows Companies
       const numFollows = faker.number.int({ min: 0, max: 5 });
-      const followedCompanies = faker.helpers.arrayElements(state.companyIds, numFollows);
-      for (const compId of followedCompanies) {
-        followersData.push([id, compId, createdAt]);
+      const followedCompanies = faker.helpers.arrayElements(state.companies, numFollows);
+      for (const comp of followedCompanies) {
+        followersData.push([id, comp.id, createdAt]);
       }
 
     } else {
       // Employer Profile
-      const compId = faker.helpers.arrayElement(state.companyIds);
+      const company = faker.helpers.arrayElement(state.companies);
+      state.employers.push({ id, companyId: company.id });
+      
       recruiterProfilesData.push([
-        id, compId, faker.person.jobTitle(), faker.phone.number(), faker.datatype.boolean(0.8), createdAt
+        id, company.id, faker.person.jobTitle(), faker.phone.number(), company.sizeCategory.isEnterprise || faker.datatype.boolean(0.8), createdAt
       ]);
-      companyMembersData.push([compId, id, faker.helpers.arrayElement(["admin", "recruiter", "viewer"])]);
+      companyMembersData.push([company.id, id, faker.helpers.arrayElement(["admin", "recruiter", "viewer"])]);
     }
   }
 
@@ -301,35 +301,44 @@ async function createJobs(config: SeedConfig, state: SeedState) {
   
   for (let i = 0; i < config.jobs; i++) {
     const id = uuidv4();
-    state.jobIds.push(id);
     const createdAt = randomDate(state.baseDate, new Date());
+    
+    // Choose a company randomly, but weighted by their multiplier
+    const company = getWeightedRandom(state.companies.map(c => ({ ...c, weight: c.sizeCategory.jobsMultiplier })));
+    
+    // Find employers for this company
+    const companyEmployers = state.employers.filter(e => e.companyId === company.id);
+    const employer = companyEmployers.length > 0 ? faker.helpers.arrayElement(companyEmployers) : faker.helpers.arrayElement(state.employers);
     
     const isDraft = faker.datatype.boolean(0.05); // 5% draft
     const isClosed = faker.datatype.boolean(0.15); // 15% closed
     const status = isDraft ? "draft" : (isClosed ? "closed" : "open");
 
-    const minSalary = faker.number.int({ min: 40000, max: 120000 });
-    const maxSalary = minSalary + faker.number.int({ min: 10000, max: 50000 });
+    const experienceMin = faker.number.int({ min: 0, max: 7 });
+    const salary = calculateSalary(experienceMin + 2, company.location.city, company.sizeCategory.isEnterprise);
+    const jobContext = generateJobContext(company.industry.name);
+    
+    state.jobs.push({ id, companyId: company.id, skills: jobContext.skills, location: company.location, industry: company.industry });
 
     jobsData.push([
       id,
-      faker.person.jobTitle(),
-      faker.lorem.paragraphs(4) + "\n\nRequirements:\n- " + faker.lorem.sentences(3) + "\n\nBenefits:\n- " + faker.lorem.sentences(2),
-      faker.helpers.arrayElement(state.employerIds), // created_by
-      faker.datatype.boolean(0.95) ? faker.helpers.arrayElement(state.companyIds) : null, // company_id (5% edge case no company)
-      faker.location.city(),
+      jobContext.role,
+      jobContext.description,
+      employer.id,
+      faker.datatype.boolean(0.95) ? company.id : null,
+      company.location.city + ", " + company.location.country,
       faker.helpers.arrayElement(JOB_TYPES),
       status,
       faker.helpers.arrayElement(WORK_MODES),
-      minSalary,
-      maxSalary,
+      salary.jobMin,
+      salary.jobMax,
       "USD",
-      faker.number.int({ min: 0, max: 3 }), // min exp
-      faker.number.int({ min: 5, max: 15 }), // max exp
+      experienceMin,
+      experienceMin + faker.number.int({ min: 2, max: 5 }), // max exp
       faker.helpers.arrayElement(["High School", "Bachelor's", "Master's", "PhD"]),
       faker.date.future(), // deadline
-      faker.number.int({ min: 1, max: 10 }), // vacancies
-      faker.datatype.boolean(0.1), // 10% featured
+      faker.number.int({ min: 1, max: company.sizeCategory.isEnterprise ? 10 : 3 }), // vacancies
+      faker.datatype.boolean(company.sizeCategory.isEnterprise ? 0.3 : 0.05), // featured
       createdAt,
       createdAt
     ]);
@@ -345,17 +354,36 @@ async function createApplications(config: SeedConfig, state: SeedState) {
 
   const candidateApplications = new Map<string, Set<string>>();
 
+  // Cache candidates by industry to optimize application matching
+  const candidatesByIndustry: Record<string, typeof state.candidates> = {};
+  for (const c of state.candidates) {
+    if (!candidatesByIndustry[c.industry.name]) candidatesByIndustry[c.industry.name] = [];
+    candidatesByIndustry[c.industry.name].push(c);
+  }
+
   for (let i = 0; i < config.applications; i++) {
-    const candidateId = faker.helpers.arrayElement(state.candidateIds);
-    const jobId = faker.helpers.arrayElement(state.jobIds);
-
-    if (!candidateApplications.has(candidateId)) {
-      candidateApplications.set(candidateId, new Set());
+    // Pick a random job
+    const job = faker.helpers.arrayElement(state.jobs);
+    
+    // Pick candidates from the same industry, or fall back to any candidate
+    const industryCandidates = candidatesByIndustry[job.industry.name] || state.candidates;
+    
+    // Try to find a candidate that hasn't applied to this job yet
+    let candidate = null;
+    for (let attempts = 0; attempts < 10; attempts++) {
+      const c = faker.helpers.arrayElement(industryCandidates);
+      if (!candidateApplications.has(c.id)) {
+        candidateApplications.set(c.id, new Set());
+      }
+      if (!candidateApplications.get(c.id)!.has(job.id)) {
+        candidate = c;
+        break;
+      }
     }
-    const appliedJobs = candidateApplications.get(candidateId)!;
-
-    if (appliedJobs.has(jobId)) continue;
-    appliedJobs.add(jobId);
+    
+    if (!candidate) continue; // Skip if we couldn't find a unique candidate
+    
+    candidateApplications.get(candidate.id)!.add(job.id);
 
     const createdAt = randomDate(state.baseDate, new Date());
     
@@ -366,14 +394,16 @@ async function createApplications(config: SeedConfig, state: SeedState) {
     else if (rand > 0.80) status = "shortlisted"; // 10%
     else if (rand > 0.55) status = "reviewing"; // 25%
 
-    const candidateRes = state.candidateResumes[candidateId] || [];
+    const candidateRes = state.candidateResumes[candidate.id] || [];
     const resumeId = candidateRes.length > 0 ? faker.helpers.arrayElement(candidateRes) : null;
-    const reviewedBy = status !== "pending" ? faker.helpers.arrayElement(state.employerIds) : null;
+    
+    const companyEmployers = state.employers.filter(e => e.companyId === job.companyId);
+    const reviewedBy = status !== "pending" ? (companyEmployers.length > 0 ? faker.helpers.arrayElement(companyEmployers).id : null) : null;
 
     appsData.push([
       uuidv4(),
-      jobId,
-      candidateId,
+      job.id,
+      candidate.id,
       status,
       resumeId,
       faker.datatype.boolean(0.4) ? faker.lorem.paragraph() : null, // 40% cover letter
@@ -386,17 +416,17 @@ async function createApplications(config: SeedConfig, state: SeedState) {
     ]);
 
     if (faker.datatype.boolean(0.2)) {
-      const savedJobId = faker.helpers.arrayElement(state.jobIds);
-      savedJobsData.push([candidateId, savedJobId, randomDate(state.baseDate, new Date())]);
+      const savedJob = faker.helpers.arrayElement(state.jobs);
+      savedJobsData.push([candidate.id, savedJob.id, randomDate(state.baseDate, new Date())]);
     }
 
     if (faker.datatype.boolean(0.05)) {
       auditLogsData.push([
         uuidv4(),
-        candidateId,
+        candidate.id,
         "application_submitted",
         "job",
-        jobId,
+        job.id,
         JSON.stringify({ status: "pending", source: "web" }),
         createdAt
       ]);
@@ -434,12 +464,12 @@ async function seed() {
   baseDate.setFullYear(baseDate.getFullYear() - 3);
 
   const state: SeedState = {
-    skillIds: [],
+    skillIds: {},
     languageIds: [],
-    companyIds: [],
-    candidateIds: [],
-    employerIds: [],
-    jobIds: [],
+    companies: [],
+    candidates: [],
+    employers: [],
+    jobs: [],
     candidateResumes: {},
     baseDate,
   };
