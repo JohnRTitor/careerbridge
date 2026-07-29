@@ -9,8 +9,10 @@ import {
   Building01Icon,
   HeadphonesIcon,
   BriefcaseIcon,
+  FolderOpenIcon,
 } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { getJobCategories } from "@/features/stats/api/api";
 import Link from "next/link";
 
@@ -65,9 +67,14 @@ export async function CategoriesSection() {
             );
           })
         ) : (
-          <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-background shadow-sm">
-            No categories available yet.
-          </div>
+          <Empty className="col-span-full border shadow-sm">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={FolderOpenIcon} />
+              </EmptyMedia>
+              <EmptyTitle>No categories available yet.</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         )}
       </div>
     </section>

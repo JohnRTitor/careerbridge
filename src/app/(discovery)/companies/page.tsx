@@ -3,6 +3,7 @@ import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CompanyCard } from "@/features/companies/components/company-card";
 import type { CompanyFilters } from "@/features/companies/api/types";
 import {
@@ -77,16 +78,20 @@ export default async function CompaniesPage({
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl">
-            <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-              <HugeiconsIcon icon={Search01Icon} className="size-8" />
-            </div>
-            <h3 className="text-xl font-semibold">No companies found</h3>
-            <p className="text-muted-foreground max-w-sm mt-2">
-              We couldn&apos;t find any companies matching your search. Try adjusting your query.
-            </p>
-            <Button variant="outline" className="mt-6" render={<Link href="/companies">Clear Search</Link>} />
-          </div>
+          <Empty className="bg-background border-dashed rounded-2xl p-12">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={Search01Icon} className="size-8" />
+              </EmptyMedia>
+              <EmptyTitle className="text-xl">No companies found</EmptyTitle>
+              <EmptyDescription className="max-w-sm mt-2">
+                We couldn&apos;t find any companies matching your search. Try adjusting your query.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" className="mt-4" render={<Link href="/companies">Clear Search</Link>} />
+            </EmptyContent>
+          </Empty>
         )}
 
         {data && data.pagination.totalPages > 1 && (

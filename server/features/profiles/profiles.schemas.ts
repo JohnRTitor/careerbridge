@@ -6,8 +6,10 @@ export const UpdateProfileSchema = z
   .object({
     headline: z.string().optional(),
     about: z.string().optional(),
+    avatar_file_id: z.string().uuid().optional(),
     visibility: ProfileVisibilitySchema.optional(),
     portfolio_url: z.url().optional().or(z.literal("")),
+    date_of_birth: z.string().refine((date) => !date || !isNaN(Date.parse(date)), { error: "Invalid date" }).optional().or(z.literal("")),
   })
   .meta({ id: "UpdateUserProfile" });
 
@@ -15,7 +17,8 @@ export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
 
 export const ResumeUploadSchema = z
   .object({
-    resume_url: z.url(),
+    resume_url: z.url().optional(),
+    file_id: z.string().uuid().optional(),
   })
   .meta({ id: "ResumeUpload" });
 

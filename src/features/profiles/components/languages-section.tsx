@@ -11,6 +11,7 @@ import {
   EarthIcon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -213,12 +214,19 @@ export function LanguagesSection({ languages }: { languages: Language[] }) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
-            <p className="text-muted-foreground text-sm mb-4">No languages added yet.</p>
-            <Button variant="outline" size="sm" onClick={openNew}>
-              Add Languages
-            </Button>
-          </div>
+          <Empty className="bg-muted/50 p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={EarthIcon} />
+              </EmptyMedia>
+              <EmptyTitle>No languages added yet.</EmptyTitle>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={openNew} className="mt-2">
+                Add Languages
+              </Button>
+            </EmptyContent>
+          </Empty>
         )}
       </CardContent>
 

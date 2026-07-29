@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Briefcase01Icon, PlusSignIcon, PencilEdit01Icon, Delete02Icon, Calendar01Icon, Location01Icon } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -260,12 +261,19 @@ export function ExperienceSection({ experience }: { experience: Experience[] }) 
             </div>
           ))
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
-            <p className="text-muted-foreground text-sm mb-4">No experience added yet.</p>
-            <Button variant="outline" size="sm" onClick={openNew}>
-              Add Experience
-            </Button>
-          </div>
+          <Empty className="bg-muted/50 p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={Briefcase01Icon} />
+              </EmptyMedia>
+              <EmptyTitle>No experience added yet.</EmptyTitle>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={openNew} className="mt-2">
+                Add Experience
+              </Button>
+            </EmptyContent>
+          </Empty>
         )}
       </CardContent>
 

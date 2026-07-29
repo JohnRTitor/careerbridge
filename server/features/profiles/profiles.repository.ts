@@ -39,25 +39,31 @@ import type {
 export async function getProfile(input: GetProfileInput) {
   const { userId } = input;
   const query = `
-    SELECT p.*, u.name, u.email, u.image 
+    SELECT p.*, u.name, u.email, u.image,
+           f1.path as avatar_file_path, f1.bucket as avatar_file_bucket,
+           f2.path as resume_file_path, f2.bucket as resume_file_bucket
     FROM user_profile p
     JOIN "user" u ON p.user_id = u.id
+    LEFT JOIN files f1 ON p.avatar_file_id = f1.id
+    LEFT JOIN files f2 ON p.resume_file_id = f2.id
     WHERE p.user_id = $1
   `;
-  const result = await pool.query<{ id: string, user_id: string, name: string | null, email: string, image: string | null, headline: string | null, about: string | null, visibility: "public" | "private", resume_url: string | null, portfolio_url: string | null }>(query, [userId]);
+  const result = await pool.query<{ id: string, user_id: string, name: string | null, email: string, image: string | null, headline: string | null, about: string | null, visibility: "public" | "private", resume_url: string | null, portfolio_url: string | null, date_of_birth: string | null, avatar_file_path: string | null, avatar_file_bucket: string | null }>(query, [userId]);
   return result.rows[0];
 }
 
 export async function upsertProfile(input: UpdateProfileInput) {
   const { userId, data } = input;
   const query = `
-    INSERT INTO user_profile (user_id, headline, about, visibility, portfolio_url, updated_at)
-    VALUES ($1, $2, $3, COALESCE($4::visibility, 'public'::visibility), $5, now())
+    INSERT INTO user_profile (user_id, headline, about, visibility, portfolio_url, avatar_file_id, date_of_birth, updated_at)
+    VALUES ($1, $2, $3, COALESCE($4::visibility, 'public'::visibility), $5, $6, $7, now())
     ON CONFLICT (user_id) DO UPDATE SET
       headline = COALESCE($2, user_profile.headline),
       about = COALESCE($3, user_profile.about),
       visibility = COALESCE($4::visibility, user_profile.visibility),
       portfolio_url = COALESCE($5, user_profile.portfolio_url),
+      avatar_file_id = COALESCE($6, user_profile.avatar_file_id),
+      date_of_birth = COALESCE($7, user_profile.date_of_birth),
       updated_at = now()
     RETURNING *;
   `;
@@ -67,6 +73,8 @@ export async function upsertProfile(input: UpdateProfileInput) {
     data.about,
     data.visibility,
     data.portfolio_url,
+    data.avatar_file_id,
+    data.date_of_birth ? data.date_of_birth : null,
   ]);
   return result.rows[0];
 }
@@ -75,11 +83,13 @@ export async function updateResume(input: UpdateResumeInput) {
   const { userId, data } = input;
   const query = `
     UPDATE user_profile 
-    SET resume_url = $2, updated_at = now() 
+    SET resume_url = COALESCE($2, resume_url),
+        resume_file_id = COALESCE($3, resume_file_id),
+        updated_at = now() 
     WHERE user_id = $1 
     RETURNING *;
   `;
-  const result = await pool.query(query, [userId, data.resume_url]);
+  const result = await pool.query(query, [userId, data.resume_url, data.file_id]);
   return result.rows[0];
 }
 

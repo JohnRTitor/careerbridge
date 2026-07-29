@@ -88,11 +88,29 @@ export const pool = new Pool({
 });
 ```
 
-## 5. Deployment Checklist
+## 5. Supabase Storage Configuration
+
+CareerBridge uses Supabase Storage for handling file uploads (user avatars, resumes, company logos). The application is designed to use **Direct-to-Storage Uploads** via signed URLs.
+
+To ensure file uploads work in production, you must set up the storage buckets in your Supabase project:
+
+1. Go to your **Supabase Dashboard** -> **Storage**.
+2. Create the following buckets:
+   - `avatars`
+   - `resumes`
+   - `companies`
+3. Configure the bucket permissions as needed. The API handles access control by issuing signed upload and download URLs, so the buckets do not necessarily need to be public, though `avatars` and `companies` may be public depending on your caching preferences.
+4. Add your Supabase credentials to your Vercel Environment Variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`: The URL of your Supabase project.
+   - `SUPABASE_SECRET_KEY`: Your Supabase secret API key (previously known as the service_role key, required to bypass RLS for secure, server-orchestrated signed URL generation).
+
+## 6. Deployment Checklist
 
 Before triggering a deployment on Vercel, verify the following:
 
 - [ ] `DATABASE_URL` is set in Vercel Environment Variables using the **Transaction Pooler** string.
+- [ ] `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SECRET_KEY` are set in Vercel for Storage capabilities.
+- [ ] Required storage buckets (`avatars`, `resumes`, `companies`) have been created in the Supabase Dashboard.
 - [ ] `NODE_ENV` is implicitly set to `production` by Vercel.
 - [ ] Any other required environment variables (e.g., authentication secrets, public API URLs) are configured in Vercel.
 - [ ] Local migrations or database resets are run from your local machine using the **Session Pooler** string.

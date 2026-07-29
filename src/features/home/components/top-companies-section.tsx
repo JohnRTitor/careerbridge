@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUpRightIcon } from "@hugeicons/core-free-icons";
+import { ArrowUpRightIcon, Building02Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { listCompanies } from "@/features/companies/api/api";
 
 export async function TopCompaniesSection() {
@@ -54,9 +55,14 @@ export async function TopCompaniesSection() {
             </Link>
           ))
         ) : (
-          <div className="col-span-full text-center text-muted-foreground py-8 border rounded-2xl bg-background shadow-sm">
-            No companies available yet.
-          </div>
+          <Empty className="col-span-full border shadow-sm">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={Building02Icon} />
+              </EmptyMedia>
+              <EmptyTitle>No companies available yet.</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         )}
       </div>
     </section>

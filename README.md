@@ -38,11 +38,13 @@ This project is built using modern web technologies:
    ```
 
 3. Configure Environment Variables:
-   Copy the example environment file and fill in your details (e.g., Database URL, Auth secrets). Ensure you have a running PostgreSQL database and update the `DATABASE_URL` accordingly.
+   Copy the example environment file and fill in your details (e.g., Database URL, Auth secrets, Supabase storage keys). Ensure you have a running PostgreSQL database and update the `DATABASE_URL` accordingly.
 
    ```bash
    cp .env.example .env
    ```
+   
+   *Note for File Uploads: To enable profile pictures and resume uploads, you must provide `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SECRET_KEY` in your `.env` file, and ensure the `avatars`, `resumes`, and `companies` buckets exist in your Supabase storage.*
 
 4. Setup the database and seed it with mock data:
 
@@ -76,6 +78,7 @@ This project is built using modern web technologies:
 - [x] Set up Next.js architecture and database connections.
 - [x] Implement robust authentication and authorization using Better Auth (RBAC for Job Seekers, Recruiters, Admins).
 - [x] Set up Hono API routes.
+- [x] Integrate direct-to-storage file uploads using Supabase Storage.
 
 ### User Profile Management
 

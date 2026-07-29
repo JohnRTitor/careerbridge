@@ -4,9 +4,11 @@ import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, Ge
 export async function searchJobs(input: SearchJobsInput & { limit: number; offset: number }) {
   const { query: queryStr, location, type, is_featured, status = 'open', limit, offset } = input;
   let baseQuery = `
-    SELECT j.*, c.name as company_name, c.logo_url as company_logo
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo,
+           fl.path as company_logo_file_path, fl.bucket as company_logo_file_bucket
     FROM jobs j
     LEFT JOIN companies c ON j.company_id = c.id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
     WHERE j.status = $1
   `;
   
@@ -57,9 +59,11 @@ export async function searchJobs(input: SearchJobsInput & { limit: number; offse
 export async function getJobById(input: GetJobByIdInput) {
   const { jobId } = input;
   const query = `
-    SELECT j.*, c.name as company_name, c.logo_url as company_logo, c.description as company_description
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo, c.description as company_description,
+           fl.path as company_logo_file_path, fl.bucket as company_logo_file_bucket
     FROM jobs j
     LEFT JOIN companies c ON j.company_id = c.id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
     WHERE j.id = $1
   `;
   const result = await pool.query(query, [jobId]);
@@ -94,9 +98,11 @@ export async function getRecommendations(input: GetRecommendationsInput & { limi
   // Simple naive recommendation: just fetch latest open jobs
   // In future, match against user_profile.headline or user_profile skills
   const query = `
-    SELECT j.*, c.name as company_name, c.logo_url as company_logo
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo,
+           fl.path as company_logo_file_path, fl.bucket as company_logo_file_bucket
     FROM jobs j
     LEFT JOIN companies c ON j.company_id = c.id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
     WHERE j.status = 'open'
     ORDER BY RANDOM()
     LIMIT $1
@@ -107,10 +113,12 @@ export async function getRecommendations(input: GetRecommendationsInput & { limi
 export async function getSavedJobs(input: GetSavedJobsInput) {
   const { userId } = input;
   const query = `
-    SELECT j.*, c.name as company_name, c.logo_url as company_logo, sj.saved_at
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo, sj.saved_at,
+           fl.path as company_logo_file_path, fl.bucket as company_logo_file_bucket
     FROM saved_jobs sj
     JOIN jobs j ON sj.job_id = j.id
     LEFT JOIN companies c ON j.company_id = c.id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
     WHERE sj.user_id = $1
     ORDER BY sj.saved_at DESC
   `;

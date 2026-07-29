@@ -98,6 +98,25 @@ CREATE INDEX "account_userId_idx" ON "account" ("userId");
 CREATE INDEX "verification_identifier_idx" ON "verification" ("identifier");
 
 -- ==========================================
+-- Storage
+-- ==========================================
+
+CREATE TABLE files (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  bucket TEXT NOT NULL,
+  path TEXT NOT NULL,
+  original_filename TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  size INTEGER NOT NULL,
+  owner_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP NOT NULL DEFAULT now(),
+  deleted_at TIMESTAMP
+);
+
+CREATE INDEX files_owner_id_idx ON files(owner_id);
+
+-- ==========================================
 -- Core Profile
 -- ==========================================
 
@@ -123,11 +142,13 @@ CREATE TABLE user_profile (
   postal_code TEXT,
 
   avatar_url TEXT,
+  avatar_file_id UUID REFERENCES files(id) ON DELETE SET NULL,
 
   visibility visibility NOT NULL DEFAULT 'public',
 
   portfolio_url TEXT,
   resume_url TEXT,
+  resume_file_id UUID REFERENCES files(id) ON DELETE SET NULL,
 
   open_to_work BOOLEAN NOT NULL DEFAULT true,
   willing_to_relocate BOOLEAN NOT NULL DEFAULT false,
@@ -236,7 +257,8 @@ CREATE TABLE resumes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id TEXT REFERENCES "user"(id) ON DELETE CASCADE,
   title TEXT,
-  file_url TEXT NOT NULL,
+  file_url TEXT,
+  file_id UUID REFERENCES files(id) ON DELETE CASCADE,
   is_default BOOLEAN DEFAULT FALSE,
   uploaded_at TIMESTAMP DEFAULT now()
 );
@@ -272,6 +294,7 @@ CREATE TABLE companies (
   name TEXT NOT NULL,
   description TEXT,
   logo_url TEXT,
+  logo_file_id UUID REFERENCES files(id) ON DELETE SET NULL,
   website TEXT,
   industry TEXT,
   size TEXT,

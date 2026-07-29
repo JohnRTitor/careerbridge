@@ -44,7 +44,14 @@ export async function listCompanies(input: ListCompaniesInput & { offset: number
 
 export async function getCompany(input: GetCompanyInput) {
   const { companyId } = input;
-  const query = `SELECT * FROM companies WHERE id = $1`;
+  const query = `
+    SELECT c.*,
+           f.path as logo_file_path,
+           f.bucket as logo_file_bucket
+    FROM companies c
+    LEFT JOIN files f ON c.logo_file_id = f.id
+    WHERE c.id = $1
+  `;
   const result = await pool.query(query, [companyId]);
   return result.rows[0];
 }
@@ -64,11 +71,11 @@ export async function verifyCompany(input: VerifyCompanyInput) {
 export async function createCompany(input: CreateCompanyInput) {
   const { data } = input;
   const query = `
-    INSERT INTO companies (name, description, logo_url, website, industry, size, location)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO companies (name, description, logo_url, logo_file_id, website, industry, size, location)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *;
   `;
-  const result = await pool.query(query, [data.name, data.description, data.logo_url, data.website, data.industry, data.size, data.location]);
+  const result = await pool.query(query, [data.name, data.description, data.logo_url, data.logo_file_id, data.website, data.industry, data.size, data.location]);
   return result.rows[0];
 }
 
@@ -79,15 +86,16 @@ export async function updateCompany(input: UpdateCompanyInput) {
       name = COALESCE($2, name),
       description = COALESCE($3, description),
       logo_url = COALESCE($4, logo_url),
-      website = COALESCE($5, website),
-      industry = COALESCE($6, industry),
-      size = COALESCE($7, size),
-      location = COALESCE($8, location),
+      logo_file_id = COALESCE($5, logo_file_id),
+      website = COALESCE($6, website),
+      industry = COALESCE($7, industry),
+      size = COALESCE($8, size),
+      location = COALESCE($9, location),
       updated_at = now()
     WHERE id = $1
     RETURNING *;
   `;
-  const result = await pool.query(query, [companyId, data.name, data.description, data.logo_url, data.website, data.industry, data.size, data.location]);
+  const result = await pool.query(query, [companyId, data.name, data.description, data.logo_url, data.logo_file_id, data.website, data.industry, data.size, data.location]);
   return result.rows[0];
 }
 
@@ -125,11 +133,22 @@ export async function unfollowCompany(input: UnfollowCompanyInput) {
 export async function getFollowedCompanies(input: GetFollowedCompaniesInput) {
   const { userId } = input;
   const query = `
-    SELECT c.* 
+    SELECT c.*,
+      fl.path as logo_file_path,
+      fl.bucket as logo_file_bucket,
+      COALESCE(
+        json_agg(json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', cm.role))
+        FILTER (WHERE u.id IS NOT NULL),
+        '[]'
+      ) as members
     FROM companies c
-    JOIN company_followers f ON c.id = f.company_id
-    WHERE f.user_id = $1
-    ORDER BY f.followed_at DESC
+    JOIN company_followers cf ON c.id = cf.company_id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
+    LEFT JOIN company_members cm ON c.id = cm.company_id
+    LEFT JOIN "user" u ON cm.user_id = u.id
+    WHERE cf.user_id = $1
+    GROUP BY c.id, cf.company_id, cf.user_id, cf.followed_at, fl.path, fl.bucket
+    ORDER BY cf.followed_at DESC
   `;
   const result = await pool.query(query, [userId]);
   return result.rows;

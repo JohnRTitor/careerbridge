@@ -4,14 +4,19 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { 
+import {
   CloudUploadIcon,
-  Delete02Icon, 
+  Delete02Icon,
   DocumentAttachmentIcon,
   EyeIcon,
-  Tick02Icon
+  Tick02Icon,
 } from "@hugeicons/core-free-icons";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,21 +28,35 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
+import {
+  Empty,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyContent,
+} from "@/components/ui/empty";
 import { useAppForm } from "@/hooks/use-app-form";
 import { format, parseISO } from "date-fns";
-import { useAddResume, useDeleteResume, useUpdateResumeEntity } from "@/features/profiles/api/mutations";
+import {
+  useAddResume,
+  useDeleteResume,
+  useUpdateResumeEntity,
+} from "@/features/profiles/api/mutations";
 import { useProfile } from "@/features/profiles/api/queries";
 import type { Resume } from "@/features/profiles/api/types";
+import { useSupabaseUpload } from "@/features/files/api/mutations";
+import { SingleFileUploader } from "@/components/ui/single-file-uploader";
+import { getPublicAssetUrl } from "@/lib/assets";
 
 export function ResumesSection() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: profile } = useProfile();
   const resumes = (profile?.resumes as Resume[]) || [];
-  
+
   const uploadMutation = useAddResume();
   const deleteMutation = useDeleteResume();
   const updateMutation = useUpdateResumeEntity();
+  const fileUploadMutation = useSupabaseUpload();
 
   const form = useAppForm({
     defaultValues: {
@@ -46,13 +65,18 @@ export function ResumesSection() {
     },
     onSubmit: async ({ value }) => {
       if (!value.file) return;
-      
+
+      const fileRecord = await fileUploadMutation.mutateAsync({
+        file: value.file,
+        bucket: "resumes",
+      });
+
       const payload = {
         title: value.name || value.file.name,
-        file_url: "https://example.com/dummy.pdf", // Mock URL since real upload is not implemented yet
+        file_url: fileRecord.path,
         is_default: false,
       };
-      
+
       await uploadMutation.mutateAsync(payload);
       setIsOpen(false);
     },
@@ -76,7 +100,12 @@ export function ResumesSection() {
           </div>
           Resumes
         </CardTitle>
-        <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="h-8 gap-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsOpen(true)}
+          className="h-8 gap-1"
+        >
           <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
           Upload
         </Button>
@@ -85,16 +114,21 @@ export function ResumesSection() {
         {resumes.length > 0 ? (
           <div className="flex flex-col gap-3">
             {resumes.map((resume) => (
-              <div 
-                key={resume.id} 
+              <div
+                key={resume.id}
                 className={`group border rounded-xl p-3 transition-colors ${
-                  resume.is_default ? "bg-destructive/10/30 border-rose-200" : "bg-muted/50 hover:bg-muted border-border"
+                  resume.is_default
+                    ? "bg-destructive/10/30 border-rose-200"
+                    : "bg-muted/50 hover:bg-muted border-border"
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center shrink-0">
-                      <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-4 text-muted-foreground" />
+                      <HugeiconsIcon
+                        icon={DocumentAttachmentIcon}
+                        className="size-4 text-muted-foreground"
+                      />
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
@@ -111,11 +145,16 @@ export function ResumesSection() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
-                  <a 
-                    href={resume.file_url} 
-                    target="_blank" 
+                  <a
+                    href={
+                      getPublicAssetUrl(null, {
+                        bucket: "resumes",
+                        path: resume.file_url,
+                      }) || resume.file_url
+                    }
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs flex items-center gap-1.5 text-muted-foreground hover:text-foreground font-medium transition-colors"
                   >
@@ -125,10 +164,15 @@ export function ResumesSection() {
                   <div className="w-px h-3 bg-border" />
                   {!resume.is_default && (
                     <>
-                      <Button 
+                      <Button
                         variant="link"
                         className="h-auto p-0 text-xs flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:no-underline font-medium transition-colors cursor-pointer"
-                        onClick={() => updateMutation.mutate({ id: resume.id, data: { is_default: true } })}
+                        onClick={() =>
+                          updateMutation.mutate({
+                            id: resume.id,
+                            data: { is_default: true },
+                          })
+                        }
                         disabled={updateMutation.isPending}
                       >
                         <HugeiconsIcon icon={Tick02Icon} className="size-3.5" />
@@ -138,12 +182,14 @@ export function ResumesSection() {
                     </>
                   )}
                   <AlertDialog>
-                    <AlertDialogTrigger render={
-                      <Button
-                        variant="link"
-                        className="h-auto p-0 text-xs flex items-center gap-1.5 text-destructive hover:text-destructive hover:no-underline font-medium transition-colors cursor-pointer ml-auto"
-                      />
-                    }>
+                    <AlertDialogTrigger
+                      render={
+                        <Button
+                          variant="link"
+                          className="h-auto p-0 text-xs flex items-center gap-1.5 text-destructive hover:text-destructive hover:no-underline font-medium transition-colors cursor-pointer ml-auto"
+                        />
+                      }
+                    >
                       <HugeiconsIcon icon={Delete02Icon} className="size-3.5" />
                       Delete
                     </AlertDialogTrigger>
@@ -151,7 +197,8 @@ export function ResumesSection() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Resume</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete this resume? This action cannot be undone.
+                          Are you sure you want to delete this resume? This
+                          action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -177,9 +224,16 @@ export function ResumesSection() {
               <HugeiconsIcon icon={DocumentAttachmentIcon} />
             </EmptyMedia>
             <EmptyTitle>No resumes uploaded yet.</EmptyTitle>
-            <EmptyDescription>Upload your resume to easily apply for jobs.</EmptyDescription>
+            <EmptyDescription>
+              Upload your resume to easily apply for jobs.
+            </EmptyDescription>
             <EmptyContent>
-              <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="mt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsOpen(true)}
+                className="mt-2"
+              >
                 Upload Resume
               </Button>
             </EmptyContent>
@@ -192,7 +246,7 @@ export function ResumesSection() {
           <DialogHeader>
             <DialogTitle>Upload Resume</DialogTitle>
           </DialogHeader>
-          <form 
+          <form
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -209,38 +263,40 @@ export function ResumesSection() {
                 />
               )}
             </form.AppField>
-            
+
             <form.AppField name="file">
               {(field) => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  <label
+                    htmlFor={field.name}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
                     PDF File *
                   </label>
-                  <input
-                    type="file"
-                    id={field.name}
-                    accept=".pdf"
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        field.handleChange(file);
-                      }
-                    }}
-                    required
+                  <SingleFileUploader
+                    key={isOpen ? "open" : "closed"}
+                    onChange={(f) => field.handleChange(f || undefined)}
+                    accept="application/pdf"
+                    maxSize={5 * 1024 * 1024}
+                    disabled={fileUploadMutation.isPending}
                   />
-                  <p className="text-xs text-muted-foreground">Max file size: 5MB. PDF only.</p>
                 </div>
               )}
             </form.AppField>
-            
+
             <div className="flex justify-end gap-3 pt-4">
-              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsOpen(false)}
+              >
                 Cancel
               </Button>
               <form.AppForm>
-                <form.SubmitButton disabled={!form.state.values.file}>
-                  Upload Resume
+                <form.SubmitButton
+                  disabled={!form.state.values.file || fileUploadMutation.isPending}
+                >
+                  {fileUploadMutation.isPending ? "Uploading..." : "Upload Resume"}
                 </form.SubmitButton>
               </form.AppForm>
             </div>

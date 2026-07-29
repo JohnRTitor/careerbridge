@@ -8,9 +8,11 @@ import {
   PlusSignIcon, 
   PencilEdit01Icon, 
   Delete02Icon, 
-  Settings02Icon
+  Settings02Icon,
+  StarIcon,
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -244,12 +246,19 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
-            <p className="text-muted-foreground text-sm mb-4">No skills added yet.</p>
-            <Button variant="outline" size="sm" onClick={openNew}>
-              Add Skills
-            </Button>
-          </div>
+          <Empty className="bg-muted/50 p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={StarIcon} />
+              </EmptyMedia>
+              <EmptyTitle>No skills added yet.</EmptyTitle>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={openNew} className="mt-2">
+                Add Skills
+              </Button>
+            </EmptyContent>
+          </Empty>
         )}
       </CardContent>
 

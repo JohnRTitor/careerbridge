@@ -160,9 +160,11 @@ export async function getRecruiterJobs(input: GetRecruiterJobsInput) {
   const total = parseInt(countResult.rows[0].count, 10);
 
   const query = `
-    SELECT j.*, c.name as company_name, c.logo_url as company_logo
+    SELECT j.*, c.name as company_name, c.logo_url as company_logo,
+           fl.path as company_logo_file_path, fl.bucket as company_logo_file_bucket
     FROM jobs j
     LEFT JOIN companies c ON j.company_id = c.id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
     WHERE j.created_by = $1
     ORDER BY j.created_at DESC
     LIMIT $2 OFFSET $3

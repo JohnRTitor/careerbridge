@@ -73,7 +73,7 @@ export function JobCard({
           )}
           <Badge variant="outline" className="font-normal text-muted-foreground border-border">
             <HugeiconsIcon icon={Location01Icon} className="size-3 mr-1" />
-            <span className="truncate max-w-[100px]">{job.location}</span>
+            <span className="truncate max-w-25">{job.location}</span>
           </Badge>
         </div>
 

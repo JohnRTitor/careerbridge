@@ -4,10 +4,12 @@ import type { GetUserApplicationsInput, ApplyForJobInput, GetApplicationInput, W
 export async function getUserApplications(input: GetUserApplicationsInput) {
   const { userId } = input;
   const query = `
-    SELECT a.*, j.title as job_title, c.name as company_name, c.logo_url as company_logo
+    SELECT a.*, j.title as job_title, c.name as company_name, c.logo_url as company_logo,
+           fl.path as company_logo_file_path, fl.bucket as company_logo_file_bucket
     FROM applications a
     JOIN jobs j ON a.job_id = j.id
     LEFT JOIN companies c ON j.company_id = c.id
+    LEFT JOIN files fl ON c.logo_file_id = fl.id
     WHERE a.candidate_id = $1
     ORDER BY a.applied_at DESC
   `;

@@ -59,7 +59,7 @@ export function CompanyCard({ company }: { company: Company }) {
           {company.location && (
             <Badge variant="outline" className="font-normal text-muted-foreground border-border">
               <HugeiconsIcon icon={Location01Icon} className="size-3 mr-1" />
-              <span className="truncate max-w-[120px]">{company.location}</span>
+              <span className="truncate max-w-30">{company.location}</span>
             </Badge>
           )}
         </div>

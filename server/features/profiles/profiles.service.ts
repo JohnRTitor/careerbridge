@@ -1,5 +1,6 @@
 import { profilesRepository } from "./profiles.repository";
 import { applicationsRepository } from "../applications/applications.repository";
+import { getPublicUrl } from "../../shared/storage";
 import { NotFoundError } from "../../shared/errors";
 import type { 
   GetProfileInput, 
@@ -36,7 +37,7 @@ export async function getProfile(input: GetProfileInput) {
   const { userId } = input;
   const profile = await profilesRepository.getProfile({ userId });
   if (!profile) {
-    return { user_id: "", name: null, email: "", image: null, headline: null, about: null, visibility: "public", resume_url: null, portfolio_url: null, education: [], experience: [], certifications: [], projects: [], skills: [], languages: [], social_links: [], resumes: [] };
+    return { user_id: "", name: null, email: "", image: null, headline: null, about: null, visibility: "public", resume_url: null, portfolio_url: null, date_of_birth: null, education: [], experience: [], certifications: [], projects: [], skills: [], languages: [], social_links: [], resumes: [] };
   }
   const education = await profilesRepository.getEducation({ userId });
   const experience = await profilesRepository.getExperience({ userId });
@@ -47,8 +48,14 @@ export async function getProfile(input: GetProfileInput) {
   const social_links = await profilesRepository.getSocialLinks({ userId });
   const resumes = await profilesRepository.getResumes({ userId });
   
+  let resolvedImage = profile.image;
+  if (profile.avatar_file_bucket && profile.avatar_file_path) {
+    resolvedImage = getPublicUrl(profile.avatar_file_bucket, profile.avatar_file_path) || profile.image;
+  }
+
   return { 
-    ...profile, 
+    ...profile,
+    image: resolvedImage,
     education, 
     experience,
     certifications,
@@ -82,11 +89,16 @@ export async function getPublicProfile(input: GetProfileInput) {
     }
   }
 
+  let resolvedImage = profile.image;
+  if (profile.avatar_file_bucket && profile.avatar_file_path) {
+    resolvedImage = getPublicUrl(profile.avatar_file_bucket, profile.avatar_file_path) || profile.image;
+  }
+
   if (!canView) {
     return {
       user_id: profile.user_id,
       name: profile.name,
-      image: profile.image,
+      image: resolvedImage,
       visibility: profile.visibility,
       is_private: true as const
     };
@@ -105,6 +117,7 @@ export async function getPublicProfile(input: GetProfileInput) {
 
   return { 
     ...safeProfile, 
+    image: resolvedImage,
     is_private: false as const,
     education, 
     experience,

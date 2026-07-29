@@ -45,7 +45,9 @@ export function DateField<TField extends AnyFieldApi>({
   ...props
 }: DateFieldProps<TField>) {
   const { invalid, error } = getFieldState(field);
-  const value = field.state.value as Date | undefined;
+  const rawValue = field.state.value;
+  const isString = typeof rawValue === "string";
+  const value = (isString && rawValue) ? new Date(rawValue as string) : (rawValue as Date | undefined);
 
   return (
     <Field className={className} data-invalid={invalid}>
@@ -77,8 +79,15 @@ export function DateField<TField extends AnyFieldApi>({
           <Calendar
             {...props}
             mode="single"
+            defaultMonth={value}
             selected={value}
-            onSelect={(date) => field.handleChange(date)}
+            onSelect={(date) => {
+              if (isString) {
+                field.handleChange((date ? format(date, "yyyy-MM-dd") : "") as any);
+              } else {
+                field.handleChange(date as any);
+              }
+            }}
           />
         </PopoverContent>
       </Popover>

@@ -12,6 +12,7 @@ import {
   Link01Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -265,12 +266,19 @@ export function CertificationsSection({ certifications }: { certifications: Cert
             </div>
           ))
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
-            <p className="text-muted-foreground text-sm mb-4">No certifications added yet.</p>
-            <Button variant="outline" size="sm" onClick={openNew}>
-              Add Certification
-            </Button>
-          </div>
+          <Empty className="bg-muted/50 p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={Certificate01Icon} />
+              </EmptyMedia>
+              <EmptyTitle>No certifications added yet.</EmptyTitle>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={openNew} className="mt-2">
+                Add Certification
+              </Button>
+            </EmptyContent>
+          </Empty>
         )}
       </CardContent>
 

@@ -18,6 +18,7 @@ import { companiesRoutes } from "../features/companies/companies.routes";
 import { adminRoutes } from "../features/admin/admin.routes";
 import { metaRoutes } from "../features/meta/meta.routes";
 import { statsRoutes } from "../features/stats/stats.routes";
+import { filesRoutes } from "../features/files/files.routes";
 import { auth } from "../auth/auth";
 
 export const app = new Hono().basePath("/api");
@@ -38,7 +39,8 @@ export const routes = app
   .route("/companies", companiesRoutes)
   .route("/admin", adminRoutes)
   .route("/meta", metaRoutes)
-  .route("/stats", statsRoutes);
+  .route("/stats", statsRoutes)
+  .route("/files", filesRoutes);
 
 export type AppType = typeof routes;
 

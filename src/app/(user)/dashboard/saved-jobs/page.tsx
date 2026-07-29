@@ -4,6 +4,7 @@ import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { BookmarkIcon } from "@hugeicons/core-free-icons";
 import { buttonVariants } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSavedJobs } from "@/features/jobs/api/queries";
 import { JobCard } from "@/features/jobs/components/job-card";
@@ -39,16 +40,20 @@ export default function SavedJobsPage() {
       </div>
 
       {savedJobs.length === 0 ? (
-        <div className="border border-dashed rounded-xl flex-1 flex flex-col items-center justify-center p-12 text-center bg-muted/50">
-          <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-            <HugeiconsIcon icon={BookmarkIcon} className="size-8" />
-          </div>
-          <h3 className="text-xl font-semibold">No saved jobs</h3>
-          <p className="text-muted-foreground max-w-sm mt-2">
-            You haven&apos;t saved any jobs yet. When you see a job you like, click the bookmark icon to save it here.
-          </p>
-          <Link href="/jobs" className={buttonVariants({ className: "mt-6" })}>Browse Jobs</Link>
-        </div>
+        <Empty className="flex-1 bg-muted/50 py-12">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <HugeiconsIcon icon={BookmarkIcon} className="size-8" />
+            </EmptyMedia>
+            <EmptyTitle className="text-xl">No saved jobs</EmptyTitle>
+            <EmptyDescription className="max-w-sm mt-2">
+              You haven&apos;t saved any jobs yet. When you see a job you like, click the bookmark icon to save it here.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Link href="/jobs" className={buttonVariants({ className: "mt-4" })}>Browse Jobs</Link>
+          </EmptyContent>
+        </Empty>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {savedJobs.map((job) => (

@@ -36,7 +36,7 @@ export function MobileNav({ links, children }: MobileNavProps) {
           <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
           <span className="sr-only">Toggle Menu</span>
         </SheetTrigger>
-        <SheetContent side="right" className="w-[300px] sm:w-[350px] flex flex-col">
+        <SheetContent side="right" className="w-75 sm:w-87.5 flex flex-col">
           <SheetHeader className="mb-4 text-left">
             <SheetTitle>
               <div onClick={() => setOpen(false)} className="cursor-pointer">
@@ -44,7 +44,6 @@ export function MobileNav({ links, children }: MobileNavProps) {
               </div>
             </SheetTitle>
           </SheetHeader>
-          
           <div className="flex flex-col gap-4 overflow-y-auto py-4 h-full">
             <div className="flex flex-col gap-2">
               {links.map((link) => {

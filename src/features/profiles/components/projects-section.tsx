@@ -14,6 +14,7 @@ import {
   Calendar01Icon
 } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -289,12 +290,19 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
             </div>
           ))
         ) : (
-          <div className="text-center py-6 border border-dashed border-border rounded-xl bg-muted/50">
-            <p className="text-muted-foreground text-sm mb-4">No projects added yet.</p>
-            <Button variant="outline" size="sm" onClick={openNew}>
-              Add Project
-            </Button>
-          </div>
+          <Empty className="bg-muted/50 p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HugeiconsIcon icon={Folder01Icon} />
+              </EmptyMedia>
+              <EmptyTitle>No projects added yet.</EmptyTitle>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={openNew} className="mt-2">
+                Add Project
+              </Button>
+            </EmptyContent>
+          </Empty>
         )}
       </CardContent>
 

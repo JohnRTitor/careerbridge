@@ -3,6 +3,7 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DocumentAttachmentIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useProfile } from "@/features/profiles/api/queries";
@@ -96,13 +97,17 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
                 )}
               </form.AppField>
             ) : (
-              <div className="border border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center text-center bg-muted/50">
-                <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-6 text-muted-foreground mb-2" />
-                <p className="text-sm font-medium">No resumes found</p>
-                <p className="text-xs text-muted-foreground mt-1 mb-3">
-                  You need to upload a resume to your profile before applying.
-                </p>
-              </div>
+              <Empty className="bg-muted/50 p-4">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-4" />
+                  </EmptyMedia>
+                  <EmptyTitle>No resumes found</EmptyTitle>
+                  <EmptyDescription>
+                    You need to upload a resume to your profile before applying.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )}
 
             <form.AppField name="cover_letter">

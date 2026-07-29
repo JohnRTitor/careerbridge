@@ -1,6 +1,7 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Alert01Icon, BriefcaseIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { JobCard } from "@/features/jobs/components/job-card";
 import { jobsService } from "../../../../server/features/jobs/jobs.service";
 import Link from "next/link";
@@ -71,22 +72,23 @@ export async function JobsSection({ query, location }: JobsSectionProps) {
                 {renderJobCards(jobs)}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
-                <HugeiconsIcon
-                  icon={Alert01Icon}
-                  className="size-12 text-muted-foreground stroke-1 mb-4"
-                />
-                <h3 className="text-lg font-semibold text-foreground">
-                  No matches listed
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                  We couldn&apos;t find anything matching your exact text. Double check
-                  spelling or try looking with empty parameters to view everything.
-                </p>
-                <Button className="mt-6" variant="outline" render={<Link href="/#jobs" scroll={false} />}>
-                  Browse All Postings
-                </Button>
-              </div>
+              <Empty className="p-12 shadow-sm">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <HugeiconsIcon icon={Alert01Icon} />
+                  </EmptyMedia>
+                  <EmptyTitle>No matches listed</EmptyTitle>
+                  <EmptyDescription>
+                    We couldn&apos;t find anything matching your exact text. Double check
+                    spelling or try looking with empty parameters to view everything.
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Button className="mt-4" variant="outline" render={<Link href="/#jobs" scroll={false} />}>
+                    Browse All Postings
+                  </Button>
+                </EmptyContent>
+              </Empty>
             )
           ) : (
             jobs.length > 0 ? (
@@ -94,19 +96,18 @@ export async function JobsSection({ query, location }: JobsSectionProps) {
                 {renderJobCards(jobs)}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
-                <HugeiconsIcon
-                  icon={BriefcaseIcon}
-                  className="size-12 text-muted-foreground stroke-1 mb-4"
-                />
-                <h3 className="text-lg font-semibold text-foreground">
-                  No featured jobs
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                  There are no featured jobs at the moment. Please check back later or use
-                  the search above to find open positions.
-                </p>
-              </div>
+              <Empty className="p-12 shadow-sm">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <HugeiconsIcon icon={BriefcaseIcon} />
+                  </EmptyMedia>
+                  <EmptyTitle>No featured jobs</EmptyTitle>
+                  <EmptyDescription>
+                    There are no featured jobs at the moment. Please check back later or use
+                    the search above to find open positions.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )
           )}
         </div>

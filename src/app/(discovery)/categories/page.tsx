@@ -13,7 +13,9 @@ import {
   Building01Icon,
   HeadphonesIcon,
   BriefcaseIcon,
+  FolderOpenIcon,
 } from "@hugeicons/core-free-icons";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CategoryCardSkeleton } from "@/components/common/skeletons";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -80,14 +82,15 @@ function CategoriesContent() {
               );
             })
           ) : (
-            <div className="col-span-full flex flex-col items-center justify-center text-center text-muted-foreground py-16 border rounded-2xl bg-background shadow-sm border-dashed">
-              <HugeiconsIcon
-                icon={BriefcaseIcon}
-                className="size-12 mb-4 opacity-50"
-              />
-              <p className="text-lg font-medium">No categories available</p>
-              <p className="text-sm">Check back later for new opportunities.</p>
-            </div>
+            <Empty className="col-span-full border-dashed shadow-sm py-16">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <HugeiconsIcon icon={FolderOpenIcon} />
+                </EmptyMedia>
+                <EmptyTitle className="text-lg">No categories available</EmptyTitle>
+                <EmptyDescription>Check back later for new opportunities.</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
         </div>
       </main>
