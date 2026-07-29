@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TextSkeleton } from "./skeletons/text-skeleton";
 import { Spinner } from "@/components/ui/spinner";
 
-interface LoadingStateProps {
+type LoadingStateProps = {
   type?: "card" | "table" | "spinner";
   count?: number;
   className?: string;

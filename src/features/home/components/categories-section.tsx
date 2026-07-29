@@ -1,5 +1,3 @@
-"use client";
-
 import { HugeiconsIcon, type IconSvgElement as IconSvgObject } from "@hugeicons/react";
 import {
   CodeIcon,
@@ -13,8 +11,8 @@ import {
   BriefcaseIcon,
 } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
-import { useJobCategories } from "@/features/stats/api/queries";
-import { CategoryCardSkeleton } from "@/components/common/skeletons";
+import { getJobCategories } from "@/features/stats/api/api";
+import Link from "next/link";
 
 const categoryIcons: Record<string, IconSvgObject> = {
   Engineering: CodeIcon,
@@ -28,12 +26,8 @@ const categoryIcons: Record<string, IconSvgObject> = {
   Support: HeadphonesIcon,
 };
 
-interface CategoriesSectionProps {
-  handlePopularSearch: (term: string) => void;
-}
-
-export function CategoriesSection({ handlePopularSearch }: CategoriesSectionProps) {
-  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+export async function CategoriesSection() {
+  const categoriesData = await getJobCategories().catch(() => []);
 
   return (
     <section id="categories" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
@@ -47,16 +41,14 @@ export function CategoriesSection({ handlePopularSearch }: CategoriesSectionProp
       </div>
 
       <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {isLoadingCategories ? (
-          Array.from({ length: 8 }).map((_, i) => <CategoryCardSkeleton key={i} />)
-        ) : categoriesData && categoriesData.length > 0 ? (
+        {categoriesData && categoriesData.length > 0 ? (
           categoriesData.map((category) => {
             const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
             return (
-              <button
+              <Link
                 key={category.industry}
-                onClick={() => handlePopularSearch(category.industry)}
-                className="text-left w-full cursor-pointer"
+                href={`/jobs?query=${encodeURIComponent(category.industry)}`}
+                className="block text-left w-full cursor-pointer"
               >
                 <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
                   <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
@@ -69,7 +61,7 @@ export function CategoriesSection({ handlePopularSearch }: CategoriesSectionProp
                     </p>
                   </div>
                 </Card>
-              </button>
+              </Link>
             );
           })
         ) : (

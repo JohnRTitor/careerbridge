@@ -11,7 +11,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-interface DesktopNavProps {
+type DesktopNavProps = {
   links: NavLink[];
 }
 

@@ -1,6 +1,5 @@
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeft01Icon,
@@ -11,77 +10,51 @@ import {
   Tick02Icon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
+import { Empty, EmptyTitle, EmptyDescription, EmptyMedia } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
-import { useCompany, useFollowedCompanies } from "@/features/companies/api/queries";
-import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
-import { useJobs } from "@/features/jobs/api/queries";
 import { JobCard } from "@/features/jobs/components/job-card";
-import { useAppPermission } from "@/features/auth/api/queries";
-import type { Company } from "@/features/companies/api/types";
+import { FollowCompanyAction } from "@/features/companies/components/follow-company-action";
+import { companiesService } from "@server/features/companies/companies.service";
+import { jobsService } from "@server/features/jobs/jobs.service";
+import type { Job } from "@/features/jobs/api/types";
 
-export default function CompanyDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params.id as string;
-  const { can } = useAppPermission();
+export default async function CompanyDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
 
-  const { data: company, isLoading, error } = useCompany(id);
-  const { data: followedCompanies = [] } = useFollowedCompanies();
-  const followMutation = useFollowCompany();
-  const unfollowMutation = useUnfollowCompany();
+  let company = null;
+  let jobsData = null;
 
-  // Fetch open jobs for this specific company
-  const { data: jobsData, isLoading: isLoadingJobs } = useJobs({ companyId: id, limit: 20, page: 1 });
-
-  const isFollowed = followedCompanies.some((c: Company) => c.id === id);
-  const isCandidate = can("bookmark", "create"); // Candidate permission proxy
-
-  const handleToggleFollow = async () => {
-    if (isFollowed) {
-      await unfollowMutation.mutateAsync(id);
-    } else {
-      await followMutation.mutateAsync(id);
-    }
-  };
-
-  const isFollowing = followMutation.isPending || unfollowMutation.isPending;
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col min-h-screen bg-background p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
-        <Skeleton className="h-8 w-24 mb-4" />
-        <Skeleton className="h-[250px] w-full rounded-2xl" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
-          {[1, 2, 3].map(i => <Skeleton key={i} className="h-48 w-full rounded-xl" />)}
-        </div>
-      </div>
-    );
+  try {
+    const [companyResult, jobsResult] = await Promise.all([
+      companiesService.getCompany({ companyId: id }),
+      jobsService.searchJobs({ companyId: id, limit: 10, page: 1, status: "open" })
+    ]);
+    company = companyResult;
+    jobsData = jobsResult;
+  } catch (err) {
+    return notFound();
   }
 
-  if (error || !company) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <h2 className="text-2xl font-bold tracking-tight">Company not found</h2>
-        <p className="text-muted-foreground mt-2 mb-6">The company you are looking for does not exist or has been removed.</p>
-        <Button onClick={() => router.back()} variant="outline">Go Back</Button>
-      </div>
-    );
+  if (!company) {
+    return notFound();
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-background pb-16">
       <div className="bg-background border-b border-border pt-8 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Button 
-            variant="ghost"
-            onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 -ml-4"
+          <Link 
+            href="/companies"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 -ml-4 px-4 py-2 rounded-md hover:bg-muted"
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
             Back to companies
-          </Button>
+          </Link>
 
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center w-full md:w-auto">
@@ -137,17 +110,13 @@ export default function CompanyDetailsPage() {
               </div>
             </div>
 
-            {isCandidate && (
-              <Button
-                onClick={handleToggleFollow}
-                disabled={isFollowing}
-                variant={isFollowed ? "secondary" : "default"}
-                size="lg"
-                className="w-full md:w-auto h-12 px-8 shrink-0"
-              >
-                {isFollowed ? "Following Company" : "Follow Company"}
-              </Button>
-            )}
+            <FollowCompanyAction 
+              companyId={company.id} 
+              size="lg" 
+              className="w-full md:w-auto h-12 px-8 shrink-0" 
+              isFollowingText="Following Company"
+              followText="Follow Company"
+            />
           </div>
           
           <div className="mt-8 pt-8 border-t border-border">
@@ -172,37 +141,30 @@ export default function CompanyDetailsPage() {
           </Badge>
         </div>
 
-        {isLoadingJobs ? (
+        {jobsData && jobsData.jobs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-48 w-full rounded-xl" />)}
+            {jobsData.jobs.map((job: Job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
           </div>
         ) : (
-          <>
-            {jobsData && jobsData.jobs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {jobsData.jobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
-                ))}
-              </div>
-            ) : (
-              <Empty className="max-w-3xl mx-auto rounded-2xl">
-                <EmptyMedia variant="icon">
-                  <HugeiconsIcon icon={BriefcaseIcon} />
-                </EmptyMedia>
-                <EmptyTitle>No open roles currently</EmptyTitle>
-                <EmptyDescription>
-                  {company.name} doesn&apos;t have any open positions right now. {isCandidate && !isFollowed ? "Follow them to get notified when they post new jobs!" : "Check back later for new opportunities."}
-                </EmptyDescription>
-                {isCandidate && !isFollowed && (
-                  <EmptyContent>
-                    <Button onClick={handleToggleFollow} disabled={isFollowing} className="mt-2">
-                      Follow {company.name}
-                    </Button>
-                  </EmptyContent>
-                )}
-              </Empty>
-            )}
-          </>
+          <Empty className="max-w-3xl mx-auto rounded-2xl">
+            <EmptyMedia variant="icon">
+              <HugeiconsIcon icon={BriefcaseIcon} />
+            </EmptyMedia>
+            <EmptyTitle>No open roles currently</EmptyTitle>
+            <EmptyDescription>
+              {company.name} doesn&apos;t have any open positions right now. Follow them to get notified when they post new jobs!
+            </EmptyDescription>
+            {/* We could potentially include FollowCompanyAction here as well, but we need to match the previous empty state logic */}
+            <div className="mt-6 flex justify-center">
+              <FollowCompanyAction 
+                companyId={company.id}
+                followText={`Follow ${company.name}`}
+                isFollowingText={`Following ${company.name}`}
+              />
+            </div>
+          </Empty>
         )}
       </div>
     </div>

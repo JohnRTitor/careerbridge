@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Logo } from "./logo";
 
-interface MobileNavProps {
+type MobileNavProps = {
   links: NavLink[];
   children?: React.ReactNode; // To pass in AuthButtons or UserMenu for mobile context
 }

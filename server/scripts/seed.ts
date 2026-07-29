@@ -6,7 +6,7 @@ import { JOB_TYPES, WORK_MODES, VISIBILITIES, randomDate, batchInsert } from "./
 faker.seed(12345);
 
 // --- Configuration ---
-export interface SeedConfig {
+export type SeedConfig = {
   candidates: number;
   employers: number;
   companies: number;
@@ -39,7 +39,7 @@ export const SeedProfiles: Record<string, SeedConfig> = {
 };
 
 // --- State ---
-interface SeedState {
+type SeedState = {
   skillIds: string[];
   languageIds: string[];
   companyIds: string[];

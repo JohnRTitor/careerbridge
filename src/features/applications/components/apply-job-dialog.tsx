@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { SelectItem } from "@/components/ui/select";
 import type { Resume } from "@/features/profiles/api/types";
 
-interface ApplyJobDialogProps {
+type ApplyJobDialogProps = {
   jobId: string;
   jobTitle: string;
   companyName: string;

@@ -1,9 +1,6 @@
-"use client";
-
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, SearchIcon, SentIcon } from "@hugeicons/core-free-icons";
-import { useHomepageStats } from "@/features/stats/api/queries";
-import { StatSkeleton } from "@/components/common/skeletons";
+import { getHomepageStats } from "@/features/stats/api/api";
 
 const steps = [
   {
@@ -26,8 +23,8 @@ const steps = [
   },
 ];
 
-export function HowItWorksSection() {
-  const { data: statsData, isLoading: isLoadingStats } = useHomepageStats();
+export async function HowItWorksSection() {
+  const statsData = await getHomepageStats().catch(() => null);
 
   return (
     <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
@@ -58,38 +55,34 @@ export function HowItWorksSection() {
       </div>
 
       {/* Stats Display Block */}
-      <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
-        {isLoadingStats ? (
-          Array.from({ length: 4 }).map((_, i) => <StatSkeleton key={i} />)
-        ) : (
-          <>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-primary sm:text-4xl">
-                {statsData?.total_open_jobs?.toLocaleString() || "0"}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-primary sm:text-4xl">
-                {statsData?.total_companies?.toLocaleString() || "0"}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">Companies</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-primary sm:text-4xl">
-                {statsData?.total_users?.toLocaleString() || "0"}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-primary sm:text-4xl">
-                {statsData?.total_applications?.toLocaleString() || "0"}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
-            </div>
-          </>
-        )}
-      </div>
+      {statsData && (
+        <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
+          <div className="text-center">
+            <p className="text-3xl font-bold text-primary sm:text-4xl">
+              {statsData.total_open_jobs?.toLocaleString() || "0"}
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-primary sm:text-4xl">
+              {statsData.total_companies?.toLocaleString() || "0"}
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Companies</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-primary sm:text-4xl">
+              {statsData.total_users?.toLocaleString() || "0"}
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-primary sm:text-4xl">
+              {statsData.total_applications?.toLocaleString() || "0"}
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

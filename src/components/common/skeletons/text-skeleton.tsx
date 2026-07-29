@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-interface TextSkeletonProps {
+type TextSkeletonProps = {
   lines?: number;
   className?: string;
   lineClassName?: string;

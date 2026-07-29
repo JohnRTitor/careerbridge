@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface UserMenuProps {
+type UserMenuProps = {
   user: {
     id: string;
     name: string;

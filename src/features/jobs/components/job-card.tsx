@@ -1,32 +1,22 @@
-"use client";
-
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  BookmarkIcon,
   Building01Icon,
   Location01Icon,
   Wallet01Icon,
 } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import type { Job, SavedJob } from "@/features/jobs/api/types";
-import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
-import { useSavedJobs } from "@/features/jobs/api/queries";
+import { SaveJobAction } from "./save-job-action";
 
 export function JobCard({
   job,
 }: {
   job: Job | SavedJob;
 }) {
-  const { data: savedJobs = [] } = useSavedJobs();
-  const saveMutation = useSaveJob();
-  const unsaveMutation = useUnsaveJob();
-
-  const isSaved = savedJobs.some((s) => s.id === job.id);
-
   const formatTimeAgo = (dateStr: string) => {
     try {
       return formatDistanceToNow(parseISO(dateStr), { addSuffix: true });
@@ -34,18 +24,6 @@ export function JobCard({
       return "recently";
     }
   };
-
-  const handleToggleSave = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isSaved) {
-      await unsaveMutation.mutateAsync(job.id);
-    } else {
-      await saveMutation.mutateAsync(job.id);
-    }
-  };
-
-  const isSaving = saveMutation.isPending || unsaveMutation.isPending;
 
   return (
     <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
@@ -78,22 +56,7 @@ export function JobCard({
               </p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleToggleSave}
-            disabled={isSaving}
-            className={`rounded-full shrink-0 ${
-              isSaved ? "text-primary bg-primary/5 hover:bg-primary/10 hover:text-primary" : "text-muted-foreground"
-            }`}
-            aria-label={isSaved ? "Unsave job" : "Save job"}
-          >
-            <HugeiconsIcon 
-              icon={BookmarkIcon} 
-              className="size-5" 
-              fill={isSaved ? "currentColor" : "none"} 
-            />
-          </Button>
+          <SaveJobAction jobId={job.id} />
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">

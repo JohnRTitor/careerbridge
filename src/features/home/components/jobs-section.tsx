@@ -1,40 +1,45 @@
-"use client";
-
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Alert01Icon, BriefcaseIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { useFeaturedJobs, useJobs } from "@/features/jobs/api/queries";
 import { JobCard } from "@/features/jobs/components/job-card";
-import { JobCardSkeleton } from "@/components/common/skeletons";
+import { jobsService } from "../../../../server/features/jobs/jobs.service";
+import Link from "next/link";
 import type { Job } from "@/features/jobs/api/types";
 
-interface JobsSectionProps {
-  appliedSearch: { query: string; location: string } | null;
-  resetSearch: () => void;
+type JobsSectionProps = {
+  query?: string;
+  location?: string;
 }
 
-export function JobsSection({ appliedSearch, resetSearch }: JobsSectionProps) {
-  const { data: featuredJobsData, isLoading: isLoadingFeatured } = useFeaturedJobs();
+export async function JobsSection({ query, location }: JobsSectionProps) {
+  const isSearching = !!(query || location);
 
-  const { data: searchResultsData, isLoading: isLoadingSearch } = useJobs({
-    query: appliedSearch?.query || undefined,
-    location: appliedSearch?.location || undefined,
-    status: "open",
-    limit: 6,
-    page: 1,
-  });
-
-  const isSearching = appliedSearch !== null;
-
-  const renderJobCards = (jobs: Job[], isLoading: boolean) => {
-    if (isLoading) {
-      return Array.from({ length: 6 }).map((_, i) => <JobCardSkeleton key={i} />);
+  let jobs: Job[] = [];
+  try {
+    if (isSearching) {
+      const res = await jobsService.searchJobs({
+        query: query || undefined,
+        location: location || undefined,
+        status: "open",
+        limit: 6,
+        page: 1,
+      });
+      jobs = res.jobs as Job[];
+    } else {
+      const res = await jobsService.searchJobs({
+        is_featured: true,
+        status: "open",
+        limit: 6,
+        page: 1,
+      });
+      jobs = res.jobs as Job[];
     }
+  } catch (err) {
+    console.error("Failed to fetch jobs", err);
+  }
 
-    if (jobs.length === 0) {
-      return null;
-    }
-
+  const renderJobCards = (jobs: Job[]) => {
+    if (jobs.length === 0) return null;
     return jobs.map((job) => <JobCard key={job.id} job={job} />);
   };
 
@@ -53,7 +58,7 @@ export function JobsSection({ appliedSearch, resetSearch }: JobsSectionProps) {
             </p>
           </div>
           {isSearching && (
-            <Button variant="outline" onClick={resetSearch}>
+            <Button variant="outline" render={<Link href="/#jobs" scroll={false} />}>
               Reset view
             </Button>
           )}
@@ -61,14 +66,9 @@ export function JobsSection({ appliedSearch, resetSearch }: JobsSectionProps) {
 
         <div className="mt-12">
           {isSearching ? (
-            // Search Results
-            isLoadingSearch ? (
+            jobs.length > 0 ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {renderJobCards([], true)}
-              </div>
-            ) : searchResultsData?.jobs && searchResultsData.jobs.length > 0 ? (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {renderJobCards(searchResultsData.jobs, false)}
+                {renderJobCards(jobs)}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
@@ -83,34 +83,31 @@ export function JobsSection({ appliedSearch, resetSearch }: JobsSectionProps) {
                   We couldn&apos;t find anything matching your exact text. Double check
                   spelling or try looking with empty parameters to view everything.
                 </p>
-                <Button className="mt-6" variant="outline" onClick={resetSearch}>
+                <Button className="mt-6" variant="outline" render={<Link href="/#jobs" scroll={false} />}>
                   Browse All Postings
                 </Button>
               </div>
             )
-          ) : // Featured Jobs
-          isLoadingFeatured ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {renderJobCards([], true)}
-            </div>
-          ) : featuredJobsData?.jobs && featuredJobsData.jobs.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {renderJobCards(featuredJobsData.jobs, false)}
-            </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
-              <HugeiconsIcon
-                icon={BriefcaseIcon}
-                className="size-12 text-muted-foreground stroke-1 mb-4"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                No featured jobs
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                There are no featured jobs at the moment. Please check back later or use
-                the search above to find open positions.
-              </p>
-            </div>
+            jobs.length > 0 ? (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {renderJobCards(jobs)}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center rounded-2xl bg-background border p-12 text-center shadow-sm">
+                <HugeiconsIcon
+                  icon={BriefcaseIcon}
+                  className="size-12 text-muted-foreground stroke-1 mb-4"
+                />
+                <h3 className="text-lg font-semibold text-foreground">
+                  No featured jobs
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                  There are no featured jobs at the moment. Please check back later or use
+                  the search above to find open positions.
+                </p>
+              </div>
+            )
           )}
         </div>
       </div>

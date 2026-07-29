@@ -1,8 +1,5 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeft01Icon,
@@ -11,36 +8,32 @@ import {
   Wallet01Icon,
   ClockIcon,
   BriefcaseIcon,
-  BookmarkIcon,
   Tick02Icon,
 } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useJob, useSavedJobs } from "@/features/jobs/api/queries";
-import { useCandidateApplications } from "@/features/applications/api/queries";
-import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { ApplyJobDialog } from "@/features/applications/components/apply-job-dialog";
-import { useAppPermission } from "@/features/auth/api/queries";
+import { jobsService } from "@server/features/jobs/jobs.service";
+import { JobDetailsActions } from "@/features/jobs/components/job-details-actions";
 
-export default function JobDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params.id as string;
-  const { can } = useAppPermission();
+export default async function JobDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
 
-  const { data: job, isLoading, error } = useJob(id);
-  const { data: savedJobs = [] } = useSavedJobs();
-  const { data: applications = [] } = useCandidateApplications();
-  
-  const saveMutation = useSaveJob();
-  const unsaveMutation = useUnsaveJob();
+  let job = null;
+  try {
+    job = await jobsService.getJobById({ jobId: id });
+  } catch (err) {
+    // Return 404 if job not found
+    return notFound();
+  }
 
-  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
-
-  const isSaved = savedJobs.some((s) => s.id === id);
-  const hasApplied = applications.some((a) => a.job_id === id);
+  if (!job) {
+    return notFound();
+  }
 
   const formatTimeAgo = (dateStr?: string) => {
     if (!dateStr) return "";
@@ -51,70 +44,18 @@ export default function JobDetailsPage() {
     }
   };
 
-  const handleToggleSave = async () => {
-    if (isSaved) {
-      await unsaveMutation.mutateAsync(id);
-    } else {
-      await saveMutation.mutateAsync(id);
-    }
-  };
-
-  const isSaving = saveMutation.isPending || unsaveMutation.isPending;
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col min-h-screen bg-background p-4 sm:p-8 space-y-6 max-w-5xl mx-auto w-full">
-        <Skeleton className="h-8 w-24 mb-4" />
-        <div className="bg-background rounded-2xl p-6 border border-border">
-          <div className="flex items-start gap-6">
-            <Skeleton className="size-20 rounded-xl" />
-            <div className="space-y-3 flex-1">
-              <Skeleton className="h-8 w-2/3" />
-              <Skeleton className="h-4 w-1/2" />
-              <div className="flex gap-2 pt-2">
-                <Skeleton className="h-6 w-24" />
-                <Skeleton className="h-6 w-32" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <Skeleton className="h-64 w-full rounded-2xl" />
-            <Skeleton className="h-48 w-full rounded-2xl" />
-          </div>
-          <div className="space-y-6">
-            <Skeleton className="h-80 w-full rounded-2xl" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !job) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <h2 className="text-2xl font-bold tracking-tight">Job not found</h2>
-        <p className="text-muted-foreground mt-2 mb-6">The job you are looking for does not exist or has been removed.</p>
-        <Button onClick={() => router.back()} variant="outline">Go Back</Button>
-      </div>
-    );
-  }
-
-  const isCandidate = can("application", "create");
-
   return (
     <div className="flex flex-col min-h-screen bg-background pb-16">
       {/* Header Section */}
       <div className="bg-background border-b border-border py-8">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <button 
-            onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          <Link 
+            href="/jobs"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
             Back to search
-          </button>
+          </Link>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-between items-start sm:items-end">
             <div className="flex flex-col sm:flex-row gap-5 items-start">
@@ -169,36 +110,12 @@ export default function JobDetailsPage() {
               </div>
             </div>
 
-            {isCandidate && (
-              <div className="flex items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-0 border-border">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className={`flex-1 sm:flex-none h-12 px-6 shadow-sm ${isSaved ? "border-primary/50 text-primary bg-primary/5 hover:bg-primary/10" : ""}`}
-                  onClick={handleToggleSave}
-                  disabled={isSaving}
-                >
-                  <HugeiconsIcon icon={BookmarkIcon} className="size-5 mr-2" fill={isSaved ? "currentColor" : "none"} />
-                  {isSaved ? "Saved" : "Save Job"}
-                </Button>
-                
-                {hasApplied ? (
-                  <Button size="lg" className="flex-1 sm:flex-none h-12 px-8 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm pointer-events-none">
-                    <HugeiconsIcon icon={Tick02Icon} className="size-5 mr-2" />
-                    Applied
-                  </Button>
-                ) : (
-                  <Button 
-                    size="lg" 
-                    className="flex-1 sm:flex-none h-12 px-8 shadow-sm"
-                    onClick={() => setIsApplyDialogOpen(true)}
-                    disabled={job.status !== "open"}
-                  >
-                    Apply Now
-                  </Button>
-                )}
-              </div>
-            )}
+            <JobDetailsActions 
+              jobId={job.id} 
+              jobTitle={job.title} 
+              companyName={job.company_name || undefined} 
+              status={job.status} 
+            />
           </div>
         </div>
       </div>
@@ -282,16 +199,6 @@ export default function JobDetailsPage() {
           </div>
         </div>
       </div>
-
-      {isCandidate && (
-        <ApplyJobDialog 
-          jobId={job.id} 
-          jobTitle={job.title} 
-          companyName={job.company_name || "the company"} 
-          open={isApplyDialogOpen} 
-          onOpenChange={setIsApplyDialogOpen} 
-        />
-      )}
     </div>
   );
 }

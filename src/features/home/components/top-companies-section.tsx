@@ -1,14 +1,11 @@
-"use client";
-
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUpRightIcon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
-import { usePopularCompanies } from "@/features/companies/api/queries";
-import { CompanyCardSkeleton } from "@/components/common/skeletons";
+import { listCompanies } from "@/features/companies/api/api";
 
-export function TopCompaniesSection() {
-  const { data: popularCompaniesData, isLoading: isLoadingCompanies } = usePopularCompanies();
+export async function TopCompaniesSection() {
+  const popularCompaniesData = await listCompanies({ limit: 6, page: 1 }).catch(() => null);
 
   return (
     <section id="companies" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
@@ -22,9 +19,7 @@ export function TopCompaniesSection() {
       </div>
 
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {isLoadingCompanies ? (
-          Array.from({ length: 6 }).map((_, i) => <CompanyCardSkeleton key={i} />)
-        ) : popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
+        {popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
           popularCompaniesData.companies.map((company) => (
             <Link key={company.id} href={`/companies/${company.id}`} className="block">
               <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">

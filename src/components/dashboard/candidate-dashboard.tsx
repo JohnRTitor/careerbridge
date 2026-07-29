@@ -1,5 +1,4 @@
-"use client";
-import { useMemo } from "react";
+
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -15,7 +14,6 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Empty, 
   EmptyHeader, 
@@ -24,27 +22,32 @@ import {
   EmptyDescription, 
   EmptyContent 
 } from "@/components/ui/empty";
-import { useProfile } from "@/features/profiles/api/queries";
-import { useCandidateApplications } from "@/features/applications/api/queries";
-import { useSavedJobs } from "@/features/jobs/api/queries";
+import { getProfile } from "@server/features/profiles/profiles.service";
+import { getUserApplications } from "@server/features/applications/applications.service";
+import { getSavedJobs } from "@server/features/jobs/jobs.service";
+import { getSession } from "@server/auth/utils";
 import { formatDistanceToNow, parseISO } from "date-fns";
 
-export default function CandidateDashboard() {
-  const { data: profile, isLoading: isProfileLoading } = useProfile();
-  const { data: applications = [], isLoading: isAppsLoading } = useCandidateApplications();
-  const { data: savedJobs = [], isLoading: isSavedJobsLoading } = useSavedJobs();
+export default async function CandidateDashboard() {
+  const session = await getSession();
+  if (!session?.user?.id) return null;
+  const userId = session.user.id;
 
-  const profileStrength = useMemo(() => {
-    if (!profile) return 0;
-    let score = 0;
-    if (profile.headline) score += 10;
-    if (profile.about) score += 10;
-    if (profile.resume_url) score += 20;
-    if (profile.skills && profile.skills.length > 0) score += 20;
-    if (profile.experience && profile.experience.length > 0) score += 20;
-    if (profile.education && profile.education.length > 0) score += 20;
-    return score;
-  }, [profile]);
+  const [profile, applications, savedJobs] = await Promise.all([
+    getProfile({ userId }).catch(() => null),
+    getUserApplications({ userId }).catch(() => []),
+    getSavedJobs({ userId }).catch(() => []),
+  ]);
+
+  let profileStrength = 0;
+  if (profile) {
+    if (profile.headline) profileStrength += 10;
+    if (profile.about) profileStrength += 10;
+    if (profile.resume_url) profileStrength += 20;
+    if (profile.skills && profile.skills.length > 0) profileStrength += 20;
+    if (profile.experience && profile.experience.length > 0) profileStrength += 20;
+    if (profile.education && profile.education.length > 0) profileStrength += 20;
+  }
 
   const activeInterviews = applications.filter(a => a.status === "interviewing").length;
   const jobOffers = applications.filter(a => a.status === "offered").length;
@@ -98,31 +101,6 @@ export default function CandidateDashboard() {
       return "recently";
     }
   };
-
-  const isLoading = isProfileLoading || isAppsLoading || isSavedJobsLoading;
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen flex-col bg-background p-4 sm:p-8 space-y-6">
-        <Skeleton className="h-48 w-full rounded-2xl" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Skeleton className="h-32 w-full rounded-2xl" />
-          <Skeleton className="h-32 w-full rounded-2xl" />
-          <Skeleton className="h-32 w-full rounded-2xl" />
-          <Skeleton className="h-32 w-full rounded-2xl" />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <Skeleton className="h-64 w-full rounded-2xl" />
-            <Skeleton className="h-64 w-full rounded-2xl" />
-          </div>
-          <div className="space-y-6">
-            <Skeleton className="h-96 w-full rounded-2xl" />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

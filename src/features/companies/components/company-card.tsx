@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -7,35 +5,13 @@ import {
   BriefcaseIcon,
   Tick02Icon,
 } from "@hugeicons/core-free-icons";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Company } from "@/features/companies/api/types";
-import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
-import { useFollowedCompanies } from "@/features/companies/api/queries";
-import { useAppPermission } from "@/features/auth/api/queries";
+import { FollowCompanyAction } from "./follow-company-action";
 
 export function CompanyCard({ company }: { company: Company }) {
-  const { can } = useAppPermission();
-  const { data: followedCompanies = [] } = useFollowedCompanies();
-  const followMutation = useFollowCompany();
-  const unfollowMutation = useUnfollowCompany();
-
-  const isFollowed = followedCompanies.some((c: Company) => c.id === company.id);
-  const isCandidate = can("bookmark", "create"); // Using bookmark permissions for following for now
-
-  const handleToggleFollow = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isFollowed) {
-      await unfollowMutation.mutateAsync(company.id);
-    } else {
-      await followMutation.mutateAsync(company.id);
-    }
-  };
-
-  const isFollowing = followMutation.isPending || unfollowMutation.isPending;
-
   return (
     <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
       <CardContent className="p-5 flex flex-col h-full">
@@ -93,17 +69,7 @@ export function CompanyCard({ company }: { company: Company }) {
             View Profile
           </Link>
           
-          {isCandidate && (
-            <Button
-              onClick={handleToggleFollow}
-              disabled={isFollowing}
-              variant={isFollowed ? "secondary" : "default"}
-              size="sm"
-              className="h-8 flex-1"
-            >
-              {isFollowed ? "Following" : "Follow"}
-            </Button>
-          )}
+          <FollowCompanyAction companyId={company.id} />
         </div>
       </CardContent>
     </Card>

@@ -1,14 +1,9 @@
-"use client";
-
-import { useState, Suspense } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Suspense } from "react";
+import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { CompanyCard } from "@/features/companies/components/company-card";
-import { useCompanies } from "@/features/companies/api/queries";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { CompanyFilters } from "@/features/companies/api/types";
 import {
   Pagination,
@@ -20,51 +15,37 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { generatePagination } from "@/lib/utils";
-import { useAppForm } from "@/hooks/use-app-form";
+import { companiesService } from "../../../../server/features/companies/companies.service";
+import { CompaniesSearchForm } from "@/features/companies/components/companies-search-form";
+import type { Company } from "@/features/companies/api/types";
 
-function CompaniesSearchContent() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
-
-  const form = useAppForm({
-    defaultValues: {
-      query: searchParams.get("query") || "",
-    },
-    onSubmit: ({ value }) => {
-      const params = new URLSearchParams(searchParams);
-      if (value.query) params.set("query", value.query);
-      else params.delete("query");
-
-      params.set("page", "1");
-      setPage(1);
-
-      router.push(`${pathname}?${params.toString()}`);
-    },
-  });
+export default async function CompaniesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedParams = await searchParams;
 
   const filters: CompanyFilters = {
-    query: searchParams.get("query") || undefined,
-    page: Number(searchParams.get("page")) || 1,
+    query: typeof resolvedParams.query === "string" ? resolvedParams.query : undefined,
+    page: typeof resolvedParams.page === "string" ? Number(resolvedParams.page) : 1,
     limit: 12,
   };
 
-  const { data, isLoading } = useCompanies(filters);
+  let data = null;
+  try {
+    data = await companiesService.listCompanies(filters);
+  } catch (err) {
+    console.error("Failed to fetch companies", err);
+  }
 
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", newPage.toString());
-    setPage(newPage);
-    router.push(`${pathname}?${params.toString()}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const page = filters.page || 1;
 
   const createPageUrl = (newPage: number) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams();
+    if (filters.query) params.set("query", filters.query);
     params.set("page", newPage.toString());
-    return `${pathname}?${params.toString()}`;
+    return `/companies?${params.toString()}`;
   };
 
   return (
@@ -78,125 +59,71 @@ function CompaniesSearchContent() {
             Explore companies, read about their culture, and find your next dream team.
           </p>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="bg-background p-2 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto mt-8"
-          >
-            <form.AppField name="query">
-              {(field) => (
-                <div className="relative flex-1 flex items-center">
-                  <HugeiconsIcon icon={Search01Icon} className="absolute left-3 size-5 text-muted-foreground pointer-events-none z-10" />
-                  <Input 
-                    type="text" 
-                    placeholder="Search for companies by name or industry..." 
-                    className="pl-10 border-0 shadow-none h-12 focus-visible:ring-0 text-base"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    onBlur={field.handleBlur}
-                  />
-                </div>
-              )}
-            </form.AppField>
-            <Button type="submit" size="lg" className="h-12 px-8 rounded-xl shrink-0">
-              Search
-            </Button>
-          </form>
+          <CompaniesSearchForm />
         </div>
       </div>
 
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold tracking-tight">
-            {isLoading ? "Loading companies..." : (
-              data?.pagination.total ? `${data.pagination.total} Companies` : "No companies found"
-            )}
+            {data?.pagination.total ? `${data.pagination.total} Companies` : "No companies found"}
           </h2>
         </div>
 
-        {isLoading ? (
+        {data && data.companies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <Skeleton key={i} className="h-50 rounded-xl w-full" />
+            {data.companies.map((company: Company) => (
+              <CompanyCard key={company.id} company={company} />
             ))}
           </div>
         ) : (
-          <>
-            {data && data.companies.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {data.companies.map((company) => (
-                  <CompanyCard key={company.id} company={company} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl">
-                <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-                  <HugeiconsIcon icon={Search01Icon} className="size-8" />
-                </div>
-                <h3 className="text-xl font-semibold">No companies found</h3>
-                <p className="text-muted-foreground max-w-sm mt-2">
-                  We couldn&apos;t find any companies matching your search. Try adjusting your query.
-                </p>
-                <Button variant="outline" className="mt-6" onClick={() => {
-                  form.reset({ query: "" });
-                  router.push(pathname);
-                }}>
-                  Clear Search
-                </Button>
-              </div>
-            )}
+          <div className="flex flex-col items-center justify-center p-12 text-center bg-background border border-dashed rounded-2xl">
+            <div className="size-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
+              <HugeiconsIcon icon={Search01Icon} className="size-8" />
+            </div>
+            <h3 className="text-xl font-semibold">No companies found</h3>
+            <p className="text-muted-foreground max-w-sm mt-2">
+              We couldn&apos;t find any companies matching your search. Try adjusting your query.
+            </p>
+            <Button variant="outline" className="mt-6" render={<Link href="/companies">Clear Search</Link>} />
+          </div>
+        )}
 
-            {data && data.pagination.totalPages > 1 && (
-              <Pagination className="mt-12">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      href={page > 1 ? createPageUrl(page - 1) : "#"}
-                      onClick={(e) => { e.preventDefault(); if (page > 1) handlePageChange(page - 1); }} 
-                      className={page === 1 ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                  
-                  {generatePagination(page, data.pagination.totalPages).map((p, i) => (
-                    <PaginationItem key={i}>
-                      {p === "..." ? (
-                        <PaginationEllipsis />
-                      ) : (
-                        <PaginationLink 
-                          href={createPageUrl(p as number)}
-                          isActive={page === p}
-                          onClick={(e) => { e.preventDefault(); handlePageChange(p as number); }}
-                        >
-                          {p}
-                        </PaginationLink>
-                      )}
-                    </PaginationItem>
-                  ))}
+        {data && data.pagination.totalPages > 1 && (
+          <Pagination className="mt-12">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  href={page > 1 ? createPageUrl(page - 1) : "#"}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              
+              {generatePagination(page, data.pagination.totalPages).map((p, i) => (
+                <PaginationItem key={i}>
+                  {p === "..." ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink 
+                      href={createPageUrl(p as number)}
+                      isActive={page === p}
+                    >
+                      {p}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ))}
 
-                  <PaginationItem>
-                    <PaginationNext 
-                      href={page < data.pagination.totalPages ? createPageUrl(page + 1) : "#"}
-                      onClick={(e) => { e.preventDefault(); if (page < data.pagination.totalPages) handlePageChange(page + 1); }} 
-                      className={page === data.pagination.totalPages ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
-          </>
+              <PaginationItem>
+                <PaginationNext 
+                  href={page < data.pagination.totalPages ? createPageUrl(page + 1) : "#"}
+                  className={page === data.pagination.totalPages ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </main>
     </div>
-  );
-}
-
-export default function CompaniesPage() {
-  return (
-    <Suspense fallback={<div className="h-screen flex items-center justify-center"><Skeleton className="size-12 rounded-full" /></div>}>
-      <CompaniesSearchContent />
-    </Suspense>
   );
 }

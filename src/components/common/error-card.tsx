@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon, type IconSvgElement as IconSvgObject } from "@hugeicons/react";
 import { Alert01Icon } from "@hugeicons/core-free-icons";
 
-interface ErrorCardProps {
+type ErrorCardProps = {
   title?: string;
   message: string;
   icon?: IconSvgObject;
