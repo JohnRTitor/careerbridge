@@ -4,18 +4,12 @@ import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
 import { getFieldState } from "@/components/form/utils";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { EyeIcon, EyeOffIcon } from "@hugeicons/core-free-icons";
-
-import { useToggle } from "@reactuses/core";
-
 type PasswordFieldProps<TField extends AnyFieldApi> = Omit<
-  React.ComponentProps<typeof Input>,
+  React.ComponentProps<typeof PasswordInput>,
   "id" | "value" | "onChange" | "onBlur" | "type"
 > & {
   field: TField;
@@ -41,8 +35,6 @@ export function PasswordField<TField extends AnyFieldApi>({
   errorClassName,
   ...props
 }: PasswordFieldProps<TField>) {
-  const [showPassword, toggleShowPassword] = useToggle(false);
-
   const { invalid, error } = getFieldState(field);
 
   return (
@@ -67,34 +59,19 @@ export function PasswordField<TField extends AnyFieldApi>({
         }
       >
         {startIcon && <div className="shrink-0">{startIcon}</div>}
-        <Input
+        <PasswordInput
           id={field.name}
           aria-invalid={invalid}
           {...props}
-          type={showPassword ? "text" : "password"}
-          value={field.state.value}
+          value={field.state.value as string}
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
           className={
             startIcon
-              ? "border-0 bg-transparent dark:bg-transparent px-0 shadow-none focus-visible:ring-0 aria-invalid:ring-0 text-sm pr-10"
-              : "pr-10"
+              ? "border-0 bg-transparent dark:bg-transparent px-0 shadow-none focus-visible:ring-0 aria-invalid:ring-0 text-sm"
+              : ""
           }
         />
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={() => toggleShowPassword()}
-          className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground transition-colors hover:text-foreground hover:bg-transparent"
-          aria-label={showPassword ? "Hide password" : "Show password"}
-        >
-          <HugeiconsIcon
-            icon={showPassword ? EyeOffIcon : EyeIcon}
-            size={18}
-          />
-        </Button>
       </div>
 
       {!error && description && (

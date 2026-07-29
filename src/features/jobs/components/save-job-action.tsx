@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
 import { useSavedJobs } from "@/features/jobs/api/queries";
 
-interface SaveJobActionProps {
+type SaveJobActionProps = {
   jobId: string;
-}
+};
 
 export function SaveJobAction({ jobId }: SaveJobActionProps) {
   const { data: savedJobs = [] } = useSavedJobs();

@@ -6,13 +6,13 @@ import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/m
 import { useFollowedCompanies } from "@/features/companies/api/queries";
 import { useAppPermission } from "@/features/auth/api/queries";
 
-interface FollowCompanyActionProps {
+type FollowCompanyActionProps = {
   companyId: string;
   className?: string;
   size?: "default" | "sm" | "lg" | "icon";
   isFollowingText?: string;
   followText?: string;
-}
+};
 
 export function FollowCompanyAction({ 
   companyId, 

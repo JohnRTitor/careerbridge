@@ -12,12 +12,12 @@ import { useAppPermission } from "@/features/auth/api/queries";
 import type { SavedJob } from "@/features/jobs/api/types";
 import type { Application } from "@/features/applications/api/types";
 
-interface JobDetailsActionsProps {
+type JobDetailsActionsProps = {
   jobId: string;
   jobTitle: string;
   companyName?: string;
   status: string;
-}
+};
 
 export function JobDetailsActions({
   jobId,
