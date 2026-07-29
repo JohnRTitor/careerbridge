@@ -43,7 +43,7 @@ export default async function CandidateDashboard() {
   if (profile) {
     if (profile.headline) profileStrength += 10;
     if (profile.about) profileStrength += 10;
-    if (profile.resume_url) profileStrength += 20;
+    if (profile.resumes && profile.resumes.length > 0) profileStrength += 20;
     if (profile.skills && profile.skills.length > 0) profileStrength += 20;
     if (profile.experience && profile.experience.length > 0) profileStrength += 20;
     if (profile.education && profile.education.length > 0) profileStrength += 20;

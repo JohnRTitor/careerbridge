@@ -5,7 +5,6 @@ import { NotFoundError } from "../../shared/errors";
 import type { 
   GetProfileInput, 
   UpdateProfileInput, 
-  UpdateResumeInput, 
   AddEducationInput, 
   UpdateEducationInput, 
   DeleteEducationInput, 
@@ -133,9 +132,6 @@ export async function updateProfile(input: UpdateProfileInput) {
   return profilesRepository.upsertProfile(input);
 }
 
-export async function updateResume(input: UpdateResumeInput) {
-  return profilesRepository.updateResume(input);
-}
 
 export async function addEducation(input: AddEducationInput) {
   return profilesRepository.addEducation(input);
@@ -260,7 +256,6 @@ export const profilesService = {
   getProfile,
   getPublicProfile,
   updateProfile,
-  updateResume,
   addEducation,
   updateEducation,
   deleteEducation,

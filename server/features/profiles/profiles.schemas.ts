@@ -6,7 +6,8 @@ export const UpdateProfileSchema = z
   .object({
     headline: z.string().optional(),
     about: z.string().optional(),
-    avatar_file_id: z.string().uuid().optional(),
+    avatar_url: z.string().optional().or(z.literal("")),
+    avatar_file_id: z.string().uuid().optional().nullable(),
     visibility: ProfileVisibilitySchema.optional(),
     portfolio_url: z.url().optional().or(z.literal("")),
     date_of_birth: z.string().refine((date) => !date || !isNaN(Date.parse(date)), { error: "Invalid date" }).optional().or(z.literal("")),
@@ -15,14 +16,7 @@ export const UpdateProfileSchema = z
 
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
 
-export const ResumeUploadSchema = z
-  .object({
-    resume_url: z.url().optional(),
-    file_id: z.string().uuid().optional(),
-  })
-  .meta({ id: "ResumeUpload" });
 
-export type ResumeUpload = z.infer<typeof ResumeUploadSchema>;
 
 export const EducationSchema = z
   .object({
@@ -79,10 +73,6 @@ export type UpdateProfileInput = {
   data: z.infer<typeof UpdateProfileSchema>;
 };
 
-export type UpdateResumeInput = {
-  userId: string;
-  data: z.infer<typeof ResumeUploadSchema>;
-};
 
 export type AddEducationInput = {
   userId: string;
@@ -123,7 +113,8 @@ export const CertificationSchema = z.object({
   issue_date: z.string().optional(),
   expiry_date: z.string().optional(),
   credential_id: z.string().optional(),
-  credential_url: z.url().optional().or(z.literal("")),
+  credential_url: z.string().optional().or(z.literal("")),
+  credential_file_id: z.string().uuid().optional().nullable(),
 });
 export type Certification = z.infer<typeof CertificationSchema>;
 
@@ -172,7 +163,8 @@ export type DeleteProjectInput = { projectId: string; userId: string };
 // -- Resumes --
 export const ResumeSchema = z.object({
   title: z.string().optional(),
-  file_url: z.url(),
+  file_url: z.string(),
+  file_id: z.string().uuid().optional().nullable(),
   is_default: z.boolean().optional().default(false),
 });
 export type Resume = z.infer<typeof ResumeSchema>;

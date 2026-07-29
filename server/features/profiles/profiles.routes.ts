@@ -9,7 +9,6 @@ import { profilesRepository } from "./profiles.repository";
 import { CertificationSchema, UpdateCertificationSchema, ProjectSchema, UpdateProjectSchema, ResumeSchema, UpdateResumeEntitySchema, UserSkillSchema, UpdateUserSkillSchema, UserLanguageSchema, UpdateUserLanguageSchema, SocialLinkSchema, UpdateSocialLinkSchema, JobPreferenceSchema } from "./profiles.schemas";
 import { 
   UpdateProfileSchema, 
-  ResumeUploadSchema, 
   EducationSchema, 
   UpdateEducationSchema,
   ExperienceSchema,
@@ -55,21 +54,6 @@ export const profilesRoutes = app
   }
 )
 
-  .post(
-  "/profile/resume",
-  describeRoute({
-    summary: "Upload resume URL",
-    tags: ["Profiles"],
-  }),
-  sValidator("json", ResumeUploadSchema),
-  requirePermission("resume", "create"),
-  async (c) => {
-    const user = c.get("user");
-    const data = c.req.valid("json");
-    const profile = await profilesService.updateResume({ userId: user.id, data });
-    return ok(c, profile, "Resume updated successfully");
-  }
-)
 
   .post(
   "/profile/education",

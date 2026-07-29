@@ -147,8 +147,7 @@ CREATE TABLE user_profile (
   visibility visibility NOT NULL DEFAULT 'public',
 
   portfolio_url TEXT,
-  resume_url TEXT,
-  resume_file_id UUID REFERENCES files(id) ON DELETE SET NULL,
+
 
   open_to_work BOOLEAN NOT NULL DEFAULT true,
   willing_to_relocate BOOLEAN NOT NULL DEFAULT false,
@@ -201,6 +200,7 @@ CREATE TABLE certifications (
   expiry_date DATE,
   credential_id TEXT,
   credential_url TEXT,
+  credential_file_id UUID REFERENCES files(id) ON DELETE SET NULL,
   created_at TIMESTAMP DEFAULT now()
 );
 

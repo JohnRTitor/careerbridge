@@ -2,7 +2,6 @@ import { rpcClient } from "@/lib/api/rpc";
 import { InferResponseType } from "hono/client";
 import type { 
   UpdateProfile as UpdateProfilePayload, 
-  ResumeUpload as ResumeUploadPayload, 
   Education as AddEducationPayload, 
   UpdateEducation as UpdateEducationPayload,
   Experience as AddExperiencePayload,
@@ -41,7 +40,6 @@ export type SocialLink = ArrayElement<Profile["social_links"]>;
 
 export type {
   UpdateProfilePayload,
-  ResumeUploadPayload,
   AddEducationPayload,
   UpdateEducationPayload,
   AddExperiencePayload,

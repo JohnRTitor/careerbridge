@@ -2,7 +2,6 @@ import { pool } from "../../app/db";
 import type { 
   GetProfileInput, 
   UpdateProfileInput, 
-  UpdateResumeInput, 
   AddEducationInput, 
   UpdateEducationInput, 
   DeleteEducationInput, 
@@ -79,19 +78,6 @@ export async function upsertProfile(input: UpdateProfileInput) {
   return result.rows[0];
 }
 
-export async function updateResume(input: UpdateResumeInput) {
-  const { userId, data } = input;
-  const query = `
-    UPDATE user_profile 
-    SET resume_url = COALESCE($2, resume_url),
-        resume_file_id = COALESCE($3, resume_file_id),
-        updated_at = now() 
-    WHERE user_id = $1 
-    RETURNING *;
-  `;
-  const result = await pool.query(query, [userId, data.resume_url, data.file_id]);
-  return result.rows[0];
-}
 
 export async function getEducation(input: GetProfileInput) {
   const { userId } = input;
@@ -504,7 +490,6 @@ export async function upsertJobPreferences(input: UpsertJobPreferenceInput) {
 export const profilesRepository = {
   getProfile,
   upsertProfile,
-  updateResume,
   getEducation,
   addEducation,
   updateEducation,

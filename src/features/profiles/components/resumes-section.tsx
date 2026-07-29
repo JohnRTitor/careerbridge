@@ -47,6 +47,11 @@ import type { Resume } from "@/features/profiles/api/types";
 import { useSupabaseUpload } from "@/features/files/api/mutations";
 import { SingleFileUploader } from "@/components/ui/single-file-uploader";
 import { getPublicAssetUrl } from "@/lib/assets";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ResumesSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -118,28 +123,35 @@ export function ResumesSection() {
                 key={resume.id}
                 className={`group border rounded-xl p-3 transition-colors ${
                   resume.is_default
-                    ? "bg-destructive/10/30 border-rose-200"
+                    ? "bg-primary/5 border-primary/20"
                     : "bg-muted/50 hover:bg-muted border-border"
                 }`}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-start justify-between min-w-0">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center shrink-0">
                       <HugeiconsIcon
                         icon={DocumentAttachmentIcon}
                         className="size-4 text-muted-foreground"
                       />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                        {resume.title}
+                        <Tooltip>
+                          <TooltipTrigger render={<span className="truncate cursor-default" />}>
+                            {resume.title}
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {resume.title}
+                          </TooltipContent>
+                        </Tooltip>
                         {resume.is_default && (
-                          <span className="text-[10px] uppercase font-bold bg-destructive/20 text-destructive px-1.5 py-0.5 rounded-sm">
+                          <span className="shrink-0 text-[10px] uppercase font-bold bg-primary/10 text-primary px-1.5 py-0.5 rounded-sm">
                             Primary
                           </span>
                         )}
                       </h4>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">
                         Uploaded {formatDate(resume.uploaded_at)}
                       </p>
                     </div>
@@ -292,13 +304,15 @@ export function ResumesSection() {
               >
                 Cancel
               </Button>
-              <form.AppForm>
-                <form.SubmitButton
-                  disabled={!form.state.values.file || fileUploadMutation.isPending}
-                >
-                  {fileUploadMutation.isPending ? "Uploading..." : "Upload Resume"}
-                </form.SubmitButton>
-              </form.AppForm>
+              <form.Subscribe selector={(state) => state.values.file}>
+                {(file) => (
+                  <form.SubmitButton
+                    disabled={!file || fileUploadMutation.isPending}
+                  >
+                    {fileUploadMutation.isPending ? "Uploading..." : "Upload Resume"}
+                  </form.SubmitButton>
+                )}
+              </form.Subscribe>
             </div>
           </form>
         </DialogContent>

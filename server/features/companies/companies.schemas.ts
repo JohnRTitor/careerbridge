@@ -5,8 +5,8 @@ export const CompanySchema = z
   .object({
     name: z.string().min(1, "Name is required"),
     description: z.string().optional(),
-    logo_url: z.url().optional().or(z.literal("")),
-    logo_file_id: z.string().uuid().optional(),
+    logo_url: z.string().optional().or(z.literal("")),
+    logo_file_id: z.string().uuid().optional().nullable(),
     website: z.url().optional().or(z.literal("")),
     industry: z.string().optional(),
     size: z.string().optional(),

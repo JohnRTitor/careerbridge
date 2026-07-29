@@ -22,15 +22,6 @@ export const useUpdateProfile = () => {
   });
 };
 
-export const useUpdateResume = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: api.updateResume,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.detail() });
-    },
-  });
-};
 
 export const useAddEducation = () => {
   const queryClient = useQueryClient();

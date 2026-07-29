@@ -1,7 +1,6 @@
 import { rpcClient, handleRpcError } from "@/lib/api/rpc";
 import type { 
   UpdateProfilePayload, 
-  ResumeUploadPayload,
   AddEducationPayload,
   UpdateEducationPayload,
   AddExperiencePayload,
@@ -42,12 +41,6 @@ export const updateProfile = async (data: UpdateProfilePayload) => {
   return json.data;
 };
 
-export const updateResume = async (data: ResumeUploadPayload) => {
-  const res = await rpcClient.api.users.profile.resume.$post({ json: data });
-  if (!res.ok) return handleRpcError(res);
-  const json = await res.json();
-  return json.data;
-};
 
 export const addEducation = async (data: AddEducationPayload) => {
   const res = await rpcClient.api.users.profile.education.$post({ json: data });
