@@ -46,7 +46,7 @@ import { useProfile } from "@/features/profiles/api/queries";
 import type { Resume } from "@/features/profiles/api/types";
 import { useSupabaseUpload } from "@/features/files/api/mutations";
 import { SingleFileUploader } from "@/components/ui/single-file-uploader";
-import { getPublicAssetUrl } from "@/lib/assets";
+import { getPrivateAssetUrl } from "@/lib/assets";
 import {
   Tooltip,
   TooltipContent,
@@ -161,10 +161,10 @@ export function ResumesSection() {
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
                   <a
                     href={
-                      getPublicAssetUrl(null, {
+                      getPrivateAssetUrl(null, {
                         bucket: "resumes",
                         path: resume.file_url,
-                      }) || resume.file_url
+                      }) || "#"
                     }
                     target="_blank"
                     rel="noopener noreferrer"
