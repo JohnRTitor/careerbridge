@@ -33,8 +33,9 @@ export function HomeHeroSearch() {
     const params = new URLSearchParams();
     if (query.trim()) params.set("query", query.trim());
     if (location.trim()) params.set("location", location.trim());
+    params.set("page", "1");
 
-    router.push(`/?${params.toString()}#jobs`, { scroll: false });
+    router.push(`/jobs?${params.toString()}`);
   };
 
   return (
