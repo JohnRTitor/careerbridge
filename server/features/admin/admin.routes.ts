@@ -3,7 +3,7 @@ import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
-import { requireAdmin, requirePermission } from "../../app/middleware/authorize";
+import { requirePermission } from "../../app/middleware/authorize";
 import { adminService } from "./admin.service";
 import { UsersQuerySchema, UpdateUserRoleSchema, UpdateUserStatusSchema } from "./admin.schemas";
 import { companiesService } from "../companies/companies.service";
@@ -19,7 +19,7 @@ const app = new Hono<AppEnv>();
 
 // All admin routes require auth and 'admin' role
 app.use("*", requireAuth);
-app.use("*", requireAdmin());
+app.use("*", requirePermission("admin", "dashboard"));
 
 export const adminRoutes = app
   .get(

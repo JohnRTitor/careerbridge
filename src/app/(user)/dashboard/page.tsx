@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import AdminDashboard from "@/components/dashboard/admin-dashboard";
 import RecruiterDashboard from "@/components/dashboard/recruiter-dashboard";
 import CandidateDashboard from "@/components/dashboard/candidate-dashboard";
+import { can } from "@server/shared/auth/authorization";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -17,14 +18,17 @@ export default async function DashboardPage() {
     redirect("/onboarding");
   }
 
-  switch (role) {
-    case "admin":
-      return <AdminDashboard />;
-    case "recruiter":
-      return <RecruiterDashboard />;
-    case "candidate":
-      return <CandidateDashboard />;
-    default:
-      redirect("/onboarding");
+  if (can(role, "admin", "dashboard")) {
+    return <AdminDashboard />;
   }
+
+  if (can(role, "job", "create")) {
+    return <RecruiterDashboard />;
+  }
+
+  if (can(role, "application", "create")) {
+    return <CandidateDashboard />;
+  }
+
+  redirect("/onboarding");
 }

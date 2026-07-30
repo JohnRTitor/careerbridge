@@ -23,37 +23,3 @@ export function requirePermission(resource: string, action: string) {
   };
 }
 
-/**
- * Ensures the authenticated user has one of the specified roles.
- * Prefer `requirePermission` over this when checking access to specific resources.
- */
-export function requireRole(...roles: string[]) {
-  return async (c: Context, next: Next) => {
-    const user = c.get("user");
-    
-    if (!user) {
-      throw new ForbiddenError();
-    }
-
-    if (!user.role || !roles.includes(user.role)) {
-      throw new ForbiddenError();
-    }
-
-    await next();
-  };
-}
-
-/** Syntactic sugar for admin requirement */
-export function requireAdmin() {
-  return requireRole("admin");
-}
-
-/** Syntactic sugar for candidate requirement */
-export function requireCandidate() {
-  return requireRole("candidate");
-}
-
-/** Syntactic sugar for recruiter requirement */
-export function requireRecruiter() {
-  return requireRole("recruiter");
-}

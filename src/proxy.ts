@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { can } from "@server/shared/auth/authorization";
 
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -34,7 +35,7 @@ export default async function proxy(request: NextRequest) {
 
   const role = user.role || "user";
 
-  if (pathname.startsWith("/admin") && role !== "admin") {
+  if (pathname.startsWith("/admin") && !can(role, "admin", "dashboard")) {
     return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 

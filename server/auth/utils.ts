@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { auth } from "./auth";
 import { redirect } from "next/navigation";
 import { Role } from "./roles";
+import { can } from "../shared/auth/authorization";
 
 export async function getSession() {
   const session = await auth.api.getSession({
@@ -18,32 +19,17 @@ export async function requireAuth() {
   return session;
 }
 
-export async function requireRole(...roles: Role[]) {
+export async function requirePagePermission(resource: string, action: string) {
   const session = await requireAuth();
-  if (!roles.includes(session.user.role as Role)) {
+  if (!can(session.user.role, resource, action)) {
     redirect("/unauthorized");
   }
   return session;
 }
 
-export async function isAdmin() {
-  const session = await getSession();
-  return session?.user?.role === "admin";
-}
-
-export async function isRecruiter() {
-  const session = await getSession();
-  return session?.user?.role === "recruiter";
-}
-
-export async function isCandidate() {
-  const session = await getSession();
-  return session?.user?.role === "candidate";
-}
-
 export async function requireJobOwner(job: { recruiter_id: string }) {
   const session = await requireAuth();
-  if (session.user.role === "admin") {
+  if (can(session.user.role, "admin", "moderate")) {
     return true;
   }
   if (job.recruiter_id === session.user.id) {

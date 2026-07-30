@@ -1,6 +1,7 @@
 import type { Context, Next } from "hono";
 import { ResourceForbiddenError, NotFoundError } from "../../shared/errors";
 import type { AppEnv } from "../../shared/types";
+import { can } from "../../shared/auth/authorization";
 
 /**
  * Ensures the authenticated user has ownership rights over a specific resource.
@@ -21,7 +22,7 @@ export function requireOwnership<T>(
     }
 
     // Admins bypass ownership checks
-    if (user.role === "admin") {
+    if (can(user.role, "admin", "moderate")) {
       await next();
       return;
     }

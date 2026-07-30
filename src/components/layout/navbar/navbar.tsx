@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "@/features/auth/api/auth-client";
-import { getLinksForRole } from "./nav-links";
+import { getLinksForPermissions } from "./nav-links";
 import { Logo } from "./logo";
 import { DesktopNav } from "./desktop-nav";
 import { MobileNav } from "./mobile-nav";
@@ -16,7 +16,7 @@ export default function Navbar() {
   // If session is loading, we can just show public links or a skeleton.
   // Showing public links temporarily prevents layout shift.
   const role = session?.user?.role;
-  const links = getLinksForRole(role);
+  const links = getLinksForPermissions(role);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">

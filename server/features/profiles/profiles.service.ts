@@ -2,6 +2,7 @@ import { profilesRepository } from "./profiles.repository";
 import { applicationsRepository } from "../applications/applications.repository";
 import { getPublicUrl } from "../../shared/storage";
 import { NotFoundError } from "../../shared/errors";
+import { can } from "../../shared/auth/authorization";
 import type { 
   GetProfileInput, 
   UpdateProfileInput, 
@@ -78,9 +79,9 @@ export async function getPublicProfile(input: GetProfileInput) {
   if (requester) {
     if (requester.id === userId) {
       canView = true;
-    } else if (requester.role === "admin") {
+    } else if (can(requester.role, "admin", "moderate")) {
       canView = true;
-    } else if (requester.role === "recruiter") {
+    } else if (can(requester.role, "application", "review")) {
       const hasApplied = await applicationsRepository.hasCandidateAppliedToRecruiter(userId, requester.id);
       if (hasApplied) {
         canView = true;

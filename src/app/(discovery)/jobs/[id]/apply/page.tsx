@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import { jobsService } from "@server/features/jobs/jobs.service";
 import { JobApplicationForm } from "@/features/applications/components/job-application-form";
+import { requirePagePermission } from "@server/auth/utils";
 
 export default async function ApplyForJobPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requirePagePermission("application", "create");
   const resolvedParams = await params;
   const id = resolvedParams.id;
 

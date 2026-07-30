@@ -3,7 +3,7 @@ import { AppEnv } from "../../shared/types";
 import { sValidator } from "@hono/standard-validator";
 import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
-import { requireCandidate, requirePermission } from "../../app/middleware/authorize";
+import { requirePermission } from "../../app/middleware/authorize";
 import { applicationsService } from "./applications.service";
 import { ApplyJobSchema } from "./applications.schemas";
 import { ok, created, noContent } from "../../shared/responses";
@@ -48,7 +48,6 @@ export const jobApplicationsRoutes = jobApp
   .post(
     "/:id/apply",
     requireAuth,
-    requireCandidate(),
     requirePermission("application", "create"),
     describeRoute({
       summary: "Submit job application",
