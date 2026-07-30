@@ -12,7 +12,13 @@ import {
   ListViewIcon,
 } from "@hugeicons/core-free-icons";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Empty, EmptyTitle, EmptyDescription, EmptyMedia, EmptyContent } from "@/components/ui/empty";
+import {
+  Empty,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyContent,
+} from "@/components/ui/empty";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,7 +40,7 @@ const ApplicationCard = ({ app }: { app: Application }) => (
       <div className="flex gap-3">
         {app.company_logo ? (
           <div className="size-10 rounded-lg border border-border overflow-hidden shrink-0">
-            <Image
+            <img
               src={app.company_logo}
               alt={app.company_name || ""}
               width={40}
@@ -63,11 +69,25 @@ const ApplicationCard = ({ app }: { app: Application }) => (
           {formatTimeAgo(app.applied_at)}
         </span>
         {app.status === "draft" ? (
-          <Link href={`/jobs/${app.job_id}/apply`} className={buttonVariants({ variant: "default", size: "sm", className: "h-7 text-[10px] px-2" })}>
+          <Link
+            href={`/jobs/${app.job_id}/apply`}
+            className={buttonVariants({
+              variant: "default",
+              size: "sm",
+              className: "h-7 text-[10px] px-2",
+            })}
+          >
             Continue
           </Link>
         ) : (
-          <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-background" })}>
+          <Link
+            href={`/jobs/${app.job_id}`}
+            className={buttonVariants({
+              variant: "outline",
+              size: "sm",
+              className: "h-7 text-[10px] px-2 bg-background",
+            })}
+          >
             View Job
           </Link>
         )}
@@ -167,9 +187,15 @@ export default function ApplicationsTrackerPage() {
             <HugeiconsIcon icon={BriefcaseIcon} />
           </EmptyMedia>
           <EmptyTitle>No applications found</EmptyTitle>
-          <EmptyDescription>You haven&apos;t applied to any jobs yet. Start exploring opportunities!</EmptyDescription>
+          <EmptyDescription>
+            You haven&apos;t applied to any jobs yet. Start exploring
+            opportunities!
+          </EmptyDescription>
           <EmptyContent>
-            <Link href="/jobs" className={buttonVariants({ className: "mt-2" })}>
+            <Link
+              href="/jobs"
+              className={buttonVariants({ className: "mt-2" })}
+            >
               Browse Jobs
             </Link>
           </EmptyContent>
