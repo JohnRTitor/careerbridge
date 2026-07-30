@@ -305,15 +305,47 @@ export async function addResume(input: AddResumeInput) {
 
 export async function updateResumeEntity(input: UpdateResumeEntityInput) {
   const { resumeId, userId, data } = input;
-  const query = `
-    UPDATE resumes SET
-      title = COALESCE($3, title),
-      is_default = COALESCE($4, is_default)
-    WHERE id = $1 AND user_id = $2
-    RETURNING *;
-  `;
-  const result = await pool.query(query, [resumeId, userId, data.title, data.is_default]);
-  return result.rows[0];
+  
+  if (data.is_default === true) {
+    // Start transaction to ensure atomicity
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      
+      // Unset default on all other resumes for this user
+      await client.query(
+        `UPDATE resumes SET is_default = false WHERE user_id = $1 AND id != $2`,
+        [userId, resumeId]
+      );
+      
+      const query = `
+        UPDATE resumes SET
+          title = COALESCE($3, title),
+          is_default = true
+        WHERE id = $1 AND user_id = $2
+        RETURNING *;
+      `;
+      const result = await client.query(query, [resumeId, userId, data.title]);
+      await client.query("COMMIT");
+      return result.rows[0];
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
+  } else {
+    // Normal update without changing primary status, or unsetting primary
+    const query = `
+      UPDATE resumes SET
+        title = COALESCE($3, title),
+        is_default = COALESCE($4, is_default)
+      WHERE id = $1 AND user_id = $2
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [resumeId, userId, data.title, data.is_default]);
+    return result.rows[0];
+  }
 }
 
 export async function deleteResume(input: DeleteResumeInput) {

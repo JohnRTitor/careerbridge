@@ -11,7 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
 import { loginSchema } from "@/features/auth/schemas";
 import { authClient } from "@/features/auth/api/auth-client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -35,12 +35,12 @@ export default function SignInPage() {
       });
 
       if (error) {
-        toast.error(error.message || "Login failed");
+        toast.add({ type: "error", description: error.message || "Login failed" });
         setLoading(false);
         return;
       }
 
-      toast.success("Login successful!");
+      toast.add({ type: "success", description: "Login successful!" });
 
       const userRole = data?.user?.role;
       if (!userRole) {

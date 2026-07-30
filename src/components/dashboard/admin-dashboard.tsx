@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { LoadingState } from "@/components/common/loading-state";
 import { Empty, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 import { useAdminUsers, useAuditLogs } from "@/features/admin/api/queries";
 import { useUpdateUserRole, useUpdateUserStatus, useVerifyCompany } from "@/features/admin/api/mutations";
@@ -39,27 +39,27 @@ export default function AdminDashboard() {
     const newRole = currentRole === "admin" ? "candidate" : currentRole === "recruiter" ? "admin" : "recruiter";
     try {
       await updateRoleMutation.mutateAsync({ userId, data: { role: newRole as "admin" | "candidate" | "recruiter" } });
-      toast.success("User role updated");
+      toast.add({ type: "success", description: "User role updated" });
     } catch {
-      toast.error("Failed to update role");
+      toast.add({ type: "error", description: "Failed to update role" });
     }
   };
 
   const handleStatusToggle = async (userId: string, isBanned: boolean) => {
     try {
       await updateStatusMutation.mutateAsync({ userId, data: { banned: !isBanned, banReason: !isBanned ? "Admin decision" : undefined } });
-      toast.success(`User ${isBanned ? 'unbanned' : 'banned'}`);
+      toast.add({ type: "success", description: `User ${isBanned ? 'unbanned' : 'banned'}` });
     } catch {
-      toast.error("Failed to update status");
+      toast.add({ type: "error", description: "Failed to update status" });
     }
   };
 
   const handleVerifyCompany = async (companyId: string, isVerified: boolean) => {
     try {
       await verifyCompanyMutation.mutateAsync({ companyId, data: { is_verified: !isVerified } });
-      toast.success(`Company ${!isVerified ? 'verified' : 'unverified'}`);
+      toast.add({ type: "success", description: `Company ${!isVerified ? 'verified' : 'unverified'}` });
     } catch {
-      toast.error("Failed to verify company");
+      toast.add({ type: "error", description: "Failed to verify company" });
     }
   };
 

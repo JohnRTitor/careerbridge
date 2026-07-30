@@ -30,7 +30,7 @@ import {
   useRecruiterApplications,
 } from "@/features/recruiters/api/queries";
 import { useUpdateApplicationStatus } from "@/features/recruiters/api/mutations";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function RecruiterDashboard() {
   const { data: analytics, isLoading: isLoadingAnalytics } =
@@ -52,9 +52,9 @@ export default function RecruiterDashboard() {
         appId,
         data: { status: newStatus },
       });
-      toast.success("Applicant status updated!");
+      toast.add({ type: "success", description: "Applicant status updated!" });
     } catch {
-      toast.error("Failed to update status");
+      toast.add({ type: "error", description: "Failed to update status" });
     }
   };
 

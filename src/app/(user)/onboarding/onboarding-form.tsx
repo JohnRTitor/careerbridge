@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRightIcon } from "@hugeicons/core-free-icons";
 
@@ -30,12 +30,12 @@ export function OnboardingForm({ user }: { user: { name: string; email: string }
       const result = await submitOnboardingAction(value);
 
       if (result.error) {
-        toast.error(result.error);
+        toast.add({ type: "error", description: result.error });
         setLoading(false);
         return;
       }
 
-      toast.success("Profile updated successfully!");
+      toast.add({ type: "success", description: "Profile updated successfully!" });
       if (value.accountType === "candidate") {
         router.push("/dashboard");
       } else {

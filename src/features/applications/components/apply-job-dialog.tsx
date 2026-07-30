@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useProfile } from "@/features/profiles/api/queries";
 import { useApplyForJob } from "@/features/applications/api/mutations";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { SelectItem } from "@/components/ui/select";
 import type { Resume } from "@/features/profiles/api/types";
 
@@ -40,10 +40,10 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
             cover_letter: value.cover_letter || undefined,
           },
         });
-        toast.success("Application submitted successfully!");
+        toast.add({ type: "success", description: "Application submitted successfully!" });
         onOpenChange(false);
       } catch {
-        toast.error("Failed to submit application. Please try again.");
+        toast.add({ type: "error", description: "Failed to submit application. Please try again." });
       }
     },
   });
@@ -87,12 +87,20 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
                   <field.SelectField 
                     field={field}
                     label="Select Resume *"
+                    renderValue={(value: unknown) => {
+                      const resume = resumes.find((r) => r.id === value);
+                      if (!resume) return null;
+                      return `${resume.title}${resume.is_default ? ' (Primary)' : ''}`;
+                    }}
                   >
-                    {resumes.map((resume) => (
-                      <SelectItem key={resume.id} value={resume.id}>
-                        {resume.title} {resume.is_default ? "(Primary)" : ""}
-                      </SelectItem>
-                    ))}
+                    {resumes.map((resume) => {
+                      const label = `${resume.title}${resume.is_default ? ' (Primary)' : ''}`;
+                      return (
+                        <SelectItem key={resume.id} value={resume.id} label={label}>
+                          {label}
+                        </SelectItem>
+                      );
+                    })}
                   </field.SelectField>
                 )}
               </form.AppField>

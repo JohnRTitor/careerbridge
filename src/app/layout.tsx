@@ -3,7 +3,7 @@ import { Geist_Mono, Outfit, Public_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from "@/components/providers";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toast";
 
 import Footer from "@/components/common/footer";
 import Navbar from "@/components/layout/navbar/navbar";

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAppForm } from "@/hooks/use-app-form";
 import { useCreateJob } from "@/features/recruiters/api/mutations";
 import { useRecruiterProfile } from "@/features/recruiters/api/queries";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { SelectItem } from "@/components/ui/select";
 import { useCurrencies } from "@/features/meta/api/queries";
 import { CreateJobSchema } from "@server/features/recruiters/recruiters.schemas";
@@ -43,10 +43,10 @@ export default function PostJobPage() {
           status: "open",
           company_id: profile?.company_id || undefined,
         });
-        toast.success("Job posted successfully!");
+        toast.add({ type: "success", description: "Job posted successfully!" });
         router.push("/dashboard");
       } catch {
-        toast.error("Failed to post job. Please try again.");
+        toast.add({ type: "error", description: "Failed to post job. Please try again." });
       }
     },
   });

@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/use-app-form";
 import { registerSchema } from "@/features/auth/schemas";
 import { authClient } from "@/features/auth/api/auth-client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -32,12 +32,12 @@ export default function SignUpPage() {
       });
 
       if (error) {
-        toast.error(error.message || "An error occurred during registration");
+        toast.add({ type: "error", description: error.message || "An error occurred during registration" });
         setLoading(false);
         return;
       }
 
-      toast.success("Account created successfully!");
+      toast.add({ type: "success", description: "Account created successfully!" });
       router.push("/onboarding");
     },
   });

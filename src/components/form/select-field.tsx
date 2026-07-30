@@ -22,6 +22,8 @@ type SelectFieldProps<TField extends AnyFieldApi> = Omit<
   label?: React.ReactNode;
   description?: React.ReactNode;
   placeholder?: React.ReactNode;
+  /** Custom render function for the selected value display in the trigger. */
+  renderValue?: (value: unknown) => React.ReactNode;
 
   className?: string;
   labelClassName?: string;
@@ -39,6 +41,7 @@ export function SelectField<TField extends AnyFieldApi>({
   label,
   description,
   placeholder,
+  renderValue,
   className,
   labelClassName,
   descriptionClassName,
@@ -68,7 +71,9 @@ export function SelectField<TField extends AnyFieldApi>({
           aria-invalid={invalid}
           className={triggerClassName}
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder}>
+            {renderValue}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent className={contentClassName}>
           {children}
