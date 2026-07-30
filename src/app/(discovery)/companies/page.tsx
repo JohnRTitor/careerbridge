@@ -89,7 +89,7 @@ export default async function CompaniesPage({
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button variant="outline" className="mt-4" render={<Link href="/companies">Clear Search</Link>} />
+              <Button variant="outline" className="mt-4" render={<Link href="/companies">Clear Search</Link>} nativeButton={false} />
             </EmptyContent>
           </Empty>
         )}

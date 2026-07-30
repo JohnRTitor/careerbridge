@@ -59,7 +59,7 @@ export async function JobsSection({ query, location }: JobsSectionProps) {
             </p>
           </div>
           {isSearching && (
-            <Button variant="outline" render={<Link href="/#jobs" scroll={false} />}>
+            <Button variant="outline" render={<Link href="/#jobs" scroll={false} />} nativeButton={false}>
               Reset view
             </Button>
           )}
@@ -84,7 +84,7 @@ export async function JobsSection({ query, location }: JobsSectionProps) {
                   </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
-                  <Button className="mt-4" variant="outline" render={<Link href="/#jobs" scroll={false} />}>
+                  <Button className="mt-4" variant="outline" render={<Link href="/#jobs" scroll={false} />} nativeButton={false}>
                     Browse All Postings
                   </Button>
                 </EmptyContent>

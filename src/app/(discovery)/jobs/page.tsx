@@ -114,7 +114,7 @@ export default async function JobsPage({
               adjusting your search keywords or filters.
             </EmptyDescription>
             <EmptyContent>
-              <Button variant="outline" className="mt-2" render={<Link href="/jobs">Clear Filters</Link>} />
+              <Button variant="outline" className="mt-2" render={<Link href="/jobs">Clear Filters</Link>} nativeButton={false} />
             </EmptyContent>
           </Empty>
         )}
