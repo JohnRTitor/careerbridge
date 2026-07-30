@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   BriefcaseIcon,
@@ -22,9 +21,25 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useCandidateApplications } from "@/features/applications/api/queries";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import type { Application } from "@/features/applications/api/types";
+import type { DragEndEvent } from "@/components/kibo-ui/kanban";
+import {
+  KanbanBoard,
+  KanbanCard,
+  KanbanCards,
+  KanbanHeader,
+  KanbanProvider,
+} from "@/components/kibo-ui/kanban";
+import {
+  ListGroup,
+  ListHeader,
+  ListItem,
+  ListItems,
+  ListProvider,
+} from "@/components/kibo-ui/list";
 
 const formatTimeAgo = (dateStr: string) => {
   try {
@@ -34,106 +49,116 @@ const formatTimeAgo = (dateStr: string) => {
   }
 };
 
+const ApplicationCardContent = ({ app }: { app: Application }) => (
+  <CardContent className="p-4">
+    <div className="flex gap-3">
+      {app.company_logo ? (
+        <div className="size-10 rounded-lg border border-border overflow-hidden shrink-0">
+          <img
+            src={app.company_logo}
+            alt={app.company_name || ""}
+            width={40}
+            height={40}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-xs font-bold text-secondary-foreground shrink-0 uppercase">
+          {app.company_name?.substring(0, 2) || "CP"}
+        </span>
+      )}
+      <div className="flex-1 min-w-0">
+        <h4 className="font-semibold text-sm leading-snug truncate">
+          {app.job_title}
+        </h4>
+        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
+          <HugeiconsIcon icon={Building01Icon} className="size-3 shrink-0" />{" "}
+          {app.company_name || "Unknown Company"}
+        </p>
+      </div>
+    </div>
+    <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
+      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+        <HugeiconsIcon icon={ClockIcon} className="size-3" />
+        {formatTimeAgo(app.applied_at)}
+      </span>
+      {app.status === "draft" ? (
+        <Link
+          href={`/jobs/${app.job_id}/apply`}
+          className={buttonVariants({
+            variant: "default",
+            size: "sm",
+            className: "h-7 text-[10px] px-2",
+          })}
+        >
+          Continue
+        </Link>
+      ) : (
+        <Link
+          href={`/jobs/${app.job_id}`}
+          className={buttonVariants({
+            variant: "outline",
+            size: "sm",
+            className: "h-7 text-[10px] px-2 bg-background",
+          })}
+        >
+          View Job
+        </Link>
+      )}
+    </div>
+  </CardContent>
+);
+
 const ApplicationCard = ({ app }: { app: Application }) => (
   <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
-    <CardContent className="p-4">
-      <div className="flex gap-3">
-        {app.company_logo ? (
-          <div className="size-10 rounded-lg border border-border overflow-hidden shrink-0">
-            <img
-              src={app.company_logo}
-              alt={app.company_name || ""}
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ) : (
-          <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-xs font-bold text-secondary-foreground shrink-0 uppercase">
-            {app.company_name?.substring(0, 2) || "CP"}
-          </span>
-        )}
-        <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-sm leading-snug truncate">
-            {app.job_title}
-          </h4>
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
-            <HugeiconsIcon icon={Building01Icon} className="size-3 shrink-0" />{" "}
-            {app.company_name || "Unknown Company"}
-          </p>
-        </div>
-      </div>
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
-        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-          <HugeiconsIcon icon={ClockIcon} className="size-3" />
-          {formatTimeAgo(app.applied_at)}
-        </span>
-        {app.status === "draft" ? (
-          <Link
-            href={`/jobs/${app.job_id}/apply`}
-            className={buttonVariants({
-              variant: "default",
-              size: "sm",
-              className: "h-7 text-[10px] px-2",
-            })}
-          >
-            Continue
-          </Link>
-        ) : (
-          <Link
-            href={`/jobs/${app.job_id}`}
-            className={buttonVariants({
-              variant: "outline",
-              size: "sm",
-              className: "h-7 text-[10px] px-2 bg-background",
-            })}
-          >
-            View Job
-          </Link>
-        )}
-      </div>
-    </CardContent>
+    <ApplicationCardContent app={app} />
   </Card>
 );
 
-const KanbanColumn = ({
-  title,
-  apps,
-  badgeClass,
-}: {
-  title: string;
-  apps: Application[];
-  badgeClass: string;
-}) => (
-  <div className="flex flex-col min-w-[280px] w-full max-w-sm shrink-0 bg-muted/50 rounded-xl border border-border p-4">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="font-semibold text-sm">{title}</h3>
-      <Badge variant="secondary" className={badgeClass}>
-        {apps.length}
-      </Badge>
-    </div>
-    <div className="flex flex-col gap-3 h-full">
-      {apps.length > 0 ? (
-        apps.map((app) => <ApplicationCard key={app.id} app={app} />)
-      ) : (
-        <div className="flex-1 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center text-xs text-muted-foreground p-6 text-center">
-          No applications in this stage
-        </div>
-      )}
-    </div>
-  </div>
-);
+const COLUMNS = [
+  { id: "draft", name: "Drafts", color: "#6B7280" },
+  { id: "pending", name: "Pending Review", color: "#8B5CF6" },
+  { id: "reviewing", name: "Reviewing", color: "#3B82F6" },
+  { id: "interviewing", name: "Interviewing", color: "#F59E0B" },
+  { id: "offered", name: "Offered", color: "#10B981" },
+  { id: "rejected", name: "Archived", color: "#EF4444" },
+];
+
+type KanbanApp = Application & {
+  name: string;
+  column: string;
+};
 
 export default function ApplicationsTrackerPage() {
-  const { data: applications = [], isLoading } = useCandidateApplications();
+  const { data: serverApplications = [], isLoading } = useCandidateApplications();
   const [view, setView] = useState<"kanban" | "list">("kanban");
+  const [localApplications, setLocalApplications] = useState<KanbanApp[]>([]);
 
-  const drafts = applications.filter((a) => a.status === "draft");
-  const pending = applications.filter((a) => a.status === "pending");
-  const reviewing = applications.filter((a) => a.status === "reviewing");
-  const interviewing = applications.filter((a) => a.status === "interviewing");
-  const offered = applications.filter((a) => a.status === "offered");
-  const rejected = applications.filter((a) => a.status === "rejected");
+  useEffect(() => {
+    setLocalApplications(
+      serverApplications.map((app) => ({
+        ...app,
+        name: app.job_title,
+        column: app.status,
+      }))
+    );
+  }, [serverApplications]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const status = COLUMNS.find(({ id }) => id === over.id);
+    if (!status) return;
+
+    setLocalApplications((apps) =>
+      apps.map((app) => {
+        if (app.id === active.id) {
+          return { ...app, column: status.id, status: status.id as Application["status"] };
+        }
+        return app;
+      })
+    );
+  };
 
   if (isLoading) {
     return (
@@ -181,7 +206,7 @@ export default function ApplicationsTrackerPage() {
         </div>
       </div>
 
-      {applications.length === 0 ? (
+      {localApplications.length === 0 ? (
         <Empty className="flex-1 bg-muted/50 mt-4">
           <EmptyMedia variant="icon">
             <HugeiconsIcon icon={BriefcaseIcon} />
@@ -201,43 +226,71 @@ export default function ApplicationsTrackerPage() {
           </EmptyContent>
         </Empty>
       ) : view === "kanban" ? (
-        <div className="flex gap-6 overflow-x-auto pb-4 flex-1">
-          <KanbanColumn
-            title="Drafts"
-            apps={drafts}
-            badgeClass="bg-muted text-muted-foreground hover:bg-muted"
-          />
-          <KanbanColumn
-            title="Pending Review"
-            apps={pending}
-            badgeClass="bg-purple-100 text-purple-600 hover:bg-purple-100"
-          />
-          <KanbanColumn
-            title="Reviewing"
-            apps={reviewing}
-            badgeClass="bg-blue-100 text-primary hover:bg-blue-100"
-          />
-          <KanbanColumn
-            title="Interviewing"
-            apps={interviewing}
-            badgeClass="bg-amber-100 text-amber-600 hover:bg-amber-100"
-          />
-          <KanbanColumn
-            title="Offered"
-            apps={offered}
-            badgeClass="bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/20"
-          />
-          <KanbanColumn
-            title="Archived"
-            apps={rejected}
-            badgeClass="bg-destructive/20 text-destructive hover:bg-destructive/20"
-          />
-        </div>
+        <ScrollArea className="w-full whitespace-nowrap rounded-md">
+          <div className="flex w-max min-h-[600px] pb-4">
+            <KanbanProvider
+              columns={COLUMNS}
+              data={localApplications}
+              onDragEnd={handleDragEnd}
+              className="flex gap-4"
+            >
+              {(column) => (
+                <KanbanBoard id={column.id} key={column.id} className="w-[320px] shrink-0 bg-muted/50 border-border">
+                  <KanbanHeader className="flex items-center justify-between p-4">
+                    <span>{column.name}</span>
+                    <Badge variant="secondary" className="bg-background text-foreground">
+                      {localApplications.filter((app) => app.column === column.id).length}
+                    </Badge>
+                  </KanbanHeader>
+                  <KanbanCards id={column.id} className="px-2 pb-2">
+                    {(app: KanbanApp) => (
+                      <KanbanCard
+                        column={column.id}
+                        id={app.id}
+                        key={app.id}
+                        name={app.name}
+                        className="p-0 bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <ApplicationCardContent app={app} />
+                      </KanbanCard>
+                    )}
+                  </KanbanCards>
+                </KanbanBoard>
+              )}
+            </KanbanProvider>
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 flex-1 content-start">
-          {applications.map((app) => (
-            <ApplicationCard key={app.id} app={app} />
-          ))}
+        <div className="flex-1 w-full max-w-4xl mx-auto mb-8">
+          <ListProvider onDragEnd={handleDragEnd}>
+            <div className="flex flex-col gap-6">
+              {COLUMNS.map((column) => {
+                const columnApps = localApplications.filter((app) => app.column === column.id);
+                if (columnApps.length === 0) return null;
+                
+                return (
+                  <ListGroup id={column.id} key={column.id} className="rounded-xl border border-border bg-muted/30 overflow-hidden">
+                    <ListHeader color={column.color} name={column.name} className="bg-muted/50 border-b border-border" />
+                    <ListItems className="p-4 gap-3">
+                      {columnApps.map((app, index) => (
+                        <ListItem
+                          id={app.id}
+                          index={index}
+                          key={app.id}
+                          name={app.name}
+                          parent={column.id}
+                          className="p-0 bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <ApplicationCardContent app={app} />
+                        </ListItem>
+                      ))}
+                    </ListItems>
+                  </ListGroup>
+                );
+              })}
+            </div>
+          </ListProvider>
         </div>
       )}
     </div>
