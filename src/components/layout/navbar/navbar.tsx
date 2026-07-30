@@ -1,16 +1,20 @@
-import { auth } from "@server/auth/auth";
-import { headers } from "next/headers";
+"use client";
+
+import { useSession } from "@/features/auth/api/auth-client";
 import { getLinksForRole } from "./nav-links";
 import { Logo } from "./logo";
 import { DesktopNav } from "./desktop-nav";
 import { MobileNav } from "./mobile-nav";
 import { AuthButtons } from "./auth-buttons";
 import { UserMenu } from "./user-menu";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { ThemeToggle } from "@/components/theme/theme-toggle"; // Need to ensure path is correct, wait we have one in src/components/theme/theme-toggle.tsx? Yes, saw in history.
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function Navbar() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  
+export default function Navbar() {
+  const { data: session, isPending } = useSession();
+
+  // If session is loading, we can just show public links or a skeleton.
+  // Showing public links temporarily prevents layout shift.
   const role = session?.user?.role;
   const links = getLinksForRole(role);
 
@@ -25,7 +29,9 @@ export default async function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <ThemeToggle />
           <div className="hidden md:flex items-center">
-            {session?.user ? (
+            {isPending ? (
+              <Skeleton className="w-24 h-9" />
+            ) : session?.user ? (
               <UserMenu user={{
                 id: session.user.id,
                 name: session.user.name,
@@ -38,8 +44,11 @@ export default async function Navbar() {
           </div>
           
           <MobileNav links={links}>
-            {session?.user ? (
+            {isPending ? (
+               <Skeleton className="w-full h-9" />
+            ) : session?.user ? (
                <div className="flex flex-col gap-4">
+                  {/* For mobile, you could render a simpler user summary or the same UserMenu logic */}
                   <div className="flex items-center gap-3 px-2 py-1">
                     <UserMenu user={{
                       id: session.user.id,

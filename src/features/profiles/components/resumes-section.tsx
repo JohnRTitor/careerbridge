@@ -45,6 +45,7 @@ import {
 import { useProfile } from "@/features/profiles/api/queries";
 import type { Resume } from "@/features/profiles/api/types";
 import { useSupabaseUpload } from "@/features/files/api/mutations";
+import { useAppPermission } from "@/features/auth/api/queries";
 import { SingleFileUploader } from "@/components/ui/single-file-uploader";
 import { getPrivateAssetUrl } from "@/lib/assets";
 import {
@@ -57,6 +58,10 @@ export function ResumesSection() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: profile } = useProfile();
   const resumes = (profile?.resumes as Resume[]) || [];
+
+  const { can } = useAppPermission();
+
+  if (!can("resume", "create")) return null;
 
   const uploadMutation = useAddResume();
   const deleteMutation = useDeleteResume();
