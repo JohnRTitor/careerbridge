@@ -18,11 +18,30 @@ CREATE TYPE job_status AS ENUM (
 );
 
 CREATE TYPE application_status AS ENUM (
+  'draft',
   'pending',
   'reviewing',
   'shortlisted',
   'rejected',
   'hired'
+);
+
+CREATE TYPE application_method AS ENUM (
+  'resume_only',
+  'form_only',
+  'resume_or_form',
+  'resume_and_form'
+);
+
+CREATE TYPE question_type AS ENUM (
+  'short_text',
+  'long_text',
+  'yes_no',
+  'multiple_choice',
+  'checkbox',
+  'number',
+  'date',
+  'url'
 );
 
 CREATE TYPE work_mode AS ENUM (
@@ -363,10 +382,35 @@ CREATE TABLE saved_jobs (
   PRIMARY KEY (user_id, job_id)
 );
 
+CREATE TABLE job_application_forms (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+  version INTEGER NOT NULL DEFAULT 1,
+  method application_method NOT NULL DEFAULT 'resume_only',
+  resume_required BOOLEAN NOT NULL DEFAULT true,
+  cover_letter_required BOOLEAN NOT NULL DEFAULT false,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE job_application_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  form_id UUID NOT NULL REFERENCES job_application_forms(id) ON DELETE CASCADE,
+  type question_type NOT NULL,
+  section TEXT,
+  label TEXT NOT NULL,
+  description TEXT,
+  is_required BOOLEAN NOT NULL DEFAULT false,
+  options JSONB,
+  "order" INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE applications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
   candidate_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+  form_id UUID REFERENCES job_application_forms(id) ON DELETE SET NULL,
   status application_status NOT NULL DEFAULT 'pending',
   
   resume_id UUID REFERENCES resumes(id) ON DELETE SET NULL,
@@ -379,6 +423,15 @@ CREATE TABLE applications (
   applied_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP NOT NULL DEFAULT now(),
   UNIQUE(job_id, candidate_id)
+);
+
+CREATE TABLE application_answers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  question_id UUID NOT NULL REFERENCES job_application_questions(id) ON DELETE CASCADE,
+  answer_value JSONB,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  UNIQUE(application_id, question_id)
 );
 
 -- ==========================================

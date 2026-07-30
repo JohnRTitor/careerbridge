@@ -5,7 +5,7 @@ import { describeRoute } from "hono-openapi";
 import { requireAuth } from "../../app/middleware/auth";
 import { requirePermission } from "../../app/middleware/authorize";
 import { jobsService } from "./jobs.service";
-import { JobSearchQuerySchema } from "./jobs.schemas";
+import { JobSearchQuerySchema, JobApplicationFormSchema } from "./jobs.schemas";
 import { ok, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
 
@@ -64,6 +64,37 @@ export const jobsRoutes = app
       const { id: jobId } = c.req.valid("param");
       const job = await jobsService.getJobById({ jobId });
       return ok(c, job);
+    }
+  )
+  .get(
+    "/:id/application-form",
+    describeRoute({
+      summary: "Get application form configuration for a job",
+      tags: ["Jobs"],
+    }),
+    sValidator("param", UuidParamSchema),
+    async (c) => {
+      const { id: jobId } = c.req.valid("param");
+      const form = await jobsService.getApplicationForm({ jobId });
+      return ok(c, form);
+    }
+  )
+  .put(
+    "/:id/application-form",
+    requireAuth,
+    requirePermission("job", "update"),
+    describeRoute({
+      summary: "Update application form configuration for a job",
+      tags: ["Jobs"],
+    }),
+    sValidator("param", UuidParamSchema),
+    sValidator("json", JobApplicationFormSchema),
+    async (c) => {
+      const user = c.get("user");
+      const { id: jobId } = c.req.valid("param");
+      const data = c.req.valid("json");
+      const form = await jobsService.updateApplicationForm({ jobId, recruiterId: user.id, data });
+      return ok(c, form);
     }
   )
   .post(

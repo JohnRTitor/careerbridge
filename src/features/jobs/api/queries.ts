@@ -45,3 +45,12 @@ export const savedJobsQueryOptions = () => queryOptions({
 });
 
 export const useSavedJobs = () => useQuery(savedJobsQueryOptions());
+
+export const jobApplicationFormQueryOptions = (id: string) => queryOptions({
+  queryKey: [...jobsKeys.detail(id), "application-form"],
+  queryFn: () => api.getJobApplicationForm(id),
+});
+
+export const useJobApplicationForm = (id: string) => 
+  useQuery(jobApplicationFormQueryOptions(id));
+

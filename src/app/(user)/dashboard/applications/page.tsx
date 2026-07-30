@@ -62,7 +62,15 @@ const ApplicationCard = ({ app }: { app: Application }) => (
           <HugeiconsIcon icon={ClockIcon} className="size-3" />
           {formatTimeAgo(app.applied_at)}
         </span>
-        <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-background" })}>View Job</Link>
+        {app.status === "draft" ? (
+          <Link href={`/jobs/${app.job_id}/apply`} className={buttonVariants({ variant: "default", size: "sm", className: "h-7 text-[10px] px-2" })}>
+            Continue
+          </Link>
+        ) : (
+          <Link href={`/jobs/${app.job_id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "h-7 text-[10px] px-2 bg-background" })}>
+            View Job
+          </Link>
+        )}
       </div>
     </CardContent>
   </Card>
@@ -100,6 +108,8 @@ export default function ApplicationsTrackerPage() {
   const { data: applications = [], isLoading } = useCandidateApplications();
   const [view, setView] = useState<"kanban" | "list">("kanban");
 
+  const drafts = applications.filter((a) => a.status === "draft");
+  const pending = applications.filter((a) => a.status === "pending");
   const reviewing = applications.filter((a) => a.status === "reviewing");
   const interviewing = applications.filter((a) => a.status === "interviewing");
   const offered = applications.filter((a) => a.status === "offered");
@@ -166,6 +176,16 @@ export default function ApplicationsTrackerPage() {
         </Empty>
       ) : view === "kanban" ? (
         <div className="flex gap-6 overflow-x-auto pb-4 flex-1">
+          <KanbanColumn
+            title="Drafts"
+            apps={drafts}
+            badgeClass="bg-muted text-muted-foreground hover:bg-muted"
+          />
+          <KanbanColumn
+            title="Pending Review"
+            apps={pending}
+            badgeClass="bg-purple-100 text-purple-600 hover:bg-purple-100"
+          />
           <KanbanColumn
             title="Reviewing"
             apps={reviewing}

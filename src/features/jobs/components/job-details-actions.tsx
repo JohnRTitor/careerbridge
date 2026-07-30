@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useSavedJobs } from "@/features/jobs/api/queries";
 import { useCandidateApplications } from "@/features/applications/api/queries";
 import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
-import { ApplyJobDialog } from "@/features/applications/components/apply-job-dialog";
-import { useAppPermission } from "@/features/auth/api/queries";
 import type { SavedJob } from "@/features/jobs/api/types";
 import type { Application } from "@/features/applications/api/types";
+import { useAppPermission } from "@/features/auth/api/queries";
+import { useRouter } from "next/navigation";
 
 type JobDetailsActionsProps = {
   jobId: string;
@@ -28,11 +28,10 @@ export function JobDetailsActions({
   const { can } = useAppPermission();
   const { data: savedJobs = [] } = useSavedJobs();
   const { data: applications = [] } = useCandidateApplications();
+  const router = useRouter();
   
   const saveMutation = useSaveJob();
   const unsaveMutation = useUnsaveJob();
-
-  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
 
   const isCandidate = can("application", "create");
   if (!isCandidate) return null;
@@ -72,21 +71,13 @@ export function JobDetailsActions({
           <Button 
             size="lg" 
             className="flex-1 sm:flex-none h-12 px-8 shadow-sm"
-            onClick={() => setIsApplyDialogOpen(true)}
+            onClick={() => router.push(`/jobs/${jobId}/apply`)}
             disabled={status !== "open"}
           >
             Apply Now
           </Button>
         )}
       </div>
-
-      <ApplyJobDialog 
-        jobId={jobId} 
-        jobTitle={jobTitle} 
-        companyName={companyName || "the company"} 
-        open={isApplyDialogOpen} 
-        onOpenChange={setIsApplyDialogOpen} 
-      />
     </>
   );
 }

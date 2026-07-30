@@ -6,7 +6,7 @@ export const CompanySchema = z
     name: z.string().min(1, "Name is required"),
     description: z.string().optional(),
     logo_url: z.string().optional().or(z.literal("")),
-    logo_file_id: z.string().uuid().optional().nullable(),
+    logo_file_id: z.uuid().optional().nullable(),
     website: z.url().optional().or(z.literal("")),
     industry: z.string().optional(),
     size: z.string().optional(),
@@ -79,7 +79,14 @@ export const UpdateCompanyMemberSchema = z.object({
 });
 export type UpdateCompanyMember = z.infer<typeof UpdateCompanyMemberSchema>;
 
-export type AddCompanyMemberInput = { companyId: string; data: z.infer<typeof CompanyMemberSchema> };
-export type UpdateCompanyMemberInput = { companyId: string; userId: string; data: z.infer<typeof UpdateCompanyMemberSchema> };
+export type AddCompanyMemberInput = {
+  companyId: string;
+  data: z.infer<typeof CompanyMemberSchema>;
+};
+export type UpdateCompanyMemberInput = {
+  companyId: string;
+  userId: string;
+  data: z.infer<typeof UpdateCompanyMemberSchema>;
+};
 export type RemoveCompanyMemberInput = { companyId: string; userId: string };
 export type GetCompanyMembersInput = { companyId: string };

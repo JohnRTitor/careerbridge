@@ -333,7 +333,8 @@ export default function RecruiterDashboard() {
                   </Empty>
                 ) : (
                   jobsData?.jobs.map((job) => (
-                    <div
+                    <Link
+                      href={`/dashboard/jobs/${job.id}`}
                       key={job.id}
                       className="p-4 flex items-center justify-between hover:bg-muted/50 cursor-pointer group"
                     >
@@ -349,7 +350,7 @@ export default function RecruiterDashboard() {
                         icon={ArrowRight01Icon}
                         className="size-4 text-muted-foreground group-hover:text-primary transition-colors"
                       />
-                    </div>
+                    </Link>
                   ))
                 )}
               </CardContent>

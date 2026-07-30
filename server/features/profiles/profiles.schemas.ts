@@ -7,16 +7,20 @@ export const UpdateProfileSchema = z
     headline: z.string().optional(),
     about: z.string().optional(),
     avatar_url: z.string().optional().or(z.literal("")),
-    avatar_file_id: z.string().uuid().optional().nullable(),
+    avatar_file_id: z.uuid().optional().nullable(),
     visibility: ProfileVisibilitySchema.optional(),
     portfolio_url: z.url().optional().or(z.literal("")),
-    date_of_birth: z.string().refine((date) => !date || !isNaN(Date.parse(date)), { error: "Invalid date" }).optional().or(z.literal("")),
+    date_of_birth: z
+      .string()
+      .refine((date) => !date || !isNaN(Date.parse(date)), {
+        error: "Invalid date",
+      })
+      .optional()
+      .or(z.literal("")),
   })
   .meta({ id: "UpdateUserProfile" });
 
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
-
-
 
 export const EducationSchema = z
   .object({
@@ -73,7 +77,6 @@ export type UpdateProfileInput = {
   data: z.infer<typeof UpdateProfileSchema>;
 };
 
-
 export type AddEducationInput = {
   userId: string;
   data: z.infer<typeof EducationSchema>;
@@ -114,7 +117,7 @@ export const CertificationSchema = z.object({
   expiry_date: z.string().optional(),
   credential_id: z.string().optional(),
   credential_url: z.string().optional().or(z.literal("")),
-  credential_file_id: z.string().uuid().optional().nullable(),
+  credential_file_id: z.uuid().optional().nullable(),
 });
 export type Certification = z.infer<typeof CertificationSchema>;
 
@@ -164,7 +167,7 @@ export type DeleteProjectInput = { projectId: string; userId: string };
 export const ResumeSchema = z.object({
   title: z.string().optional(),
   file_url: z.string(),
-  file_id: z.string().uuid().optional().nullable(),
+  file_id: z.uuid().optional().nullable(),
   is_default: z.boolean().optional().default(false),
 });
 export type Resume = z.infer<typeof ResumeSchema>;

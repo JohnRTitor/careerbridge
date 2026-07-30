@@ -2,14 +2,20 @@ import { z } from "zod";
 import { PaginationQuerySchema } from "../../shared/schemas";
 
 export const JobSchema = z.object({
-  id: z.string().uuid(),
-  company_id: z.string().uuid(),
-  recruiter_id: z.string().uuid(),
+  id: z.uuid(),
+  company_id: z.uuid(),
+  recruiter_id: z.uuid(),
   title: z.string(),
   description: z.string(),
   requirements: z.string().nullable(),
   benefits: z.string().nullable(),
-  type: z.enum(["full-time", "part-time", "contract", "internship", "freelance"]),
+  type: z.enum([
+    "full-time",
+    "part-time",
+    "contract",
+    "internship",
+    "freelance",
+  ]),
   location: z.string(),
   salary_min: z.number().nullable(),
   salary_max: z.number().nullable(),
@@ -28,7 +34,6 @@ export const SavedJobSchema = JobSchema.extend({
   saved_at: z.string(),
 });
 export type SavedJob = z.infer<typeof SavedJobSchema>;
-
 
 export const JobTypeSchema = z.enum([
   "full-time",
@@ -77,4 +82,55 @@ export type GetRecommendationsInput = {
 
 export type GetSavedJobsInput = {
   userId: string;
+};
+
+export const ApplicationMethodSchema = z.enum([
+  "resume_only",
+  "form_only",
+  "resume_or_form",
+  "resume_and_form",
+]);
+export type ApplicationMethod = z.infer<typeof ApplicationMethodSchema>;
+
+export const QuestionTypeSchema = z.enum([
+  "short_text",
+  "long_text",
+  "yes_no",
+  "multiple_choice",
+  "checkbox",
+  "number",
+  "date",
+  "url",
+]);
+export type QuestionType = z.infer<typeof QuestionTypeSchema>;
+
+export const JobApplicationQuestionSchema = z.object({
+  id: z.uuid().optional(),
+  type: QuestionTypeSchema,
+  section: z.string().nullable().optional(),
+  label: z.string(),
+  description: z.string().nullable().optional(),
+  is_required: z.boolean(),
+  options: z.array(z.string()).nullable().optional(),
+  order: z.number(),
+});
+export type JobApplicationQuestion = z.infer<
+  typeof JobApplicationQuestionSchema
+>;
+
+export const JobApplicationFormSchema = z
+  .object({
+    id: z.uuid().optional(),
+    method: ApplicationMethodSchema,
+    resume_required: z.boolean(),
+    cover_letter_required: z.boolean(),
+    questions: z.array(JobApplicationQuestionSchema).optional(),
+  })
+  .meta({ id: "JobApplicationForm" });
+export type JobApplicationForm = z.infer<typeof JobApplicationFormSchema>;
+
+export type UpdateApplicationFormInput = {
+  jobId: string;
+  recruiterId: string;
+  data: JobApplicationForm;
 };

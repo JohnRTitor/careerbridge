@@ -1,5 +1,6 @@
 import { rpcClient, handleRpcError } from "@/lib/api/rpc";
 import type { JobFilters, Job, SavedJob } from "./types";
+import type { JobApplicationForm } from "@server/features/jobs/jobs.schemas";
 
 export const searchJobs = async (filters: JobFilters) => {
   const query = {
@@ -47,3 +48,18 @@ export const getSavedJobs = async () => {
   const json = await res.json();
   return json.data;
 };
+
+export const getJobApplicationForm = async (id: string) => {
+  const res = await rpcClient.api.jobs[":id"]["application-form"].$get({ param: { id } });
+  if (!res.ok) return handleRpcError(res);
+  const json = await res.json();
+  return json.data;
+};
+
+export const updateJobApplicationForm = async (id: string, data: JobApplicationForm) => {
+  const res = await rpcClient.api.jobs[":id"]["application-form"].$put({ param: { id }, json: data });
+  if (!res.ok) return handleRpcError(res);
+  const json = await res.json();
+  return json.data;
+};
+

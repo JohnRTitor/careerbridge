@@ -1,9 +1,18 @@
 import { recruitersRepository } from "./recruiters.repository";
 import { NotFoundError, ForbiddenError } from "../../shared/errors";
 import type { CreateJobInput, UpdateJobInput, DeleteJobInput, GetJobApplicantsInput, UpdateApplicationStatusInput, GetAnalyticsInput, GetRecruiterProfileInput, UpsertRecruiterProfileInput, GetRecruiterJobsInput, GetRecruiterApplicationsInput } from "./recruiters.schemas";
+import { jobsService } from "../jobs/jobs.service";
 
 export async function createJob(input: CreateJobInput) {
-  return recruitersRepository.createJob(input);
+  const job = await recruitersRepository.createJob(input);
+  if (input.data.application_form) {
+    await jobsService.updateApplicationForm({
+      jobId: job.id,
+      recruiterId: input.recruiterId,
+      data: input.data.application_form
+    });
+  }
+  return job;
 }
 
 export async function updateJob(input: UpdateJobInput) {

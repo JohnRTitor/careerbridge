@@ -1,6 +1,7 @@
 import { jobsRepository } from "./jobs.repository";
 import { NotFoundError } from "../../shared/errors";
-import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput, Job, SavedJob } from "./jobs.schemas";
+import type { SearchJobsInput, GetJobByIdInput, SaveJobInput, UnsaveJobInput, GetRecommendationsInput, GetSavedJobsInput, Job, SavedJob, JobApplicationForm, UpdateApplicationFormInput } from "./jobs.schemas";
+import { UnauthorizedError } from "../../shared/errors";
 
 export async function searchJobs(input: SearchJobsInput): Promise<{ jobs: Job[]; pagination: { total: number; page: number; limit: number; totalPages: number } }> {
   const { page = 1, limit = 10 } = input;
@@ -57,6 +58,26 @@ export async function getSavedJobs(input: GetSavedJobsInput): Promise<SavedJob[]
   return data as SavedJob[];
 }
 
+export async function getApplicationForm(input: GetJobByIdInput): Promise<JobApplicationForm> {
+  const form = await jobsRepository.getApplicationForm(input.jobId);
+  if (!form) {
+    throw new NotFoundError("Application form not found for this job");
+  }
+  return form as JobApplicationForm;
+}
+
+export async function updateApplicationForm(input: UpdateApplicationFormInput): Promise<JobApplicationForm> {
+  const job = await jobsRepository.getJobById({ jobId: input.jobId });
+  if (!job) throw new NotFoundError("Job not found");
+  
+  if (job.created_by !== input.recruiterId) {
+    throw new UnauthorizedError("You are not authorized to update this job's form");
+  }
+  
+  const form = await jobsRepository.updateApplicationForm(input.jobId, input.data);
+  return form as JobApplicationForm;
+}
+
 export const jobsService = {
   searchJobs,
   getJobById,
@@ -64,4 +85,6 @@ export const jobsService = {
   unsaveJob,
   getRecommendations,
   getSavedJobs,
+  getApplicationForm,
+  updateApplicationForm,
 };

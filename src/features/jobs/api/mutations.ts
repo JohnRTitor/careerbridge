@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { jobsKeys } from "./query-keys";
+import type { JobApplicationForm } from "@server/features/jobs/jobs.schemas";
 import * as api from "./api";
 
 export const useSaveJob = () => {
@@ -22,6 +23,17 @@ export const useUnsaveJob = () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.detail(jobId) });
       queryClient.invalidateQueries({ queryKey: jobsKeys.lists() });
       queryClient.invalidateQueries({ queryKey: jobsKeys.saved() });
+    },
+  });
+};
+
+export const useUpdateJobApplicationForm = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: JobApplicationForm }) => 
+      api.updateJobApplicationForm(id, data),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: [...jobsKeys.detail(id), "application-form"] });
     },
   });
 };

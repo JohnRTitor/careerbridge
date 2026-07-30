@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { JobTypeSchema, JobStatusSchema } from "../jobs/jobs.schemas";
+import { JobTypeSchema, JobStatusSchema, JobApplicationFormSchema } from "../jobs/jobs.schemas";
 import { PaginationQuerySchema } from "../../shared/schemas";
 
 export const CreateJobBaseSchema = z.object({
@@ -14,6 +14,7 @@ export const CreateJobBaseSchema = z.object({
   maximum_salary: z.number().positive().optional(),
   currency: z.string().length(3).optional(),
   status: JobStatusSchema.optional().default("open"),
+  application_form: JobApplicationFormSchema.optional(),
 });
 
 const validateSalaryRange = (

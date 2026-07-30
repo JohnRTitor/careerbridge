@@ -126,6 +126,63 @@ export async function getSavedJobs(input: GetSavedJobsInput) {
   return result.rows;
 }
 
+export async function getApplicationForm(jobId: string) {
+  const formQuery = `SELECT * FROM job_application_forms WHERE job_id = $1 AND is_active = true`;
+  const formResult = await pool.query(formQuery, [jobId]);
+  if (formResult.rowCount === 0) return null;
+  
+  const form = formResult.rows[0];
+  const questionsQuery = `SELECT * FROM job_application_questions WHERE form_id = $1 ORDER BY "order" ASC`;
+  const questionsResult = await pool.query(questionsQuery, [form.id]);
+  
+  return {
+    ...form,
+    questions: questionsResult.rows
+  };
+}
+
+export async function updateApplicationForm(jobId: string, data: any) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    const currentFormResult = await client.query(`SELECT version FROM job_application_forms WHERE job_id = $1 AND is_active = true`, [jobId]);
+    const nextVersion = (currentFormResult.rowCount ?? 0) > 0 ? parseInt(currentFormResult.rows[0].version) + 1 : 1;
+    
+    await client.query(`UPDATE job_application_forms SET is_active = false WHERE job_id = $1`, [jobId]);
+    
+    const formInsert = `
+      INSERT INTO job_application_forms (job_id, version, method, resume_required, cover_letter_required, is_active)
+      VALUES ($1, $2, $3, $4, $5, true)
+      RETURNING *
+    `;
+    const newFormResult = await client.query(formInsert, [jobId, nextVersion, data.method, data.resume_required, data.cover_letter_required]);
+    const newForm = newFormResult.rows[0];
+    
+    const questions = [];
+    if (data.questions && data.questions.length > 0) {
+      for (const q of data.questions) {
+        const qInsert = `
+          INSERT INTO job_application_questions (form_id, type, section, label, description, is_required, options, "order")
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+          RETURNING *
+        `;
+        const optionsJson = q.options ? JSON.stringify(q.options) : null;
+        const qResult = await client.query(qInsert, [newForm.id, q.type, q.section, q.label, q.description, q.is_required, optionsJson, q.order]);
+        questions.push(qResult.rows[0]);
+      }
+    }
+    
+    await client.query('COMMIT');
+    return { ...newForm, questions };
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
 export const jobsRepository = {
   searchJobs,
   getJobById,
@@ -133,4 +190,6 @@ export const jobsRepository = {
   unsaveJob,
   getRecommendations,
   getSavedJobs,
+  getApplicationForm,
+  updateApplicationForm,
 };

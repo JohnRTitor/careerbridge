@@ -18,6 +18,9 @@ export async function applyForJob(input: ApplyForJobInput) {
 
   const existing = await applicationsRepository.getApplication({ jobId, candidateId });
   if (existing) {
+    if (existing.status === 'draft') {
+      return applicationsRepository.updateApplication(existing.id, input.data);
+    }
     throw new ConflictError("You have already applied to this job");
   }
 

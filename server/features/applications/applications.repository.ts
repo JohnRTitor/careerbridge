@@ -19,13 +19,90 @@ export async function getUserApplications(input: GetUserApplicationsInput) {
 
 export async function applyForJob(input: ApplyForJobInput) {
   const { jobId, candidateId, data } = input;
-  const query = `
-    INSERT INTO applications (job_id, candidate_id, resume_id, cover_letter)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *;
-  `;
-  const result = await pool.query(query, [jobId, candidateId, data.resume_id, data.cover_letter]);
-  return result.rows[0];
+  const status = data.is_draft ? 'draft' : 'pending';
+  
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    const query = `
+      INSERT INTO applications (job_id, candidate_id, form_id, resume_id, cover_letter, status)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+    const result = await client.query(query, [
+      jobId, 
+      candidateId, 
+      data.form_id, 
+      data.resume_id, 
+      data.cover_letter,
+      status
+    ]);
+    const application = result.rows[0];
+
+    if (data.answers && Object.keys(data.answers).length > 0) {
+      for (const [questionId, answerValue] of Object.entries(data.answers)) {
+        await client.query(`
+          INSERT INTO application_answers (application_id, question_id, answer_value)
+          VALUES ($1, $2, $3)
+        `, [application.id, questionId, JSON.stringify(answerValue)]);
+      }
+    }
+
+    await client.query('COMMIT');
+    return application;
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+export async function updateApplication(applicationId: string, data: ApplyForJobInput["data"]) {
+  const status = data.is_draft ? 'draft' : 'pending';
+  
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    const query = `
+      UPDATE applications 
+      SET form_id = $1, resume_id = $2, cover_letter = $3, status = $4, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $5
+      RETURNING *;
+    `;
+    const result = await client.query(query, [
+      data.form_id, 
+      data.resume_id, 
+      data.cover_letter,
+      status,
+      applicationId
+    ]);
+    const application = result.rows[0];
+
+    if (data.answers) {
+      // Delete existing answers and re-insert
+      await client.query(`DELETE FROM application_answers WHERE application_id = $1`, [applicationId]);
+      
+      if (Object.keys(data.answers).length > 0) {
+        for (const [questionId, answerValue] of Object.entries(data.answers)) {
+          await client.query(`
+            INSERT INTO application_answers (application_id, question_id, answer_value)
+            VALUES ($1, $2, $3)
+          `, [applicationId, questionId, JSON.stringify(answerValue)]);
+        }
+      }
+    }
+
+    await client.query('COMMIT');
+    return application;
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
 }
 
 export async function getApplication(input: GetApplicationInput) {
@@ -64,6 +141,7 @@ export const applicationsRepository = {
   getUserApplications,
   applyForJob,
   getApplication,
+  updateApplication,
   withdrawApplication,
   hasCandidateAppliedToRecruiter,
 };

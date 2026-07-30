@@ -29,6 +29,12 @@ export default function PostJobPage() {
       minimum_salary: undefined as number | undefined,
       maximum_salary: undefined as number | undefined,
       currency: "USD",
+      application_form: {
+        method: "resume_only" as "resume_only" | "form_only" | "resume_or_form" | "resume_and_form",
+        resume_required: true,
+        cover_letter_required: false,
+        questions: [],
+      }
     },
     validators: {
       // @ts-expect-error - schema fields are optional but form requires them
@@ -175,6 +181,45 @@ export default function PostJobPage() {
                   />
                 )}
               </form.AppField>
+
+              <div className="border-t border-border pt-6 mt-6">
+                <h3 className="text-lg font-semibold mb-4">Application Settings</h3>
+                <div className="grid sm:grid-cols-2 gap-6 mb-6">
+                  <form.AppField name="application_form.method">
+                    {(field) => (
+                      <field.SelectField
+                        field={field}
+                        label="Application Method"
+                      >
+                        <SelectItem value="resume_only">Resume Only</SelectItem>
+                        <SelectItem value="form_only">Form Only</SelectItem>
+                        <SelectItem value="resume_or_form">Resume or Form</SelectItem>
+                        <SelectItem value="resume_and_form">Resume and Form</SelectItem>
+                      </field.SelectField>
+                    )}
+                  </form.AppField>
+                </div>
+                <div className="flex gap-6">
+                  <form.AppField name="application_form.resume_required">
+                    {(field) => (
+                      <field.SwitchField
+                        field={field}
+                        label="Require Resume"
+                        description="Candidates must upload a resume"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="application_form.cover_letter_required">
+                    {(field) => (
+                      <field.SwitchField
+                        field={field}
+                        label="Require Cover Letter"
+                        description="Candidates must provide a cover letter"
+                      />
+                    )}
+                  </form.AppField>
+                </div>
+              </div>
 
               <div className="pt-6 border-t border-border flex justify-end gap-3">
                 <Link href="/dashboard" className={buttonVariants({ variant: "outline", size: "lg" })}>
