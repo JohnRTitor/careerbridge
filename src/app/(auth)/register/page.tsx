@@ -38,6 +38,7 @@ export default function SignUpPage() {
       }
 
       toast.add({ type: "success", description: "Account created successfully!" });
+      router.refresh();
       router.push("/onboarding");
     },
   });

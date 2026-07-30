@@ -43,6 +43,7 @@ export default function SignInPage() {
       toast.add({ type: "success", description: "Login successful!" });
 
       const userRole = data?.user?.role;
+      router.refresh();
       if (!userRole) {
         router.push("/onboarding");
       } else {
