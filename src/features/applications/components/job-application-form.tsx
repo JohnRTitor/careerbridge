@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DocumentAttachmentIcon, Tick02Icon } from "@hugeicons/core-free-icons";
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useAppForm } from "@/hooks/use-app-form";
 import { useProfile } from "@/features/profiles/api/queries";
 import { useApplyForJob } from "@/features/applications/api/mutations";
@@ -142,6 +143,11 @@ export function JobApplicationForm({ jobId, jobTitle, companyName }: JobApplicat
                     You need to upload a resume to your profile before applying.
                   </EmptyDescription>
                 </EmptyHeader>
+                <EmptyContent>
+                  <Link href="/dashboard/profile" className={buttonVariants({ variant: "outline", size: "sm" })}>
+                    Upload Resume
+                  </Link>
+                </EmptyContent>
               </Empty>
             )}
           </div>
