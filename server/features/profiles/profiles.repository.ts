@@ -39,15 +39,13 @@ export async function getProfile(input: GetProfileInput) {
   const { userId } = input;
   const query = `
     SELECT p.*, u.name, u.email, u.image,
-           f1.path as avatar_file_path, f1.bucket as avatar_file_bucket,
-           f2.path as resume_file_path, f2.bucket as resume_file_bucket
+           f1.path as avatar_file_path, f1.bucket as avatar_file_bucket
     FROM user_profile p
     JOIN "user" u ON p.user_id = u.id
     LEFT JOIN files f1 ON p.avatar_file_id = f1.id
-    LEFT JOIN files f2 ON p.resume_file_id = f2.id
     WHERE p.user_id = $1
   `;
-  const result = await pool.query<{ id: string, user_id: string, name: string | null, email: string, image: string | null, headline: string | null, about: string | null, visibility: "public" | "private", resume_url: string | null, portfolio_url: string | null, date_of_birth: string | null, avatar_file_path: string | null, avatar_file_bucket: string | null }>(query, [userId]);
+  const result = await pool.query<{ id: string, user_id: string, name: string | null, email: string, image: string | null, headline: string | null, about: string | null, visibility: "public" | "private", portfolio_url: string | null, date_of_birth: string | null, avatar_file_path: string | null, avatar_file_bucket: string | null }>(query, [userId]);
   return result.rows[0];
 }
 

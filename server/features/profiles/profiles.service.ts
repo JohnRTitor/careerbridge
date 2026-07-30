@@ -36,7 +36,7 @@ export async function getProfile(input: GetProfileInput) {
   const { userId } = input;
   const profile = await profilesRepository.getProfile({ userId });
   if (!profile) {
-    return { user_id: "", name: null, email: "", image: null, headline: null, about: null, visibility: "public", resume_url: null, portfolio_url: null, date_of_birth: null, education: [], experience: [], certifications: [], projects: [], skills: [], languages: [], social_links: [], resumes: [] };
+    return { user_id: "", name: null, email: "", image: null, headline: null, about: null, visibility: "public", portfolio_url: null, date_of_birth: null, education: [], experience: [], certifications: [], projects: [], skills: [], languages: [], social_links: [], resumes: [] };
   }
   const education = await profilesRepository.getEducation({ userId });
   const experience = await profilesRepository.getExperience({ userId });

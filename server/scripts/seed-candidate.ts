@@ -74,9 +74,9 @@ async function main() {
     // Get an employer and company for mock jobs if we need more
     if (jobIds.length < numApplications) {
       if (values.verbose) console.log(`Need ${numApplications} jobs, but only found ${jobIds.length}. Creating mock jobs...`);
-      const employersRes = await pool.query("SELECT id FROM \"user\" WHERE role = 'employer' LIMIT 50");
+      const employersRes = await pool.query("SELECT id FROM \"user\" WHERE role = 'recruiter' LIMIT 50");
       if (employersRes.rows.length === 0) {
-         console.error("No employers found in the database. Please run the main db:seed script first.");
+         console.error("No recruiters found in the database. Please run the main db:seed script first.");
          process.exit(1);
       }
       const employers = employersRes.rows;

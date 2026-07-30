@@ -158,7 +158,7 @@ async function createUsers(config: SeedConfig, state: SeedState) {
       identity.avatarUrl,
       createdAt,
       createdAt,
-      isCandidate ? "candidate" : "employer",
+      isCandidate ? "candidate" : "recruiter",
       faker.datatype.boolean(0.02), // 2% banned
       null,
       null
@@ -194,7 +194,6 @@ async function createUsers(config: SeedConfig, state: SeedState) {
         identity.avatarUrl,
         faker.helpers.arrayElement(VISIBILITIES),
         identity.portfolio,
-        faker.internet.url(), // resume_url
         faker.datatype.boolean(0.8), // 80% open to work
         faker.datatype.boolean(0.5), // 50% willing to relocate
         salary.expected,
@@ -279,7 +278,7 @@ async function createUsers(config: SeedConfig, state: SeedState) {
   }
 
   await batchInsert("user", ["id", "name", "email", "emailVerified", "image", "createdAt", "updatedAt", "role", "banned", "banReason", "banExpires"], userData);
-  await batchInsert("user_profile", ["user_id", "headline", "about", "first_name", "last_name", "phone", "date_of_birth", "gender", "country", "state", "city", "address", "postal_code", "avatar_url", "visibility", "portfolio_url", "resume_url", "open_to_work", "willing_to_relocate", "expected_salary", "current_salary", "years_of_experience", "created_at", "updated_at"], profileData);
+  await batchInsert("user_profile", ["user_id", "headline", "about", "first_name", "last_name", "phone", "date_of_birth", "gender", "country", "state", "city", "address", "postal_code", "avatar_url", "visibility", "portfolio_url", "open_to_work", "willing_to_relocate", "expected_salary", "current_salary", "years_of_experience", "created_at", "updated_at"], profileData);
   await batchInsert("education", ["id", "user_id", "institution", "degree", "field_of_study", "start_date", "end_date", "description", "created_at", "updated_at"], educationData);
   await batchInsert("experience", ["id", "user_id", "title", "company", "location", "start_date", "end_date", "description", "created_at", "updated_at"], experienceData);
   await batchInsert("certifications", ["id", "user_id", "name", "issuer", "issue_date", "expiry_date", "credential_id", "credential_url", "created_at"], certificationsData);
