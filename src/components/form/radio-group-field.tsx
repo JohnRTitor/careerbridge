@@ -4,12 +4,12 @@ import * as React from "react";
 import { AnyFieldApi } from "@tanstack/react-form";
 
 import { getFieldState } from "@/components/form/utils";
-import { RadioGroup } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/animate-ui/components/base/radio";
 import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
-import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group";
+import { type RadioGroupProps as RadioGroupPrimitiveProps } from "@/components/animate-ui/components/base/radio";
 
 type RadioGroupFieldProps<TField extends AnyFieldApi> = Omit<
-  RadioGroupPrimitive.Props,
+  RadioGroupPrimitiveProps,
   "value" | "onValueChange" | "defaultValue" | "id"
 > & {
   field: TField;

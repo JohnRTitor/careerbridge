@@ -8,6 +8,7 @@ import { ArrowRightIcon } from "@hugeicons/core-free-icons";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { SelectItem } from "@/components/ui/select";
+import { Radio } from "@/components/animate-ui/components/base/radio";
 import { useAppForm } from "@/hooks/use-app-form";
 import { onboardingSchema } from "@/features/auth/schemas";
 import { submitOnboardingAction } from "@/features/auth/actions";
@@ -64,15 +65,21 @@ export function OnboardingForm({ user }: { user: { name: string; email: string }
           <div className="space-y-4">
             <form.AppField name="accountType">
               {(field) => (
-                <field.SelectField
+                <field.RadioGroupField
                   field={field}
                   label="How do you want to use CareerBridge?"
                   labelClassName="text-sm font-semibold"
-                  placeholder="Select an account type"
+                  className="gap-3"
                 >
-                  <SelectItem value="candidate">I&apos;m looking for work</SelectItem>
-                  <SelectItem value="recruiter">I&apos;m hiring talent</SelectItem>
-                </field.SelectField>
+                  <div className="flex items-center space-x-2">
+                    <Radio value="candidate" id="r-candidate" />
+                    <label htmlFor="r-candidate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">I&apos;m looking for work</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Radio value="recruiter" id="r-recruiter" />
+                    <label htmlFor="r-recruiter" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">I&apos;m hiring talent</label>
+                  </div>
+                </field.RadioGroupField>
               )}
             </form.AppField>
 
