@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
-  PopoverContent,
+  PopoverPanel,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/animate-ui/components/base/popover";
 import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -75,7 +75,7 @@ export function DateField<TField extends AnyFieldApi>({
           <HugeiconsIcon icon={Calendar01Icon} className="mr-2" size={16} />
           {value ? format(value, "PPP") : <span>{placeholder}</span>}
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverPanel className="w-auto p-0" align="start">
           <Calendar
             {...props}
             mode="single"
@@ -89,7 +89,7 @@ export function DateField<TField extends AnyFieldApi>({
               }
             }}
           />
-        </PopoverContent>
+        </PopoverPanel>
       </Popover>
 
       {!error && description && (
