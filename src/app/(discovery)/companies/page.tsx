@@ -4,6 +4,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import SplitText from "@/components/SplitText";
+import DecryptedText from "@/components/DecryptedText";
+import FadeContent from "@/components/FadeContent";
 import { CompanyCard } from "@/features/companies/components/company-card";
 import type { CompanyFilters } from "@/features/companies/api/types";
 import {
@@ -53,9 +56,13 @@ export default async function CompaniesPage({
     <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-background">
       <div className="bg-primary px-4 py-12 sm:py-16 sm:px-6 lg:px-8 border-b border-primary/20">
         <div className="mx-auto max-w-4xl space-y-6 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-            Discover Great Workplaces
-          </h1>
+          <SplitText
+            text="Discover Great Workplaces"
+            className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl"
+            delay={40}
+            from={{ opacity: 0, transform: 'translate3d(0,30px,0)' }}
+            to={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+          />
           <p className="mt-2 text-primary-foreground/80 text-sm sm:text-base max-w-2xl mx-auto">
             Explore companies, read about their culture, and find your next dream team.
           </p>
@@ -73,8 +80,10 @@ export default async function CompaniesPage({
 
         {data && data.companies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.companies.map((company: Company) => (
-              <CompanyCard key={company.id} company={company} />
+            {data.companies.map((company: Company, index: number) => (
+              <FadeContent key={company.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+                <CompanyCard company={company} />
+              </FadeContent>
             ))}
           </div>
         ) : (
@@ -83,7 +92,9 @@ export default async function CompaniesPage({
               <EmptyMedia variant="icon">
                 <HugeiconsIcon icon={Search01Icon} className="size-8" />
               </EmptyMedia>
-              <EmptyTitle className="text-xl">No companies found</EmptyTitle>
+              <EmptyTitle className="text-xl">
+                <DecryptedText text="No companies found" speed={60} maxIterations={15} animateOn="view" />
+              </EmptyTitle>
               <EmptyDescription className="max-w-sm mt-2">
                 We couldn&apos;t find any companies matching your search. Try adjusting your query.
               </EmptyDescription>

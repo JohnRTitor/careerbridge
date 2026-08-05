@@ -11,6 +11,7 @@ import type { SavedJob } from "@/features/jobs/api/types";
 import type { Application } from "@/features/applications/api/types";
 import { useAppPermission } from "@/features/auth/api/queries";
 import { useRouter } from "next/navigation";
+import StarBorder from "@/components/StarBorder";
 
 type JobDetailsActionsProps = {
   jobId: string;
@@ -68,14 +69,18 @@ export function JobDetailsActions({
             Applied
           </Button>
         ) : (
-          <Button 
-            size="lg" 
-            className="flex-1 sm:flex-none h-12 px-8 shadow-sm"
-            onClick={() => router.push(`/jobs/${jobId}/apply`)}
-            disabled={status !== "open"}
-          >
-            Apply Now
-          </Button>
+          <div className="flex-1 sm:flex-none">
+            <StarBorder color="#4562FF" speed="3s">
+              <Button 
+                size="lg" 
+                className="w-full h-12 px-8 shadow-sm"
+                onClick={() => router.push(`/jobs/${jobId}/apply`)}
+                disabled={status !== "open"}
+              >
+                Apply Now
+              </Button>
+            </StarBorder>
+          </div>
         )}
       </div>
     </>

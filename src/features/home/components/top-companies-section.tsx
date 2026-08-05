@@ -4,6 +4,7 @@ import { ArrowUpRightIcon, Building02Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { listCompanies } from "@/features/companies/api/api";
+import TiltedCard from "@/components/TiltedCard";
 
 export async function TopCompaniesSection() {
   const popularCompaniesData = await listCompanies({ limit: 6, page: 1 }).catch(() => null);
@@ -23,35 +24,47 @@ export async function TopCompaniesSection() {
         {popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
           popularCompaniesData.companies.map((company) => (
             <Link key={company.id} href={`/companies/${company.id}`} className="block">
-              <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md">
-                {company.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={company.logo_url}
-                    alt={company.name}
-                    className="size-14 shrink-0 rounded-xl object-cover border"
-                  />
-                ) : (
-                  <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-base font-bold text-secondary-foreground uppercase">
-                    {company.name.substring(0, 2)}
-                  </span>
-                )}
-                <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-semibold">{company.name}</h3>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {company.industry || "Company"}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <HugeiconsIcon
-                    icon={ArrowUpRightIcon}
-                    className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
-                  />
-                  <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
-                    {company.open_jobs_count || 0} jobs
-                  </span>
-                </div>
-              </Card>
+              <TiltedCard
+                imageSrc=""
+                containerHeight="100px"
+                containerWidth="100%"
+                imageHeight="100%"
+                imageWidth="100%"
+                scaleOnHover={1.05}
+                rotateAmplitude={5}
+                showTooltip={false}
+                showMobileWarning={false}
+              >
+                <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md h-[100px]">
+                  {company.logo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={company.logo_url}
+                      alt={company.name}
+                      className="size-14 shrink-0 rounded-xl object-cover border"
+                    />
+                  ) : (
+                    <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-base font-bold text-secondary-foreground uppercase">
+                      {company.name.substring(0, 2)}
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-semibold">{company.name}</h3>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {company.industry || "Company"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <HugeiconsIcon
+                      icon={ArrowUpRightIcon}
+                      className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
+                    />
+                    <span className="mt-1 whitespace-nowrap text-xs font-medium text-primary">
+                      {company.open_jobs_count || 0} jobs
+                    </span>
+                  </div>
+                </Card>
+              </TiltedCard>
             </Link>
           ))
         ) : (

@@ -3,7 +3,7 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DocumentAttachmentIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogPopup, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/animate-ui/components/base/dialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAppForm } from "@/hooks/use-app-form";
@@ -12,6 +12,7 @@ import { useApplyForJob } from "@/features/applications/api/mutations";
 import { toast } from "@/components/ui/toast";
 import { SelectItem } from "@/components/ui/select";
 import type { Resume } from "@/features/profiles/api/types";
+import ShinyText from "@/components/ShinyText";
 
 type ApplyJobDialogProps = {
   jobId: string;
@@ -51,7 +52,7 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogPopup className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Apply for {jobTitle}</DialogTitle>
           <DialogDescription>
@@ -140,14 +141,14 @@ export function ApplyJobDialog({ jobId, jobTitle, companyName, open, onOpenChang
                 Cancel
               </Button>
               <form.AppForm>
-                <form.SubmitButton disabled={resumes.length === 0}>
-                  Submit Application
+                <form.SubmitButton disabled={resumes.length === 0} className="font-semibold">
+                  <ShinyText text="Submit Application" shineColor="#ffffff" color="currentColor" speed={3} />
                 </form.SubmitButton>
               </form.AppForm>
             </DialogFooter>
           </form>
         )}
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 }

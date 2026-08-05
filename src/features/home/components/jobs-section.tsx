@@ -3,6 +3,7 @@ import { Alert01Icon, BriefcaseIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { JobCard } from "@/features/jobs/components/job-card";
+import FadeContent from "@/components/FadeContent";
 import { jobsService } from "../../../../server/features/jobs/jobs.service";
 import Link from "next/link";
 import type { Job } from "@/features/jobs/api/types";
@@ -41,7 +42,11 @@ export async function JobsSection({ query, location }: JobsSectionProps) {
 
   const renderJobCards = (jobs: Job[]) => {
     if (jobs.length === 0) return null;
-    return jobs.map((job) => <JobCard key={job.id} job={job} />);
+    return jobs.map((job, index) => (
+      <FadeContent key={job.id} delay={index * 150} blur duration={800} ease="power3.out" className="h-full">
+        <JobCard job={job} />
+      </FadeContent>
+    ));
   };
 
   return (

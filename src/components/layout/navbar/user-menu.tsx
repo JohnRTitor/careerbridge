@@ -6,14 +6,14 @@ import { Logout01Icon, UserIcon, DashboardSquare02Icon, Settings02Icon } from "@
 import { signOut } from "@/features/auth/api/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Menu as DropdownMenu,
+  MenuPanel as DropdownMenuContent,
+  MenuGroup as DropdownMenuGroup,
+  MenuItem as DropdownMenuItem,
+  MenuGroupLabel as DropdownMenuLabel,
+  MenuSeparator as DropdownMenuSeparator,
+  MenuTrigger as DropdownMenuTrigger,
+} from "@/components/animate-ui/components/base/menu";
 
 type UserMenuProps = {
   user: {
@@ -50,17 +50,23 @@ export function UserMenu({ user }: UserMenuProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem render={<Link href={profileUrl} className="w-full cursor-pointer" />}>
-            <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
-            <span>My Profile</span>
+          <DropdownMenuItem>
+            <Link href={profileUrl} className="w-full flex items-center cursor-pointer">
+              <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
+              <span>My Profile</span>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem render={<Link href="/dashboard" className="w-full cursor-pointer" />}>
-            <HugeiconsIcon icon={DashboardSquare02Icon} className="mr-2 h-4 w-4" />
-            <span>Dashboard</span>
+          <DropdownMenuItem>
+            <Link href="/dashboard" className="w-full flex items-center cursor-pointer">
+              <HugeiconsIcon icon={DashboardSquare02Icon} className="mr-2 h-4 w-4" />
+              <span>Dashboard</span>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem render={<Link href="/dashboard/profile" className="w-full cursor-pointer" />}>
-            <HugeiconsIcon icon={Settings02Icon} className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+          <DropdownMenuItem>
+            <Link href="/dashboard/profile" className="w-full flex items-center cursor-pointer">
+              <HugeiconsIcon icon={Settings02Icon} className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

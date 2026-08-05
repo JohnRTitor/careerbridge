@@ -6,14 +6,15 @@ import {
   Tick02Icon,
 } from "@hugeicons/core-free-icons";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
+import SpotlightCard from "@/components/SpotlightCard";
 import { Badge } from "@/components/ui/badge";
 import type { Company } from "@/features/companies/api/types";
 import { FollowCompanyAction } from "./follow-company-action";
 
 export function CompanyCard({ company }: { company: Company }) {
   return (
-    <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+    <SpotlightCard className="shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full" spotlightColor="rgba(120, 119, 198, 0.2)">
       <CardContent className="p-5 flex flex-col h-full">
         <div className="flex justify-between items-start gap-4 mb-4">
           <div className="flex gap-4">
@@ -72,6 +73,6 @@ export function CompanyCard({ company }: { company: Company }) {
           <FollowCompanyAction companyId={company.id} />
         </div>
       </CardContent>
-    </Card>
+    </SpotlightCard>
   );
 }

@@ -4,6 +4,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/components/job-card";
+import FadeContent from "@/components/FadeContent";
+import SplitText from "@/components/SplitText";
+import DecryptedText from "@/components/DecryptedText";
 import type { JobFilters } from "@/features/jobs/api/types";
 import {
   Empty,
@@ -76,9 +79,13 @@ export default async function JobsPage({
       <div className="bg-primary px-4 py-12 sm:py-16 sm:px-6 lg:px-8 border-b border-primary/20">
         <div className="mx-auto max-w-5xl space-y-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-              Find your next role
-            </h1>
+            <SplitText
+              text="Find your next role"
+              className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl"
+              delay={40}
+              from={{ opacity: 0, transform: 'translate3d(0,30px,0)' }}
+              to={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+            />
             <p className="mt-2 text-primary-foreground/80 text-sm sm:text-base">
               Discover opportunities that match your skills and aspirations.
             </p>
@@ -99,8 +106,10 @@ export default async function JobsPage({
 
         {data && data.jobs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {data.jobs.map((job: Job) => (
-              <JobCard key={job.id} job={job} />
+            {data.jobs.map((job: Job, index: number) => (
+              <FadeContent key={job.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+                <JobCard job={job} />
+              </FadeContent>
             ))}
           </div>
         ) : (
@@ -108,7 +117,9 @@ export default async function JobsPage({
             <EmptyMedia variant="icon">
               <HugeiconsIcon icon={Search01Icon} />
             </EmptyMedia>
-            <EmptyTitle>No results found</EmptyTitle>
+            <EmptyTitle>
+              <DecryptedText text="No results found" speed={60} maxIterations={15} animateOn="view" />
+            </EmptyTitle>
             <EmptyDescription>
               We couldn&apos;t find any jobs matching your criteria. Try
               adjusting your search keywords or filters.

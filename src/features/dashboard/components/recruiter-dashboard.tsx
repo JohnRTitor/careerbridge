@@ -31,6 +31,10 @@ import {
 } from "@/features/recruiters/api/queries";
 import { useUpdateApplicationStatus } from "@/features/recruiters/api/mutations";
 import { toast } from "@/components/ui/toast";
+import BorderGlow from "@/components/BorderGlow";
+import CountUp from "@/components/CountUp";
+import SpotlightCard from "@/components/SpotlightCard";
+import ClickSpark from "@/components/ClickSpark";
 
 export default function RecruiterDashboard() {
   const { data: analytics, isLoading: isLoadingAnalytics } =
@@ -118,45 +122,47 @@ export default function RecruiterDashboard() {
     <div className="flex min-h-screen flex-col bg-background">
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8">
-          {/* Light mode pattern */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-20 dark:hidden"
-            style={{
-              backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px)`,
-              backgroundSize: "24px 24px",
-            }}
-          />
-          {/* Dark mode pattern (original) */}
-          <div
-            className="absolute inset-0 pointer-events-none hidden dark:block"
-            style={{
-              backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
-              backgroundSize: "24px 24px, 100% 100%",
-              backgroundBlendMode: "overlay",
-            }}
-          />
-          <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Talent Acquisition Portal
-              </h1>
-              <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-                Manage your job postings and review incoming talent pipeline.
-              </p>
+        <BorderGlow className="mb-8 rounded-3xl" glowColor="69 98 255" borderRadius={24}>
+          <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8">
+            {/* Light mode pattern */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-20 dark:hidden"
+              style={{
+                backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px)`,
+                backgroundSize: "24px 24px",
+              }}
+            />
+            {/* Dark mode pattern (original) */}
+            <div
+              className="absolute inset-0 pointer-events-none hidden dark:block"
+              style={{
+                backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
+                backgroundSize: "24px 24px, 100% 100%",
+                backgroundBlendMode: "overlay",
+              }}
+            />
+            <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Talent Acquisition Portal
+                </h1>
+                <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                  Manage your job postings and review incoming talent pipeline.
+                </p>
+              </div>
+              <Link
+                href="/dashboard/post-job"
+                className={buttonVariants({
+                  variant: "default",
+                  className: "gap-2 shrink-0",
+                })}
+              >
+                <HugeiconsIcon icon={PlusSignIcon} className="size-4" /> Create
+                New Posting
+              </Link>
             </div>
-            <Link
-              href="/dashboard/post-job"
-              className={buttonVariants({
-                variant: "default",
-                className: "gap-2 shrink-0",
-              })}
-            >
-              <HugeiconsIcon icon={PlusSignIcon} className="size-4" /> Create
-              New Posting
-            </Link>
           </div>
-        </div>
+        </BorderGlow>
 
         {isLoadingAnalytics ? (
           <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
@@ -177,7 +183,7 @@ export default function RecruiterDashboard() {
                       {stat.label}
                     </p>
                     <p className="text-3xl font-bold text-foreground mt-1">
-                      {stat.value}
+                      <CountUp to={stat.value as number} separator="," />
                     </p>
                   </div>
                   <div
@@ -219,8 +225,9 @@ export default function RecruiterDashboard() {
               </Empty>
             ) : (
               appsData?.applications.map((app) => (
-                <Card
+                <SpotlightCard
                   key={app.id}
+                  spotlightColor="rgba(69, 98, 255, 0.15)"
                   className="bg-card transition-all hover:shadow-md border border-border"
                 >
                   <CardContent className="p-5">
@@ -264,48 +271,54 @@ export default function RecruiterDashboard() {
                         </div>
                         <div className="flex gap-1.5">
                           {app.status === "pending" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-8 text-xs bg-background"
-                              onClick={() =>
-                                handleUpdateStatus(app.id, "reviewing")
-                              }
-                              disabled={updateStatusMutation.isPending}
-                            >
-                              Review
-                            </Button>
+                            <ClickSpark sparkColor="#4562FF" sparkSize={3} sparkRadius={10} sparkCount={6} duration={400}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 text-xs bg-background"
+                                onClick={() =>
+                                  handleUpdateStatus(app.id, "reviewing")
+                                }
+                                disabled={updateStatusMutation.isPending}
+                              >
+                                Review
+                              </Button>
+                            </ClickSpark>
                           )}
                           {app.status === "reviewing" && (
                             <>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                className="h-8 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive"
-                                onClick={() =>
-                                  handleUpdateStatus(app.id, "rejected")
-                                }
-                                disabled={updateStatusMutation.isPending}
-                              >
-                                Reject
-                              </Button>
-                              <Button
-                                size="sm"
-                                className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700"
-                                onClick={() =>
-                                  handleUpdateStatus(app.id, "shortlisted")
-                                }
-                                disabled={updateStatusMutation.isPending}
-                              >
-                                Shortlist
-                              </Button>
+                              <ClickSpark sparkColor="#EF4444" sparkSize={3} sparkRadius={10} sparkCount={6} duration={400}>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  className="h-8 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive"
+                                  onClick={() =>
+                                    handleUpdateStatus(app.id, "rejected")
+                                  }
+                                  disabled={updateStatusMutation.isPending}
+                                >
+                                  Reject
+                                </Button>
+                              </ClickSpark>
+                              <ClickSpark sparkColor="#4562FF" sparkSize={3} sparkRadius={10} sparkCount={6} duration={400}>
+                                <Button
+                                  size="sm"
+                                  className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700"
+                                  onClick={() =>
+                                    handleUpdateStatus(app.id, "shortlisted")
+                                  }
+                                  disabled={updateStatusMutation.isPending}
+                                >
+                                  Shortlist
+                                </Button>
+                              </ClickSpark>
                             </>
                           )}
                         </div>
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </SpotlightCard>
               ))
             )}
           </div>

@@ -17,15 +17,17 @@ import type { Profile } from "@/features/profiles/api/types";
 import { useAppForm } from "@/hooks/use-app-form";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/animate-ui/components/base/dialog";
 import { SelectItem } from "@/components/ui/select";
 import { useUpdateProfile } from "@/features/profiles/api/mutations";
 import { AvatarCropper } from "@/components/ui/avatar-cropper";
 import { useSupabaseUpload } from "@/features/files/api/mutations";
 import { getPublicAssetUrl } from "@/lib/assets";
+import SplitText from "@/components/SplitText";
+import ShinyText from "@/components/ShinyText";
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -69,12 +71,19 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
             }}
           />
           <div className="flex-1 mt-2">
-            <h1 className="text-2xl font-bold text-foreground">
-              {profile.name}
-            </h1>
-            <p className="text-lg text-muted-foreground mt-1 font-medium">
-              {profile.headline || "Add a headline"}
-            </p>
+            <SplitText 
+              text={profile.name || ""} 
+              className="text-2xl font-bold text-foreground"
+              delay={50}
+              tag="h1"
+            />
+            <div className="text-lg mt-1 font-medium">
+              <ShinyText 
+                text={profile.headline || "Add a headline"} 
+                className="text-muted-foreground"
+                speed={3} 
+              />
+            </div>
 
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
@@ -115,7 +124,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
       </CardContent>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogPopup className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Edit Profile Information</DialogTitle>
           </DialogHeader>
@@ -185,7 +194,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
               />
             </div>
           </form>
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </Card>
   );

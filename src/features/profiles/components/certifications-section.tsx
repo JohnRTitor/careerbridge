@@ -11,7 +11,7 @@ import {
   Certificate01Icon,
   Link01Icon
 } from "@hugeicons/core-free-icons";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogPopup, DialogHeader, DialogTitle } from "@/components/animate-ui/components/base/dialog";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
@@ -28,6 +28,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import type { Certification, AddCertificationPayload, UpdateCertificationPayload } from "@/features/profiles/api/types";
 import { useAddCertification, useUpdateCertification, useDeleteCertification } from "@/features/profiles/api/mutations";
 import { format, parseISO } from "date-fns";
+import FadeContent from "@/components/FadeContent";
 
 type CertificationFormProps = {
   certification?: Certification;
@@ -206,6 +207,7 @@ export function CertificationsSection({ certifications }: { certifications: Cert
   };
 
   return (
+    <FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
     <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -283,13 +285,14 @@ export function CertificationsSection({ certifications }: { certifications: Cert
       </CardContent>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogPopup className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{selectedItem ? "Edit Certification" : "Add Certification"}</DialogTitle>
           </DialogHeader>
           <CertificationForm certification={selectedItem} onClose={() => setIsOpen(false)} />
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </Card>
+    </FadeContent>
   );
 }

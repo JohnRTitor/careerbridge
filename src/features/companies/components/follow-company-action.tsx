@@ -5,6 +5,7 @@ import type { Company } from "@/features/companies/api/types";
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
 import { useFollowedCompanies } from "@/features/companies/api/queries";
 import { useAppPermission } from "@/features/auth/api/queries";
+import ClickSpark from "@/components/ClickSpark";
 
 type FollowCompanyActionProps = {
   companyId: string;
@@ -43,14 +44,18 @@ export function FollowCompanyAction({
   };
 
   return (
-    <Button
-      onClick={handleToggleFollow}
-      disabled={isFollowing}
-      variant={isFollowed ? "secondary" : "default"}
-      size={size}
-      className={className}
-    >
-      {isFollowed ? isFollowingText : followText}
-    </Button>
+    <div className={className}>
+      <ClickSpark sparkColor="#4562FF" sparkSize={6} sparkRadius={12} sparkCount={12} duration={500}>
+        <Button
+          onClick={handleToggleFollow}
+          disabled={isFollowing}
+          variant={isFollowed ? "secondary" : "default"}
+          size={size}
+          className="w-full h-full"
+        >
+          {isFollowed ? isFollowingText : followText}
+        </Button>
+      </ClickSpark>
+    </div>
   );
 }

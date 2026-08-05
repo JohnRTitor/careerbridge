@@ -15,6 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { getJobCategories } from "@/features/stats/api/api";
 import Link from "next/link";
+import FadeContent from "@/components/FadeContent";
 
 const categoryIcons: Record<string, IconSvgObject> = {
   Engineering: CodeIcon,
@@ -44,26 +45,27 @@ export async function CategoriesSection() {
 
       <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {categoriesData && categoriesData.length > 0 ? (
-          categoriesData.map((category) => {
+          categoriesData.map((category, index) => {
             const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
             return (
-              <Link
-                key={category.industry}
-                href={`/jobs?query=${encodeURIComponent(category.industry)}`}
-                className="block text-left w-full cursor-pointer"
-              >
-                <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
-                  <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    <HugeiconsIcon icon={IconComponent} className="size-6" />
-                  </span>
-                  <div>
-                    <h3 className="font-semibold">{category.industry}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {category.job_count.toLocaleString()} open jobs
-                    </p>
-                  </div>
-                </Card>
-              </Link>
+              <FadeContent key={category.industry} blur={true} duration={1000} ease="ease-out" initialOpacity={0} delay={index * 100}>
+                <Link
+                  href={`/jobs?query=${encodeURIComponent(category.industry)}`}
+                  className="block text-left w-full cursor-pointer h-full"
+                >
+                  <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
+                    <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                      <HugeiconsIcon icon={IconComponent} className="size-6" />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold">{category.industry}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {category.job_count.toLocaleString()} open jobs
+                      </p>
+                    </div>
+                  </Card>
+                </Link>
+              </FadeContent>
             );
           })
         ) : (

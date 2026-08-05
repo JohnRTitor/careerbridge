@@ -12,7 +12,7 @@ import {
   Calendar01Icon, 
   Mortarboard01Icon 
 } from "@hugeicons/core-free-icons";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogPopup, DialogHeader, DialogTitle } from "@/components/animate-ui/components/base/dialog";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
@@ -29,6 +29,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import type { Education, AddEducationPayload, UpdateEducationPayload } from "@/features/profiles/api/types";
 import { useAddEducation, useUpdateEducation, useDeleteEducation } from "@/features/profiles/api/mutations";
 import { format, parseISO } from "date-fns";
+import FadeContent from "@/components/FadeContent";
 
 type EducationFormProps = {
   education?: Education;
@@ -206,6 +207,7 @@ export function EducationSection({ education }: { education: Education[] }) {
   };
 
   return (
+    <FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
     <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -281,14 +283,15 @@ export function EducationSection({ education }: { education: Education[] }) {
         )}
       </CardContent>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg">
+      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
+        <DialogPopup className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{selectedItem ? "Edit Education" : "Add Education"}</DialogTitle>
           </DialogHeader>
           <EducationForm education={selectedItem} onClose={() => setIsOpen(false)} />
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </Card>
+    </FadeContent>
   );
 }

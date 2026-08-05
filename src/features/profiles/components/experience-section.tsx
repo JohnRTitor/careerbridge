@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Briefcase01Icon, PlusSignIcon, PencilEdit01Icon, Delete02Icon, Calendar01Icon, Location01Icon } from "@hugeicons/core-free-icons";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogPopup, DialogHeader, DialogTitle } from "@/components/animate-ui/components/base/dialog";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
@@ -22,6 +22,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import type { Experience, AddExperiencePayload, UpdateExperiencePayload } from "@/features/profiles/api/types";
 import { useAddExperience, useUpdateExperience, useDeleteExperience } from "@/features/profiles/api/mutations";
 import { format, parseISO } from "date-fns";
+import FadeContent from "@/components/FadeContent";
 
 type ExperienceFormProps = {
   experience?: Experience;
@@ -198,6 +199,7 @@ export function ExperienceSection({ experience }: { experience: Experience[] }) 
   };
 
   return (
+    <FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
     <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -278,13 +280,14 @@ export function ExperienceSection({ experience }: { experience: Experience[] }) 
       </CardContent>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogPopup className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{selectedItem ? "Edit Experience" : "Add Experience"}</DialogTitle>
           </DialogHeader>
           <ExperienceForm experience={selectedItem} onClose={() => setIsOpen(false)} />
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </Card>
+    </FadeContent>
   );
 }

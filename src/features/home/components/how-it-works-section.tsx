@@ -1,6 +1,7 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, SearchIcon, SentIcon } from "@hugeicons/core-free-icons";
 import { getHomepageStats } from "@/features/stats/api/api";
+import CountUp from "@/components/CountUp";
 
 const steps = [
   {
@@ -59,25 +60,25 @@ export async function HowItWorksSection() {
         <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
           <div className="text-center">
             <p className="text-3xl font-bold text-primary sm:text-4xl">
-              {statsData.total_open_jobs?.toLocaleString() || "0"}
+              <CountUp to={statsData.total_open_jobs || 0} separator="," />
             </p>
             <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-primary sm:text-4xl">
-              {statsData.total_companies?.toLocaleString() || "0"}
+              <CountUp to={statsData.total_companies || 0} separator="," />
             </p>
             <p className="mt-1 text-sm text-muted-foreground">Companies</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-primary sm:text-4xl">
-              {statsData.total_users?.toLocaleString() || "0"}
+              <CountUp to={statsData.total_users || 0} separator="," />
             </p>
             <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-primary sm:text-4xl">
-              {statsData.total_applications?.toLocaleString() || "0"}
+              <CountUp to={statsData.total_applications || 0} separator="," />
             </p>
             <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
           </div>

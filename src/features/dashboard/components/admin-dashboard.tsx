@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel as TabsContent, TabsList, TabsTab as TabsTrigger, TabsPanels, TabsHighlight, TabsHighlightItem } from "@/components/animate-ui/primitives/base/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LoadingState } from "@/components/common/loading-state";
 import { Empty, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
@@ -21,6 +21,8 @@ import { toast } from "@/components/ui/toast";
 import { useAdminUsers, useAuditLogs } from "@/features/admin/api/queries";
 import { useUpdateUserRole, useUpdateUserStatus, useVerifyCompany } from "@/features/admin/api/mutations";
 import { useCompanies } from "@/features/companies/api/queries";
+import BorderGlow from "@/components/BorderGlow";
+import CountUp from "@/components/CountUp";
 
 export default function AdminDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -107,25 +109,27 @@ export default function AdminDashboard() {
 
       {/* Main Container */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-        <div
-          className="rounded-3xl border border-destructive/10 bg-linear-to-r from-destructive/10 to-destructive/5 p-6 sm:p-8 mb-8"
-          style={{
-            backgroundImage: `radial-gradient(var(--color-destructive) 1px, transparent 1px), linear-gradient(to right, var(--color-destructive), var(--color-destructive))`,
-            backgroundSize: "24px 24px, 100% 100%",
-            backgroundBlendMode: "overlay"
-          }}
-        >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                System Administration
-              </h1>
-              <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-                Manage platform users, verify companies, and monitor audit logs.
-              </p>
+        <BorderGlow className="mb-8 rounded-3xl" glowColor="239 68 68" borderRadius={24}>
+          <div
+            className="rounded-3xl border border-destructive/10 bg-linear-to-r from-destructive/10 to-destructive/5 p-6 sm:p-8"
+            style={{
+              backgroundImage: `radial-gradient(var(--color-destructive) 1px, transparent 1px), linear-gradient(to right, var(--color-destructive), var(--color-destructive))`,
+              backgroundSize: "24px 24px, 100% 100%",
+              backgroundBlendMode: "overlay"
+            }}
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  System Administration
+                </h1>
+                <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                  Manage platform users, verify companies, and monitor audit logs.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </BorderGlow>
 
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3 mb-8">
           {adminStats.map((stat) => (
@@ -133,7 +137,9 @@ export default function AdminDashboard() {
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                  <p className="text-3xl font-bold text-foreground mt-1">{isLoadingUsers ? "-" : stat.value}</p>
+                  <p className="text-3xl font-bold text-foreground mt-1">
+                    {isLoadingUsers ? "-" : <CountUp to={stat.value as number} separator="," />}
+                  </p>
                 </div>
                 <div className={`size-12 rounded-xl bg-muted flex items-center justify-center ${stat.color}`}>
                   <HugeiconsIcon icon={stat.icon} className="size-6" />
@@ -144,13 +150,16 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="users" className="w-full">
-          <TabsList className="mb-6 bg-card border border-border shadow-sm rounded-xl p-1">
-            <TabsTrigger value="users" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">User Management</TabsTrigger>
-            <TabsTrigger value="companies" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Company Verification</TabsTrigger>
-            <TabsTrigger value="audit" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Audit Logs</TabsTrigger>
+          <TabsList className="mb-6 bg-card border border-border shadow-sm rounded-xl p-1 relative flex">
+            <TabsHighlight className="bg-primary rounded-lg">
+              <TabsTrigger value="users" className="flex-1" render={<TabsHighlightItem value="users"><button className="w-full flex-1 rounded-lg z-10 py-1.5 px-3 text-sm font-medium transition-colors data-[selected]:text-primary-foreground text-center" /></TabsHighlightItem>}>User Management</TabsTrigger>
+              <TabsTrigger value="companies" className="flex-1" render={<TabsHighlightItem value="companies"><button className="w-full flex-1 rounded-lg z-10 py-1.5 px-3 text-sm font-medium transition-colors data-[selected]:text-primary-foreground text-center" /></TabsHighlightItem>}>Company Verification</TabsTrigger>
+              <TabsTrigger value="audit" className="flex-1" render={<TabsHighlightItem value="audit"><button className="w-full flex-1 rounded-lg z-10 py-1.5 px-3 text-sm font-medium transition-colors data-[selected]:text-primary-foreground text-center" /></TabsHighlightItem>}>Audit Logs</TabsTrigger>
+            </TabsHighlight>
           </TabsList>
           
-          <TabsContent value="users" className="space-y-4">
+          <TabsPanels>
+            <TabsContent value="users" className="space-y-4">
             <Card className="bg-card border border-border">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -310,6 +319,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+          </TabsPanels>
         </Tabs>
       </main>
     </div>

@@ -22,6 +22,9 @@ import {
   EmptyDescription, 
   EmptyContent 
 } from "@/components/ui/empty";
+import CountUp from "@/components/CountUp";
+import BorderGlow from "@/components/BorderGlow";
+import SpotlightCard from "@/components/SpotlightCard";
 import { getProfile } from "@server/features/profiles/profiles.service";
 import { getUserApplications } from "@server/features/applications/applications.service";
 import { getSavedJobs } from "@server/features/jobs/jobs.service";
@@ -55,25 +58,25 @@ export default async function CandidateDashboard() {
   const candidateStats = [
     {
       label: "Total Applications",
-      value: applications.length.toString(),
+      value: applications.length,
       icon: BriefcaseIcon,
       color: "text-primary",
     },
     {
       label: "Interviews Slotted",
-      value: activeInterviews.toString(),
+      value: activeInterviews,
       icon: CalendarIcon,
       color: "text-amber-600",
     },
     {
       label: "Job Offers",
-      value: jobOffers.toString(),
+      value: jobOffers,
       icon: Tick01Icon,
       color: "text-emerald-600",
     },
     {
       label: "Saved Openings",
-      value: savedJobs.length.toString(),
+      value: savedJobs.length,
       icon: BookmarkIcon,
       color: "text-indigo-600",
     },
@@ -107,28 +110,30 @@ export default async function CandidateDashboard() {
       {/* Main Dashboard Space */}
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         {/* Ice Blue welcome Banner */}
-        <div
-          className="rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8 mb-8"
-          style={{
-            backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
-            backgroundSize: "24px 24px, 100% 100%",
-            backgroundBlendMode: "overlay"
-          }}
-        >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Welcome back, {profile?.name?.split(" ")[0] || "Candidate"}! 👋
-              </h1>
-              <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-                Your profile is {profileStrength}% complete. {profileStrength < 100 ? "Complete your profile to stand out!" : "Companies are looking for you."}
-              </p>
+        <BorderGlow className="mb-8 rounded-3xl" glowColor="221 83 53" borderRadius={24}>
+          <div
+            className="rounded-3xl border border-primary/10 bg-linear-to-r from-primary/10 to-primary/5 p-6 sm:p-8"
+            style={{
+              backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(to right, var(--color-primary), var(--color-primary))`,
+              backgroundSize: "24px 24px, 100% 100%",
+              backgroundBlendMode: "overlay"
+            }}
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Welcome back, {profile?.name?.split(" ")[0] || "Candidate"}! 👋
+                </h1>
+                <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                  Your profile is {profileStrength}% complete. {profileStrength < 100 ? "Complete your profile to stand out!" : "Companies are looking for you."}
+                </p>
+              </div>
+              <Link href="/dashboard/profile" className={buttonVariants({ variant: "default", className: "gap-2 shrink-0" })}>
+                <HugeiconsIcon icon={File01Icon} className="size-4" /> Update Profile
+              </Link>
             </div>
-            <Link href="/dashboard/profile" className={buttonVariants({ variant: "default", className: "gap-2 shrink-0" })}>
-              <HugeiconsIcon icon={File01Icon} className="size-4" /> Update Profile
-            </Link>
           </div>
-        </div>
+        </BorderGlow>
 
         {/* Dynamic Metric Display Grids */}
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
@@ -143,7 +148,7 @@ export default async function CandidateDashboard() {
                     {stat.label}
                   </p>
                   <p className="text-3xl font-bold text-foreground mt-1">
-                    {stat.value}
+                    <CountUp to={stat.value} separator="," />
                   </p>
                 </div>
                 <div
@@ -169,8 +174,9 @@ export default async function CandidateDashboard() {
             </div>
 
             {applications.slice(0, 5).map((app) => (
-              <Card
+              <SpotlightCard
                 key={app.id}
+                spotlightColor="rgba(69, 98, 255, 0.15)"
                 className="bg-card transition-all hover:shadow-md border border-border"
               >
                 <CardContent className="p-6">
@@ -217,7 +223,7 @@ export default async function CandidateDashboard() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </SpotlightCard>
             ))}
             
             {applications.length === 0 && (

@@ -14,6 +14,7 @@ import { authClient } from "@/features/auth/api/auth-client";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Aurora from "@/components/Aurora";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -53,14 +54,10 @@ export default function SignInPage() {
 
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] justify-center overflow-hidden bg-background px-4 py-12 sm:py-20">
-      <div
-        className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`,
-          backgroundSize: "24px 24px",
-        }}
-      />
-      <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 z-0 opacity-40">
+        <Aurora colorStops={["#3b82f6", "#2563eb", "#1d4ed8"]} speed={0.5} />
+      </div>
+      <div className="absolute inset-0 bg-linear-to-b from-background via-background/80 to-transparent pointer-events-none z-0" />
 
       <div className="relative z-10 w-full max-w-md space-y-6">
         {/* Main Logo & Platform Context */}

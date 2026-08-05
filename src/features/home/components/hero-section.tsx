@@ -1,5 +1,8 @@
 import { statsRepository } from "../../../../server/features/stats/stats.repository";
 import { HomeHeroSearch } from "./home-hero-search";
+import Particles from "@/components/Particles";
+import ShinyText from "@/components/ShinyText";
+import BlurText from "@/components/BlurText";
 
 type HeroSectionProps = {
   searchMessage?: { type: "success" | "error" | null; text: string };
@@ -15,15 +18,19 @@ export async function HeroSection({ searchMessage }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden bg-background">
-      <div
-        className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)`,
-          backgroundSize: "24px 24px",
-        }}
-      />
-      <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
-      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+      <div className="absolute inset-0 z-0">
+        <Particles
+          particleColors={['#ffffff', '#ffffff']}
+          particleCount={200}
+          particleSpread={10}
+          speed={0.1}
+          particleBaseSize={100}
+          moveParticlesOnHover={true}
+          alphaParticles={true}
+        />
+      </div>
+      <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none z-0" />
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
         <div className="mx-auto max-w-3xl text-center flex flex-col items-center">
           {statsData ? (
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
@@ -38,12 +45,16 @@ export async function HeroSection({ searchMessage }: HeroSectionProps) {
           )}
 
           <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
-            Find your role <span className="text-primary">reach</span> your goal
+            Find your role <ShinyText text="reach" className="text-primary" /> your goal
           </h1>
 
-          <p className="mx-auto mt-5 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-            Search thousands of open roles from the world&apos;s most exciting companies and take the next step in your career.
-          </p>
+          <BlurText
+            text="Search thousands of open roles from the world's most exciting companies and take the next step in your career."
+            className="mx-auto mt-5 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground"
+            delay={50}
+            animateBy="words"
+            direction="top"
+          />
 
           <HomeHeroSearch />
         </div>

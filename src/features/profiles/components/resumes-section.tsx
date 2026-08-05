@@ -13,10 +13,10 @@ import {
 } from "@hugeicons/core-free-icons";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/animate-ui/components/base/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,9 +50,11 @@ import { SingleFileUploader } from "@/components/ui/single-file-uploader";
 import { getPrivateAssetUrl } from "@/lib/assets";
 import {
   Tooltip,
-  TooltipContent,
+  TooltipPanel,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/animate-ui/components/base/tooltip";
+import SpotlightCard from "@/components/SpotlightCard";
+import FadeContent from "@/components/FadeContent";
 
 export function ResumesSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,6 +104,7 @@ export function ResumesSection() {
   };
 
   return (
+    <FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
     <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -124,8 +127,9 @@ export function ResumesSection() {
         {resumes.length > 0 ? (
           <div className="flex flex-col gap-3">
             {resumes.map((resume) => (
-              <div
+              <SpotlightCard
                 key={resume.id}
+                spotlightColor="rgba(69, 98, 255, 0.15)"
                 className={`group border rounded-xl p-3 transition-colors ${
                   resume.is_default
                     ? "bg-primary/5 border-primary/20"
@@ -146,9 +150,9 @@ export function ResumesSection() {
                           <TooltipTrigger render={<span className="truncate cursor-default" />}>
                             {resume.title}
                           </TooltipTrigger>
-                          <TooltipContent>
+                          <TooltipPanel>
                             {resume.title}
-                          </TooltipContent>
+                          </TooltipPanel>
                         </Tooltip>
                         {resume.is_default && (
                           <span className="shrink-0 text-[10px] uppercase font-bold bg-primary/10 text-primary px-1.5 py-0.5 rounded-sm">
@@ -162,7 +166,6 @@ export function ResumesSection() {
                     </div>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
                   <a
                     href={
@@ -232,7 +235,7 @@ export function ResumesSection() {
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         ) : (
@@ -259,7 +262,7 @@ export function ResumesSection() {
       </CardContent>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogPopup className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Upload Resume</DialogTitle>
           </DialogHeader>
@@ -320,8 +323,9 @@ export function ResumesSection() {
               </form.Subscribe>
             </div>
           </form>
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </Card>
+    </FadeContent>
   );
 }

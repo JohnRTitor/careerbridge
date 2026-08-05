@@ -20,12 +20,12 @@ import {
 } from "@/components/ui/cropper";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/animate-ui/components/base/dialog";
 import { Slider } from "@/components/ui/slider";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
@@ -286,7 +286,7 @@ export function AvatarCropper({ value, onUpload, onChange, className, disabled }
 
       {/* Cropper Dialog - Use isDialogOpen for open prop */}
       <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
-        <DialogContent className="gap-0 p-0 sm:max-w-140 *:[button]:hidden">
+        <DialogPopup className="gap-0 p-0 sm:max-w-140 *:[button]:hidden">
           <DialogDescription className="sr-only">
             Crop image dialog
           </DialogDescription>
@@ -354,7 +354,7 @@ export function AvatarCropper({ value, onUpload, onChange, className, disabled }
               />
             </div>
           </DialogFooter>
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClientProvider } from "@tanstack/react-query";
-import { TooltipProvider } from "@/components/ui/tooltip";
+
 import { getQueryClient } from "@/lib/api/query-client";
 import { ThemeProvider } from "./theme-provider";
 
@@ -16,7 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         enableSystem
         disableTransitionOnChange
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        {children}
       </ThemeProvider>
     </QueryClientProvider>
   );

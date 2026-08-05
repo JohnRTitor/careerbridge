@@ -20,9 +20,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
-  TooltipContent,
+  TooltipPanel,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/animate-ui/components/base/tooltip"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { SidebarLeftIcon } from "@hugeicons/core-free-icons"
 
@@ -514,7 +514,7 @@ function SidebarMenuButton({
 }: useRender.ComponentProps<"button"> &
   React.ComponentProps<"button"> & {
     isActive?: boolean
-    tooltip?: string | React.ComponentProps<typeof TooltipContent>
+    tooltip?: string | React.ComponentProps<typeof TooltipPanel>
   } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar()
   const comp = useRender({
@@ -525,7 +525,7 @@ function SidebarMenuButton({
       },
       props
     ),
-    render: !tooltip ? render : <TooltipTrigger render={render} />,
+    render: !tooltip ? render : <TooltipTrigger render={render as any} />,
     state: {
       slot: "sidebar-menu-button",
       sidebar: "menu-button",
@@ -547,7 +547,7 @@ function SidebarMenuButton({
   return (
     <Tooltip>
       {comp}
-      <TooltipContent
+      <TooltipPanel
         side="right"
         align="center"
         hidden={state !== "collapsed" || isMobile}

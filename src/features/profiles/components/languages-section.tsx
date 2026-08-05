@@ -10,7 +10,7 @@ import {
   Delete02Icon, 
   EarthIcon
 } from "@hugeicons/core-free-icons";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogPopup, DialogHeader, DialogTitle } from "@/components/animate-ui/components/base/dialog";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   AlertDialog,
@@ -28,6 +28,7 @@ import { ComboboxList, ComboboxItem, ComboboxEmpty } from "@/components/ui/combo
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Language, AddUserLanguagePayload, UpdateUserLanguagePayload } from "@/features/profiles/api/types";
 import { useAddUserLanguage, useUpdateUserLanguage, useDeleteUserLanguage } from "@/features/profiles/api/mutations";
+import FadeContent from "@/components/FadeContent";
 import { useLanguages } from "@/features/meta/api/queries";
 import { useDebounce } from "@reactuses/core";
 
@@ -178,6 +179,7 @@ export function LanguagesSection({ languages }: { languages: Language[] }) {
   };
 
   return (
+    <FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
     <Card className="border-border shadow-sm bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -231,13 +233,14 @@ export function LanguagesSection({ languages }: { languages: Language[] }) {
       </CardContent>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogPopup className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{selectedItem ? "Edit Language" : "Add Language"}</DialogTitle>
           </DialogHeader>
           <LanguageForm language={selectedItem} onClose={() => setIsOpen(false)} />
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </Card>
+    </FadeContent>
   );
 }
