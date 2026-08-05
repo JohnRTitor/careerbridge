@@ -1,8 +1,8 @@
 import { getSession } from "@server/auth/utils";
 import { redirect } from "next/navigation";
-import AdminDashboard from "@/components/dashboard/admin-dashboard";
-import RecruiterDashboard from "@/components/dashboard/recruiter-dashboard";
-import CandidateDashboard from "@/components/dashboard/candidate-dashboard";
+import AdminDashboard from "@/features/dashboard/components/admin-dashboard";
+import RecruiterDashboard from "@/features/dashboard/components/recruiter-dashboard";
+import CandidateDashboard from "@/features/dashboard/components/candidate-dashboard";
 import { can } from "@server/shared/auth/authorization";
 
 export default async function DashboardPage() {

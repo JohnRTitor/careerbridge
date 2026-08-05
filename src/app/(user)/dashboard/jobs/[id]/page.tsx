@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
-import { ApplicationSettings } from "@/components/jobs/application-settings";
+import { ApplicationSettings } from "@/features/jobs/components/application-settings";
 import { useJob } from "@/features/jobs/api/queries";
 
 export default function JobSettingsPage() {
