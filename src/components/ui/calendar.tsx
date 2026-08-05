@@ -6,194 +6,22 @@ import {
   getDefaultClassNames,
   type DayButton,
   type Locale,
-  type DropdownProps,
 } from "@daypicker/react";
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ArrowDownIcon,
-  Tick02Icon,
 } from "@hugeicons/core-free-icons";
-
-function CalendarDropdown({
-  value,
-  onChange,
-  className: _className,
-  ...props
-}: DropdownProps) {
-  const isYearDropdown =
-    props.name === "years" || (props.options && props.options[0]?.value > 1000);
-  const options = isYearDropdown
-    ? [...(props.options || [])].reverse()
-    : props.options || [];
-  const [open, setOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div ref={containerRef} className="relative">
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={() => setOpen((prev) => !prev)}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "w-fit justify-between capitalize h-7 gap-1",
-        )}
-      >
-        {value != null && value !== ""
-          ? options.find((item) => item.value === Number(value))?.label
-          : "Select"}
-        <HugeiconsIcon
-          icon={ArrowDownIcon}
-          strokeWidth={2}
-          className="ml-1 h-3.5 w-3.5 shrink-0 opacity-50"
-        />
-      </button>
-      {open && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 z-50 mt-1 w-fit min-w-32 rounded-lg bg-popover p-0 text-xs text-popover-foreground shadow-md ring-1 ring-foreground/10 animate-in fade-in-0 zoom-in-95">
-          <Command
-            filter={(val, search) => {
-              const label = options.find(
-                (item) => item.value.toString() === val,
-              )?.label;
-              return label?.toLowerCase().includes(search.toLowerCase())
-                ? 1
-                : 0;
-            }}
-          >
-            <CommandInput placeholder="Search..." />
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup>
-                {options.map((item) => (
-                  <CommandItem
-                    className="capitalize"
-                    key={item.value}
-                    onSelect={() => {
-                      onChange?.({
-                        target: { value: item.value.toString() },
-                      } as React.ChangeEvent<HTMLSelectElement>);
-                      setOpen(false);
-                    }}
-                    value={item.value.toString()}
-                  >
-                    <HugeiconsIcon
-                      icon={Tick02Icon}
-                      strokeWidth={2}
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        Number(value) === item.value
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
-                    {item.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CalendarRoot({
-  className,
-  rootRef,
-  ...props
-}: React.ComponentProps<"div"> & { rootRef?: React.Ref<HTMLDivElement> }) {
-  return (
-    <div
-      data-slot="calendar"
-      ref={rootRef}
-      className={cn(className)}
-      {...props}
-    />
-  );
-}
-
-function CalendarChevron({
-  className,
-  orientation,
-}: {
-  className?: string;
-  orientation?: string;
-}) {
-  if (orientation === "left") {
-    return (
-      <HugeiconsIcon
-        icon={ArrowLeftIcon}
-        strokeWidth={2}
-        className={cn("size-4", className)}
-      />
-    );
-  }
-
-  if (orientation === "right") {
-    return (
-      <HugeiconsIcon
-        icon={ArrowRightIcon}
-        strokeWidth={2}
-        className={cn("size-4", className)}
-      />
-    );
-  }
-
-  return (
-    <HugeiconsIcon
-      icon={ArrowDownIcon}
-      strokeWidth={2}
-      className={cn("size-4", className)}
-    />
-  );
-}
-
-function CalendarWeekNumber({
-  children,
-  ...props
-}: React.ComponentProps<"td">) {
-  return (
-    <td {...props}>
-      <div className="flex size-(--cell-size) items-center justify-center text-center">
-        {children}
-      </div>
-    </td>
-  );
-}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  captionLayout = "dropdown",
+  captionLayout = "label",
   buttonVariant = "ghost",
   locale,
   formatters,
@@ -253,7 +81,10 @@ function Calendar({
           "relative rounded-(--cell-radius)",
           defaultClassNames.dropdown_root,
         ),
-        dropdown: cn("hidden", defaultClassNames.dropdown),
+        dropdown: cn(
+          "absolute inset-0 bg-popover opacity-0",
+          defaultClassNames.dropdown,
+        ),
         caption_label: cn(
           "font-medium select-none",
           captionLayout === "label"
@@ -308,13 +139,60 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Dropdown: CalendarDropdown,
-        Root: CalendarRoot,
-        Chevron: CalendarChevron,
+        Root: ({ className, rootRef, ...props }) => {
+          return (
+            <div
+              data-slot="calendar"
+              ref={rootRef}
+              className={cn(className)}
+              {...props}
+            />
+          );
+        },
+        Chevron: ({ className, orientation, ...props }) => {
+          if (orientation === "left") {
+            return (
+              <HugeiconsIcon
+                icon={ArrowLeftIcon}
+                strokeWidth={2}
+                className={cn("size-4", className)}
+                {...props}
+              />
+            );
+          }
+
+          if (orientation === "right") {
+            return (
+              <HugeiconsIcon
+                icon={ArrowRightIcon}
+                strokeWidth={2}
+                className={cn("size-4", className)}
+                {...props}
+              />
+            );
+          }
+
+          return (
+            <HugeiconsIcon
+              icon={ArrowDownIcon}
+              strokeWidth={2}
+              className={cn("size-4", className)}
+              {...props}
+            />
+          );
+        },
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
-        WeekNumber: CalendarWeekNumber,
+        WeekNumber: ({ children, ...props }) => {
+          return (
+            <td {...props}>
+              <div className="flex size-(--cell-size) items-center justify-center text-center">
+                {children}
+              </div>
+            </td>
+          );
+        },
         ...components,
       }}
       {...props}

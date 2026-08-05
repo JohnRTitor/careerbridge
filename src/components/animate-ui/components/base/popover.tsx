@@ -55,6 +55,7 @@ function PopoverPanel({
         {...props}
       >
         <PopoverPopupPrimitive
+          data-slot="popover-content"
           initialFocus={initialFocus}
           finalFocus={finalFocus}
           className={cn(
