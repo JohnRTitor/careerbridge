@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   experimental: {
+    turbopackRustReactCompiler: true,
     optimizePackageImports: ["@hugeicons/core-free-icons"],
   },
 };
