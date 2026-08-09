@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import { useInView, useMotionValue, useSpring } from 'motion/react';
 import { useCallback, useEffect, useRef } from 'react';
@@ -22,7 +23,7 @@ export default function CountUp({
   direction = 'up',
   delay = 0,
   duration = 2,
-  className = '',
+  className,
   startWhen = true,
   separator = '',
   onStart,

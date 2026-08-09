@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import { useRef, useCallback, useState, useEffect, type ReactNode } from 'react';
 
@@ -74,7 +75,7 @@ function buildMeshGradients(colors: string[]): string[] {
 
 const BorderGlow: React.FC<BorderGlowProps> = ({
   children,
-  className = '',
+  className,
   edgeSensitivity = 30,
   glowColor = '40 80 80',
   backgroundColor = '#120F17',
@@ -169,7 +170,7 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
       onPointerMove={handlePointerMove}
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
-      className={`relative grid isolate border border-white/15 ${className}`}
+      className={cn("relative grid isolate border border-white/15", className)}
       style={{
         background: backgroundColor,
         borderRadius: `${borderRadius}px`,

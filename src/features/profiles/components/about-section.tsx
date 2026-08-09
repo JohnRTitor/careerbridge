@@ -9,7 +9,7 @@ import { Dialog, DialogPopup, DialogHeader, DialogTitle } from "@/components/ani
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Profile } from "@/features/profiles/api/types";
 import { useUpdateProfile } from "@/features/profiles/api/mutations";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 export function AboutSection({ profile }: { profile: Profile }) {
   const [isOpen, setIsOpen] = useState(false);

@@ -21,8 +21,9 @@ import { toast } from "@/components/ui/toast";
 import { useAdminUsers, useAuditLogs } from "@/features/admin/api/queries";
 import { useUpdateUserRole, useUpdateUserStatus, useVerifyCompany } from "@/features/admin/api/mutations";
 import { useCompanies } from "@/features/companies/api/queries";
-import BorderGlow from "@/components/BorderGlow";
-import CountUp from "@/components/CountUp";
+import BorderGlow from "@/components/react-bits/BorderGlow";
+import CountUp from "@/components/react-bits/CountUp";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 export default function AdminDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -132,20 +133,22 @@ export default function AdminDashboard() {
         </BorderGlow>
 
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3 mb-8">
-          {adminStats.map((stat) => (
-            <Card key={stat.label} className="bg-card border border-border shadow-sm">
-              <CardContent className="p-6 flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                  <p className="text-3xl font-bold text-foreground mt-1">
-                    {isLoadingUsers ? "-" : <CountUp to={stat.value as number} separator="," />}
-                  </p>
-                </div>
-                <div className={`size-12 rounded-xl bg-muted flex items-center justify-center ${stat.color}`}>
-                  <HugeiconsIcon icon={stat.icon} className="size-6" />
-                </div>
-              </CardContent>
-            </Card>
+          {adminStats.map((stat, index) => (
+            <FadeContent key={stat.label} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+              <Card className="bg-card border border-border shadow-sm h-full">
+                <CardContent className="p-6 flex items-center justify-between h-full">
+                  <div>
+                    <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                    <p className="text-3xl font-bold text-foreground mt-1">
+                      {isLoadingUsers ? "-" : <CountUp to={stat.value as number} separator="," />}
+                    </p>
+                  </div>
+                  <div className={`size-12 rounded-xl bg-muted flex items-center justify-center ${stat.color}`}>
+                    <HugeiconsIcon icon={stat.icon} className="size-6" />
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeContent>
           ))}
         </div>
 

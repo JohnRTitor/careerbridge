@@ -9,7 +9,8 @@ import { authClient } from "@/features/auth/api/auth-client";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Aurora from "@/components/Aurora";
+import Aurora from "@/components/react-bits/Aurora";
+import DecryptedText from "@/components/react-bits/DecryptedText";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function SignUpPage() {
       <div className="relative z-10 w-full max-w-md space-y-6">
         <div className="flex flex-col items-center text-center">
           <h1 className="text-xl font-bold text-foreground sm:text-2xl">
-            Create Your Account
+            <DecryptedText text="Create Your Account" speed={70} maxIterations={15} />
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
             Join the automated ecosystem connecting modern talent pools

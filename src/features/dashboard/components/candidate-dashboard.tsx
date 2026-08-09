@@ -22,14 +22,15 @@ import {
   EmptyDescription, 
   EmptyContent 
 } from "@/components/ui/empty";
-import CountUp from "@/components/CountUp";
-import BorderGlow from "@/components/BorderGlow";
-import SpotlightCard from "@/components/SpotlightCard";
+import CountUp from "@/components/react-bits/CountUp";
+import BorderGlow from "@/components/react-bits/BorderGlow";
+import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import { getProfile } from "@server/features/profiles/profiles.service";
 import { getUserApplications } from "@server/features/applications/applications.service";
 import { getSavedJobs } from "@server/features/jobs/jobs.service";
 import { getSession } from "@server/auth/utils";
 import { formatDistanceToNow, parseISO } from "date-fns";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 export default async function CandidateDashboard() {
   const session = await getSession();
@@ -137,27 +138,28 @@ export default async function CandidateDashboard() {
 
         {/* Dynamic Metric Display Grids */}
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
-          {candidateStats.map((stat) => (
-            <Card
-              key={stat.label}
-              className="bg-card border border-border shadow-sm"
-            >
-              <CardContent className="p-6 flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground font-medium">
-                    {stat.label}
-                  </p>
-                  <p className="text-3xl font-bold text-foreground mt-1">
-                    <CountUp to={stat.value} separator="," />
-                  </p>
-                </div>
-                <div
-                  className={`size-12 rounded-xl bg-primary/10 flex items-center justify-center ${stat.color}`}
-                >
-                  <HugeiconsIcon icon={stat.icon} className="size-6" />
-                </div>
-              </CardContent>
-            </Card>
+          {candidateStats.map((stat, index) => (
+            <FadeContent key={stat.label} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+              <Card
+                className="bg-card border border-border shadow-sm h-full"
+              >
+                <CardContent className="p-6 flex items-center justify-between h-full">
+                  <div>
+                    <p className="text-sm text-muted-foreground font-medium">
+                      {stat.label}
+                    </p>
+                    <p className="text-3xl font-bold text-foreground mt-1">
+                      <CountUp to={stat.value} separator="," />
+                    </p>
+                  </div>
+                  <div
+                    className={`size-12 rounded-xl bg-primary/10 flex items-center justify-center ${stat.color}`}
+                  >
+                    <HugeiconsIcon icon={stat.icon} className="size-6" />
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeContent>
           ))}
         </div>
 

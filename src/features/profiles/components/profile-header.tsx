@@ -26,8 +26,9 @@ import { useUpdateProfile } from "@/features/profiles/api/mutations";
 import { AvatarCropper } from "@/components/ui/avatar-cropper";
 import { useSupabaseUpload } from "@/features/files/api/mutations";
 import { getPublicAssetUrl } from "@/lib/assets";
-import SplitText from "@/components/SplitText";
-import ShinyText from "@/components/ShinyText";
+import SplitText from "@/components/react-bits/SplitText";
+import ShinyText from "@/components/react-bits/ShinyText";
+import BorderGlow from "@/components/react-bits/BorderGlow";
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,14 +63,16 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
       </div>
       <CardContent className="px-6 sm:px-8 pb-8 relative pt-0">
         <div className="flex flex-col sm:flex-row gap-6 items-start">
-          <AvatarCropper
-            value={profile.image}
-            className="size-24 sm:size-32 border-4 border-white shadow-md bg-background -mt-12 sm:-mt-16 ring-1 ring-border"
-            onUpload={async (blob) => {
-              const fileRecord = await uploadMutation.mutateAsync({ file: blob, bucket: "avatars" });
-              await updateProfile.mutateAsync({ avatar_file_id: fileRecord.id });
-            }}
-          />
+          <BorderGlow glowColor="69 98 255" borderRadius={100} className="-mt-12 sm:-mt-16 w-max rounded-full z-10">
+            <AvatarCropper
+              value={profile.image}
+              className="size-24 sm:size-32 border-4 border-white shadow-md bg-background ring-1 ring-border"
+              onUpload={async (blob) => {
+                const fileRecord = await uploadMutation.mutateAsync({ file: blob, bucket: "avatars" });
+                await updateProfile.mutateAsync({ avatar_file_id: fileRecord.id });
+              }}
+            />
+          </BorderGlow>
           <div className="flex-1 mt-2">
             <SplitText 
               text={profile.name || ""} 

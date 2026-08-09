@@ -29,7 +29,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import type { Education, AddEducationPayload, UpdateEducationPayload } from "@/features/profiles/api/types";
 import { useAddEducation, useUpdateEducation, useDeleteEducation } from "@/features/profiles/api/mutations";
 import { format, parseISO } from "date-fns";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 type EducationFormProps = {
   education?: Education;

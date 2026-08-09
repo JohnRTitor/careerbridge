@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useEffect, useCallback } from 'react';
+import { cn } from "@/lib/utils";
 
 interface ClickSparkProps {
   sparkColor?: string;
@@ -10,6 +11,7 @@ interface ClickSparkProps {
   easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
   extraScale?: number;
   children?: React.ReactNode;
+  className?: string;
 }
 
 interface Spark {
@@ -27,6 +29,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
   duration = 400,
   easing = 'ease-out',
   extraScale = 1.0,
+  className,
   children
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -152,7 +155,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full" onClick={handleClick}>
+    <div className={cn("relative w-full h-full", className)} onClick={handleClick}>
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
       {children}
     </div>

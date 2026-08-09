@@ -4,9 +4,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import SplitText from "@/components/SplitText";
-import DecryptedText from "@/components/DecryptedText";
-import FadeContent from "@/components/FadeContent";
+import SplitText from "@/components/react-bits/SplitText";
+import DecryptedText from "@/components/react-bits/DecryptedText";
+import FadeContent from "@/components/react-bits/FadeContent";
 import { CompanyCard } from "@/features/companies/components/company-card";
 import type { CompanyFilters } from "@/features/companies/api/types";
 import {

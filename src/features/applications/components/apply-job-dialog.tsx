@@ -12,7 +12,7 @@ import { useApplyForJob } from "@/features/applications/api/mutations";
 import { toast } from "@/components/ui/toast";
 import { SelectItem } from "@/components/ui/select";
 import type { Resume } from "@/features/profiles/api/types";
-import ShinyText from "@/components/ShinyText";
+import ShinyText from "@/components/react-bits/ShinyText";
 
 type ApplyJobDialogProps = {
   jobId: string;

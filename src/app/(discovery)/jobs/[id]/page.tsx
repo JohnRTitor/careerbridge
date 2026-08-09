@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { jobsService } from "@server/features/jobs/jobs.service";
 import { JobDetailsActions } from "@/features/jobs/components/job-details-actions";
+import SplitText from "@/components/react-bits/SplitText";
+import SpotlightCard from "@/components/react-bits/SpotlightCard";
 
 export default async function JobDetailsPage({
   params,
@@ -72,7 +74,7 @@ export default async function JobDetailsPage({
               
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                  {job.title}
+                  <SplitText text={job.title} delay={20} />
                 </h1>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm sm:text-base text-muted-foreground">
                   <span className="flex items-center gap-1.5 font-medium text-foreground">
@@ -125,77 +127,85 @@ export default async function JobDetailsPage({
           
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            <section className="bg-background rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
-              <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
-                <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
-                  <HugeiconsIcon icon={BriefcaseIcon} className="size-4" />
-                </div>
-                Job Description
-              </h2>
-              <div className="prose prose-sm sm:prose-base max-w-none text-muted-foreground whitespace-pre-wrap">
-                {job.description}
-              </div>
-            </section>
-
-            {job.requirements && (
-              <section className="bg-background rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
+            <SpotlightCard className="bg-background rounded-2xl border border-border shadow-sm h-full" spotlightColor="rgba(120, 119, 198, 0.2)">
+              <div className="p-6 sm:p-8">
                 <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
-                  <div className="p-1.5 bg-destructive/10 text-destructive rounded-lg">
-                    <HugeiconsIcon icon={Tick02Icon} className="size-4" />
+                  <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                    <HugeiconsIcon icon={BriefcaseIcon} className="size-4" />
                   </div>
-                  Requirements
+                  Job Description
                 </h2>
                 <div className="prose prose-sm sm:prose-base max-w-none text-muted-foreground whitespace-pre-wrap">
-                  {job.requirements}
+                  {job.description}
                 </div>
-              </section>
+              </div>
+            </SpotlightCard>
+
+            {job.requirements && (
+              <SpotlightCard className="bg-background rounded-2xl border border-border shadow-sm h-full" spotlightColor="rgba(120, 119, 198, 0.2)">
+                <div className="p-6 sm:p-8">
+                  <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
+                    <div className="p-1.5 bg-destructive/10 text-destructive rounded-lg">
+                      <HugeiconsIcon icon={Tick02Icon} className="size-4" />
+                    </div>
+                    Requirements
+                  </h2>
+                  <div className="prose prose-sm sm:prose-base max-w-none text-muted-foreground whitespace-pre-wrap">
+                    {job.requirements}
+                  </div>
+                </div>
+              </SpotlightCard>
             )}
 
             {job.benefits && (
-              <section className="bg-background rounded-2xl p-6 sm:p-8 border border-border shadow-sm">
-                <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
-                  <div className="p-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg">
-                    <HugeiconsIcon icon={Wallet01Icon} className="size-4" />
+              <SpotlightCard className="bg-background rounded-2xl border border-border shadow-sm h-full" spotlightColor="rgba(120, 119, 198, 0.2)">
+                <div className="p-6 sm:p-8">
+                  <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground flex items-center gap-2">
+                    <div className="p-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg">
+                      <HugeiconsIcon icon={Wallet01Icon} className="size-4" />
+                    </div>
+                    Benefits & Perks
+                  </h2>
+                  <div className="prose prose-sm sm:prose-base max-w-none text-muted-foreground whitespace-pre-wrap">
+                    {job.benefits}
                   </div>
-                  Benefits & Perks
-                </h2>
-                <div className="prose prose-sm sm:prose-base max-w-none text-muted-foreground whitespace-pre-wrap">
-                  {job.benefits}
                 </div>
-              </section>
+              </SpotlightCard>
             )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <section className="bg-background rounded-2xl p-6 border border-border shadow-sm">
-              <h2 className="text-lg font-bold tracking-tight mb-4 text-foreground">About the Company</h2>
-              <div className="flex items-center gap-4 mb-4">
-                {job.company_logo ? (
-                  <div className="size-12 rounded-lg border border-border overflow-hidden shrink-0 bg-background">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={job.company_logo} alt={job.company_name || ""} className="w-full h-full object-contain" />
+            <SpotlightCard className="bg-background rounded-2xl border border-border shadow-sm h-full" spotlightColor="rgba(120, 119, 198, 0.2)">
+              <div className="p-6">
+                <h2 className="text-lg font-bold tracking-tight mb-4 text-foreground">About the Company</h2>
+                <div className="flex items-center gap-4 mb-4">
+                  {job.company_logo ? (
+                    <div className="size-12 rounded-lg border border-border overflow-hidden shrink-0 bg-background">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={job.company_logo} alt={job.company_name || ""} className="w-full h-full object-contain" />
+                    </div>
+                  ) : (
+                    <div className="size-12 rounded-lg bg-primary/10 text-primary text-sm font-bold flex items-center justify-center shrink-0 uppercase border border-primary/20">
+                      {job.company_name?.substring(0, 2) || "CO"}
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-semibold text-base">{job.company_name}</h3>
+                    <Link href={`/companies/${job.company_id}`} className="text-sm text-primary hover:underline font-medium">
+                      View Company Profile
+                    </Link>
                   </div>
-                ) : (
-                  <div className="size-12 rounded-lg bg-primary/10 text-primary text-sm font-bold flex items-center justify-center shrink-0 uppercase border border-primary/20">
-                    {job.company_name?.substring(0, 2) || "CO"}
-                  </div>
-                )}
-                <div>
-                  <h3 className="font-semibold text-base">{job.company_name}</h3>
-                  <Link href={`/companies/${job.company_id}`} className="text-sm text-primary hover:underline font-medium">
-                    View Company Profile
-                  </Link>
                 </div>
+                {job.company_description ? (
+                  <p className="text-sm text-muted-foreground line-clamp-4">
+                    {job.company_description}
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">No company description available.</p>
+                )}
               </div>
-              {job.company_description ? (
-                <p className="text-sm text-muted-foreground line-clamp-4">
-                  {job.company_description}
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">No company description available.</p>
-              )}
-            </section>
+            </SpotlightCard>
           </div>
         </div>
       </div>

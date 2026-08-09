@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
@@ -26,7 +27,7 @@ export interface SplitTextProps {
 
 const SplitText: React.FC<SplitTextProps> = ({
   text,
-  className = '',
+  className,
   delay = 50,
   duration = 1.25,
   ease = 'power3.out',
@@ -163,7 +164,7 @@ const SplitText: React.FC<SplitTextProps> = ({
       wordWrap: 'break-word',
       willChange: 'transform, opacity'
     };
-    const classes = `split-parent overflow-hidden inline-block whitespace-normal ${className}`;
+    const classes = cn("split-parent overflow-hidden inline-block whitespace-normal", className);
     const Tag = (tag || 'p') as React.ElementType;
 
     return (

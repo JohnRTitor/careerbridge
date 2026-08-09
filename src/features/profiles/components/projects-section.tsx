@@ -30,7 +30,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import type { Project, AddProjectPayload, UpdateProjectPayload } from "@/features/profiles/api/types";
 import { useAddProject, useUpdateProject, useDeleteProject } from "@/features/profiles/api/mutations";
 import { format, parseISO } from "date-fns";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 type ProjectFormProps = {
   project?: Project;

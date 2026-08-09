@@ -4,9 +4,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { JobCard } from "@/features/jobs/components/job-card";
-import FadeContent from "@/components/FadeContent";
-import SplitText from "@/components/SplitText";
-import DecryptedText from "@/components/DecryptedText";
+import FadeContent from "@/components/react-bits/FadeContent";
+import SplitText from "@/components/react-bits/SplitText";
+import DecryptedText from "@/components/react-bits/DecryptedText";
 import type { JobFilters } from "@/features/jobs/api/types";
 import {
   Empty,

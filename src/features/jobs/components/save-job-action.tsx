@@ -5,7 +5,7 @@ import { BookmarkIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { useSaveJob, useUnsaveJob } from "@/features/jobs/api/mutations";
 import { useSavedJobs } from "@/features/jobs/api/queries";
-import ClickSpark from "@/components/ClickSpark";
+import ClickSpark from "@/components/react-bits/ClickSpark";
 
 type SaveJobActionProps = {
   jobId: string;

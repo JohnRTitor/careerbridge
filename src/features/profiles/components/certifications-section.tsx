@@ -28,7 +28,7 @@ import { useAppForm } from "@/hooks/use-app-form";
 import type { Certification, AddCertificationPayload, UpdateCertificationPayload } from "@/features/profiles/api/types";
 import { useAddCertification, useUpdateCertification, useDeleteCertification } from "@/features/profiles/api/mutations";
 import { format, parseISO } from "date-fns";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 type CertificationFormProps = {
   certification?: Certification;

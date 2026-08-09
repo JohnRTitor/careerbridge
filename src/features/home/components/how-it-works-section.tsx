@@ -1,7 +1,8 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, SearchIcon, SentIcon } from "@hugeicons/core-free-icons";
 import { getHomepageStats } from "@/features/stats/api/api";
-import CountUp from "@/components/CountUp";
+import CountUp from "@/components/react-bits/CountUp";
+import AnimatedContent from "@/components/react-bits/AnimatedContent";
 
 const steps = [
   {
@@ -40,18 +41,20 @@ export async function HowItWorksSection() {
 
       <div className="mt-12 grid gap-8 md:grid-cols-3">
         {steps.map((step, i) => (
-          <div key={step.title} className="relative flex flex-col items-center text-center">
-            <span className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-              <HugeiconsIcon icon={step.icon} className="size-7" />
-            </span>
-            <span className="mt-4 font-mono text-sm font-semibold text-primary">
-              Step {i + 1}
-            </span>
-            <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
-            <p className="mt-2 max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
-              {step.description}
-            </p>
-          </div>
+          <AnimatedContent key={step.title} distance={40} direction="vertical" duration={0.6} delay={0.15 * i}>
+            <div className="relative flex flex-col items-center text-center">
+              <span className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                <HugeiconsIcon icon={step.icon} className="size-7" />
+              </span>
+              <span className="mt-4 font-mono text-sm font-semibold text-primary">
+                Step {i + 1}
+              </span>
+              <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
+              <p className="mt-2 max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+                {step.description}
+              </p>
+            </div>
+          </AnimatedContent>
         ))}
       </div>
 

@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import { motion, Transition, Easing } from 'motion/react';
 import { useEffect, useRef, useState, useMemo } from 'react';
@@ -34,7 +35,7 @@ const buildKeyframes = (
 const BlurText: React.FC<BlurTextProps> = ({
   text = '',
   delay = 200,
-  className = '',
+  className,
   animateBy = 'words',
   direction = 'top',
   threshold = 0.1,
@@ -90,7 +91,7 @@ const BlurText: React.FC<BlurTextProps> = ({
   const times = Array.from({ length: stepCount }, (_, i) => (stepCount === 1 ? 0 : i / (stepCount - 1)));
 
   return (
-    <p ref={ref} className={`blur-text ${className} flex flex-wrap`}>
+    <p ref={ref} className={cn("blur-text flex flex-wrap", className)}>
       {elements.map((segment, index) => {
         const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
 

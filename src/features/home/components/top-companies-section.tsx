@@ -4,7 +4,8 @@ import { ArrowUpRightIcon, Building02Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { listCompanies } from "@/features/companies/api/api";
-import TiltedCard from "@/components/TiltedCard";
+import SpotlightCard from "@/components/react-bits/SpotlightCard";
+import AnimatedContent from "@/components/react-bits/AnimatedContent";
 
 export async function TopCompaniesSection() {
   const popularCompaniesData = await listCompanies({ limit: 6, page: 1 }).catch(() => null);
@@ -22,20 +23,16 @@ export async function TopCompaniesSection() {
 
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {popularCompaniesData?.companies && popularCompaniesData.companies.length > 0 ? (
-          popularCompaniesData.companies.map((company) => (
+          popularCompaniesData.companies.map((company, index) => (
             <Link key={company.id} href={`/companies/${company.id}`} className="block">
-              <TiltedCard
-                imageSrc=""
-                containerHeight="100px"
-                containerWidth="100%"
-                imageHeight="100%"
-                imageWidth="100%"
-                scaleOnHover={1.05}
-                rotateAmplitude={5}
-                showTooltip={false}
-                showMobileWarning={false}
+              <AnimatedContent
+                distance={40}
+                direction="vertical"
+                reverse={false}
+                duration={0.6}
+                delay={0.1 * index}
               >
-                <Card className="group flex flex-row items-center gap-4 p-5 transition-all hover:border-primary hover:shadow-md h-[100px]">
+                <SpotlightCard className="group flex items-center justify-center p-6 bg-card border-border hover:border-primary hover:shadow-md h-[100px]" spotlightColor="rgba(69, 98, 255, 0.15)">
                   {company.logo_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -49,7 +46,7 @@ export async function TopCompaniesSection() {
                     </span>
                   )}
                   <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-semibold">{company.name}</h3>
+                    <h3 className="truncate font-semibold text-foreground group-hover:text-primary transition-colors">{company.name}</h3>
                     <p className="text-sm text-muted-foreground truncate">
                       {company.industry || "Company"}
                     </p>
@@ -63,8 +60,8 @@ export async function TopCompaniesSection() {
                       {company.open_jobs_count || 0} jobs
                     </span>
                   </div>
-                </Card>
-              </TiltedCard>
+                </SpotlightCard>
+              </AnimatedContent>
             </Link>
           ))
         ) : (

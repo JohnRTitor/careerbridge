@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import React, { useRef, useState } from 'react';
 
@@ -14,7 +15,7 @@ interface SpotlightCardProps extends React.PropsWithChildren {
 
 const SpotlightCard: React.FC<SpotlightCardProps> = ({
   children,
-  className = '',
+  className,
   spotlightColor = 'rgba(255, 255, 255, 0.25)'
 }) => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -55,7 +56,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
       onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative rounded-xl border border-border bg-card overflow-hidden ${className}`}
+      className={cn("relative rounded-xl border border-border bg-card overflow-hidden", className)}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-in-out"

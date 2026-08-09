@@ -2,16 +2,35 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+import Particles from "@/components/react-bits/Particles"
+import DecryptedText from "@/components/react-bits/DecryptedText"
+
 function Empty({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="empty"
       className={cn(
-        "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance",
+        "relative flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance overflow-hidden",
         className
       )}
       {...props}
-    />
+    >
+      <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
+        <Particles
+          particleColors={["#ffffff", "#4562FF"]}
+          particleCount={50}
+          particleSpread={10}
+          speed={0.1}
+          particleBaseSize={100}
+          moveParticlesOnHover={true}
+          alphaParticles={true}
+          disableRotation={false}
+        />
+      </div>
+      <div className="relative z-10 flex flex-col items-center gap-4 w-full h-full justify-center">
+        {props.children}
+      </div>
+    </div>
   )
 }
 
@@ -55,7 +74,7 @@ function EmptyMedia({
   )
 }
 
-function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+function EmptyTitle({ className, children, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="empty-title"
@@ -64,7 +83,20 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
         className
       )}
       {...props}
-    />
+    >
+      {typeof children === "string" ? (
+        <DecryptedText
+          text={children}
+          speed={50}
+          maxIterations={10}
+          sequential={true}
+          revealDirection="start"
+          animateOn="view"
+        />
+      ) : (
+        children
+      )}
+    </div>
   )
 }
 

@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import React from 'react';
 
 type StarBorderProps<T extends React.ElementType> = React.ComponentPropsWithoutRef<T> & {
@@ -12,7 +13,7 @@ type StarBorderProps<T extends React.ElementType> = React.ComponentPropsWithoutR
 
 const StarBorder = <T extends React.ElementType = 'button'>({
   as,
-  className = '',
+  className,
   color = 'white',
   speed = '6s',
   thickness = 1,
@@ -23,7 +24,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
 
   return (
     <Component
-      className={`relative inline-block overflow-hidden rounded-[20px] ${className}`}
+      className={cn("relative inline-block overflow-hidden rounded-[20px]", className)}
       {...(rest as any)}
       style={{
         padding: `${thickness}px 0`,

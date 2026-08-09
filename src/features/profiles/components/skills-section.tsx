@@ -29,7 +29,7 @@ import { ComboboxList, ComboboxItem, ComboboxEmpty } from "@/components/ui/combo
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Skill, AddUserSkillPayload, UpdateUserSkillPayload } from "@/features/profiles/api/types";
 import { useAddUserSkill, useUpdateUserSkill, useDeleteUserSkill } from "@/features/profiles/api/mutations";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 import { useSkills } from "@/features/meta/api/queries";
 import { useCreateSkill } from "@/features/meta/api/mutations";
 import { useDebounce } from "@reactuses/core";
@@ -228,23 +228,25 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
       <CardContent>
         {skills.length > 0 ? (
           <div className="flex flex-col gap-3">
-            {skills.map((skill) => (
-              <div key={skill.skill_id} className="group flex items-center justify-between border-b border-border/50 pb-3 last:border-0 last:pb-0">
-                <div>
-                  <h4 className="font-semibold text-foreground text-sm">{skill.skill_name || "Unknown"}</h4>
-                  <p className="text-xs text-muted-foreground capitalize mt-0.5">
-                    {typeof skill.proficiency === 'number' ? ["beginner", "intermediate", "advanced", "expert"][skill.proficiency - 1] : skill.proficiency} · {skill.years_of_experience} yrs
-                  </p>
+            {skills.map((skill, index) => (
+              <FadeContent key={skill.skill_id} delay={index * 100} blur duration={500} ease="power3.out">
+                <div className="group flex items-center justify-between border-b border-border/50 pb-3 last:border-0 last:pb-0">
+                  <div>
+                    <h4 className="font-semibold text-foreground text-sm">{skill.skill_name || "Unknown"}</h4>
+                    <p className="text-xs text-muted-foreground capitalize mt-0.5">
+                      {typeof skill.proficiency === 'number' ? ["beginner", "intermediate", "advanced", "expert"][skill.proficiency - 1] : skill.proficiency} · {skill.years_of_experience} yrs
+                    </p>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground shrink-0" 
+                    onClick={() => openEdit(skill)}
+                  >
+                    <HugeiconsIcon icon={PencilEdit01Icon} className="size-3.5" />
+                  </Button>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground shrink-0" 
-                  onClick={() => openEdit(skill)}
-                >
-                  <HugeiconsIcon icon={PencilEdit01Icon} className="size-3.5" />
-                </Button>
-              </div>
+              </FadeContent>
             ))}
           </div>
         ) : (

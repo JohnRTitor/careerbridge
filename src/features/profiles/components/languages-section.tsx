@@ -28,7 +28,7 @@ import { ComboboxList, ComboboxItem, ComboboxEmpty } from "@/components/ui/combo
 import { useAppForm } from "@/hooks/use-app-form";
 import type { Language, AddUserLanguagePayload, UpdateUserLanguagePayload } from "@/features/profiles/api/types";
 import { useAddUserLanguage, useUpdateUserLanguage, useDeleteUserLanguage } from "@/features/profiles/api/mutations";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 import { useLanguages } from "@/features/meta/api/queries";
 import { useDebounce } from "@reactuses/core";
 

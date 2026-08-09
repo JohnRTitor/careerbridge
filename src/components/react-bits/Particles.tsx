@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import React, { useEffect, useRef } from 'react';
 import { Renderer, Camera, Geometry, Program, Mesh } from 'ogl';
@@ -251,7 +252,7 @@ const Particles: React.FC<ParticlesProps> = ({
     pixelRatio
   ]);
 
-  return <div ref={containerRef} className={`relative w-full h-full ${className}`} />;
+  return <div ref={containerRef} className={cn("relative w-full h-full", className)} />;
 };
 
 export default Particles;

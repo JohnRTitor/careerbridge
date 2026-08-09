@@ -1,8 +1,8 @@
 import { statsRepository } from "../../../../server/features/stats/stats.repository";
 import { HomeHeroSearch } from "./home-hero-search";
-import Particles from "@/components/Particles";
-import ShinyText from "@/components/ShinyText";
-import BlurText from "@/components/BlurText";
+import Particles from "@/components/react-bits/Particles";
+import ShinyText from "@/components/react-bits/ShinyText";
+import BlurText from "@/components/react-bits/BlurText";
 
 type HeroSectionProps = {
   searchMessage?: { type: "success" | "error" | null; text: string };

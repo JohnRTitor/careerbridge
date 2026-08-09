@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useAnimationFrame, useTransform } from 'motion/react';
@@ -21,7 +22,7 @@ const ShinyText: React.FC<ShinyTextProps> = ({
   text,
   disabled = false,
   speed = 2,
-  className = '',
+  className,
   color = '#b5b5b5',
   shineColor = '#ffffff',
   spread = 120,
@@ -120,7 +121,7 @@ const ShinyText: React.FC<ShinyTextProps> = ({
 
   return (
     <motion.span
-      className={`inline-block ${className}`}
+      className={cn("inline-block", className)}
       style={{ ...gradientStyle, backgroundPosition }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

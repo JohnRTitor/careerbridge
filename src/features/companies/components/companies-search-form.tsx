@@ -6,7 +6,8 @@ import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppForm } from "@/hooks/use-app-form";
-import FadeContent from "@/components/FadeContent";
+
+import ClickSpark from "@/components/react-bits/ClickSpark";
 
 export function CompaniesSearchForm() {
   const router = useRouter();
@@ -28,7 +29,6 @@ export function CompaniesSearchForm() {
   });
 
   return (
-    <FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -52,10 +52,18 @@ export function CompaniesSearchForm() {
             </div>
           )}
         </form.AppField>
-        <Button type="submit" size="lg" className="h-12 px-8 rounded-xl shrink-0">
-          Search
-        </Button>
+        <ClickSpark
+          sparkColor="#fff"
+          sparkSize={5}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+          className="relative w-full sm:w-auto"
+        >
+          <Button type="submit" size="lg" className="h-12 px-8 rounded-xl shrink-0 w-full sm:w-auto">
+            Search
+          </Button>
+        </ClickSpark>
       </form>
-    </FadeContent>
   );
 }

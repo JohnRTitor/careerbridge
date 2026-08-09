@@ -7,9 +7,9 @@ import { NavLink } from "./nav-links";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { RippleButton } from "@/components/animate-ui/components/buttons/ripple";
 
 type DesktopNavProps = {
   links: NavLink[];
@@ -30,18 +30,17 @@ export function DesktopNav({ links }: DesktopNavProps) {
 
           return (
             <NavigationMenuItem key={link.href}>
-              <NavigationMenuLink
-                href={link.href}
-                render={<Link href={link.href} />}
-                data-active={isActive}
+              <RippleButton
+                asChild
                 className={cn(
-                  "bg-transparent hover:bg-transparent focus:bg-transparent",
-                  "text-sm font-medium transition-colors hover:text-primary",
+                  "bg-transparent hover:bg-transparent focus:bg-transparent border-none shadow-none text-sm font-medium transition-colors hover:text-primary px-3 py-2",
                   isActive ? "text-primary" : "text-muted-foreground",
                 )}
               >
-                {link.label}
-              </NavigationMenuLink>
+                <Link href={link.href}>
+                  {link.label}
+                </Link>
+              </RippleButton>
             </NavigationMenuItem>
           );
         })}

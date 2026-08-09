@@ -15,7 +15,7 @@ import { useJobApplicationForm } from "@/features/jobs/api/queries";
 import { useUpdateJobApplicationForm } from "@/features/jobs/api/mutations";
 import type { JobApplicationForm, JobApplicationQuestion } from "@server/features/jobs/jobs.schemas";
 import { Skeleton } from "@/components/ui/skeleton";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 export function ApplicationSettings({ jobId }: { jobId: string }) {
   const { data: formData, isLoading } = useJobApplicationForm(jobId);

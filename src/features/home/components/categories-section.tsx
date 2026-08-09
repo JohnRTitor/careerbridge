@@ -1,4 +1,7 @@
-import { HugeiconsIcon, type IconSvgElement as IconSvgObject } from "@hugeicons/react";
+import {
+  HugeiconsIcon,
+  type IconSvgElement as IconSvgObject,
+} from "@hugeicons/react";
 import {
   CodeIcon,
   PenToolIcon,
@@ -12,10 +15,17 @@ import {
   FolderOpenIcon,
 } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { getJobCategories } from "@/features/stats/api/api";
 import Link from "next/link";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
+import TiltedCard from "@/components/react-bits/TiltedCard";
+import SplitText from "@/components/react-bits/SplitText";
 
 const categoryIcons: Record<string, IconSvgObject> = {
   Engineering: CodeIcon,
@@ -36,7 +46,12 @@ export async function CategoriesSection() {
     <section id="categories" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <div className="flex flex-col items-center text-center">
         <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-          Browse by category
+          <SplitText
+            text="Browse by category"
+            delay={50}
+            threshold={0.2}
+            rootMargin="-50px"
+          />
         </h2>
         <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
           Explore opportunities across the fields you care about most.
@@ -46,24 +61,47 @@ export async function CategoriesSection() {
       <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {categoriesData && categoriesData.length > 0 ? (
           categoriesData.map((category, index) => {
-            const IconComponent = categoryIcons[category.industry] || BriefcaseIcon;
+            const IconComponent =
+              categoryIcons[category.industry] || BriefcaseIcon;
             return (
-              <FadeContent key={category.industry} blur={true} duration={1000} ease="ease-out" initialOpacity={0} delay={index * 100}>
+              <FadeContent
+                key={category.industry}
+                blur={true}
+                duration={1000}
+                ease="ease-out"
+                initialOpacity={0}
+                delay={index * 100}
+              >
                 <Link
                   href={`/jobs?query=${encodeURIComponent(category.industry)}`}
                   className="block text-left w-full cursor-pointer h-full"
                 >
-                  <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full">
-                    <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                      <HugeiconsIcon icon={IconComponent} className="size-6" />
-                    </span>
-                    <div>
-                      <h3 className="font-semibold">{category.industry}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {category.job_count.toLocaleString()} open jobs
-                      </p>
-                    </div>
-                  </Card>
+                  <TiltedCard
+                    imageSrc=""
+                    containerHeight="150px"
+                    containerWidth="100%"
+                    imageHeight="200px"
+                    imageWidth="100%"
+                    scaleOnHover={1.05}
+                    rotateAmplitude={8}
+                    showTooltip={false}
+                    showMobileWarning={false}
+                  >
+                    <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full w-full">
+                      <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                        <HugeiconsIcon
+                          icon={IconComponent}
+                          className="size-6"
+                        />
+                      </span>
+                      <div>
+                        <h3 className="font-semibold">{category.industry}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {category.job_count.toLocaleString()} open jobs
+                        </p>
+                      </div>
+                    </Card>
+                  </TiltedCard>
                 </Link>
               </FadeContent>
             );

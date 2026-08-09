@@ -11,7 +11,7 @@ import type { SavedJob } from "@/features/jobs/api/types";
 import type { Application } from "@/features/applications/api/types";
 import { useAppPermission } from "@/features/auth/api/queries";
 import { useRouter } from "next/navigation";
-import StarBorder from "@/components/StarBorder";
+import StarBorder from "@/components/react-bits/StarBorder";
 
 type JobDetailsActionsProps = {
   jobId: string;

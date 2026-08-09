@@ -17,6 +17,9 @@ import { FollowCompanyAction } from "@/features/companies/components/follow-comp
 import { companiesService } from "@server/features/companies/companies.service";
 import { jobsService } from "@server/features/jobs/jobs.service";
 import type { Job } from "@/features/jobs/api/types";
+import BlurText from "@/components/react-bits/BlurText";
+import SplitText from "@/components/react-bits/SplitText";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 export default async function CompanyDetailsPage({
   params,
@@ -72,7 +75,7 @@ export default async function CompanyDetailsPage({
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl font-bold text-foreground tracking-tight">
-                    {company.name}
+                    <BlurText text={company.name} delay={50} />
                   </h1>
                   {company.is_verified && (
                     <div className="text-primary bg-primary/10 rounded-full p-1 mt-1" title="Verified Company">
@@ -120,7 +123,7 @@ export default async function CompanyDetailsPage({
           </div>
           
           <div className="mt-8 pt-8 border-t border-border">
-            <h2 className="text-xl font-semibold mb-3">About {company.name}</h2>
+            <h2 className="text-xl font-semibold mb-3"><SplitText text={`About ${company.name}`} delay={20} /></h2>
             <div className="prose prose-sm sm:prose-base max-w-4xl text-muted-foreground whitespace-pre-wrap">
               {company.description || "This company has not provided a description yet."}
             </div>
@@ -131,7 +134,9 @@ export default async function CompanyDetailsPage({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 w-full">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Open Roles</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              <SplitText text="Open Roles" delay={30} />
+            </h2>
             <p className="text-muted-foreground text-sm mt-1">
               Join the team at {company.name}
             </p>
@@ -143,8 +148,10 @@ export default async function CompanyDetailsPage({
 
         {jobsData && jobsData.jobs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {jobsData.jobs.map((job: Job) => (
-              <JobCard key={job.id} job={job} />
+            {jobsData.jobs.map((job: Job, index: number) => (
+              <FadeContent key={job.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+                <JobCard job={job} />
+              </FadeContent>
             ))}
           </div>
         ) : (

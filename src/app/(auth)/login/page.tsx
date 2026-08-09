@@ -14,7 +14,8 @@ import { authClient } from "@/features/auth/api/auth-client";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Aurora from "@/components/Aurora";
+import Aurora from "@/components/react-bits/Aurora";
+import DecryptedText from "@/components/react-bits/DecryptedText";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function SignInPage() {
         {/* Main Logo & Platform Context */}
         <div className="flex flex-col items-center text-center">
           <h1 className="text-xl font-bold text-foreground sm:text-2xl">
-            Welcome Back
+            <DecryptedText text="Welcome Back" speed={70} maxIterations={15} />
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
             Access your CareerBridge account

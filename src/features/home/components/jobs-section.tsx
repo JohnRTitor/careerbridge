@@ -3,7 +3,7 @@ import { Alert01Icon, BriefcaseIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { JobCard } from "@/features/jobs/components/job-card";
-import FadeContent from "@/components/FadeContent";
+import FadeContent from "@/components/react-bits/FadeContent";
 import { jobsService } from "../../../../server/features/jobs/jobs.service";
 import Link from "next/link";
 import type { Job } from "@/features/jobs/api/types";

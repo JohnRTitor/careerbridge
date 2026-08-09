@@ -53,8 +53,8 @@ import {
   TooltipPanel,
   TooltipTrigger,
 } from "@/components/animate-ui/components/base/tooltip";
-import SpotlightCard from "@/components/SpotlightCard";
-import FadeContent from "@/components/FadeContent";
+import SpotlightCard from "@/components/react-bits/SpotlightCard";
+import FadeContent from "@/components/react-bits/FadeContent";
 
 export function ResumesSection() {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { motion } from 'motion/react';
@@ -29,7 +30,7 @@ export default function DecryptedText({
   revealDirection = 'start',
   useOriginalCharsOnly = false,
   characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+',
-  className = '',
+  className,
   parentClassName = '',
   encryptedClassName = '',
   animateOn = 'hover',
@@ -366,7 +367,7 @@ export default function DecryptedText({
   return (
     <motion.span
       ref={containerRef}
-      className={`inline-block whitespace-pre-wrap ${parentClassName}`}
+      className={cn("inline-block whitespace-pre-wrap ${parentClassName}", className)}
       {...animateProps}
       {...props}
     >

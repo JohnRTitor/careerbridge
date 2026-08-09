@@ -7,7 +7,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { buttonVariants } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import SpotlightCard from "@/components/SpotlightCard";
+import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import { Badge } from "@/components/ui/badge";
 import type { Company } from "@/features/companies/api/types";
 import { FollowCompanyAction } from "./follow-company-action";

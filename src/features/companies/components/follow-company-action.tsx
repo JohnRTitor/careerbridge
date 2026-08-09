@@ -5,7 +5,7 @@ import type { Company } from "@/features/companies/api/types";
 import { useFollowCompany, useUnfollowCompany } from "@/features/companies/api/mutations";
 import { useFollowedCompanies } from "@/features/companies/api/queries";
 import { useAppPermission } from "@/features/auth/api/queries";
-import ClickSpark from "@/components/ClickSpark";
+import ClickSpark from "@/components/react-bits/ClickSpark";
 
 type FollowCompanyActionProps = {
   companyId: string;
