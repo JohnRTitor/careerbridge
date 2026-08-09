@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, SearchIcon, SentIcon } from "@hugeicons/core-free-icons";
 import { getHomepageStats } from "@/features/stats/api/api";
@@ -25,9 +26,42 @@ const steps = [
   },
 ];
 
-export async function HowItWorksSection() {
+async function HowItWorksStats() {
   const statsData = await getHomepageStats().catch(() => null);
 
+  if (!statsData) return null;
+
+  return (
+    <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
+      <div className="text-center">
+        <p className="text-3xl font-bold text-primary sm:text-4xl">
+          <CountUp to={statsData.total_open_jobs || 0} separator="," />
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
+      </div>
+      <div className="text-center">
+        <p className="text-3xl font-bold text-primary sm:text-4xl">
+          <CountUp to={statsData.total_companies || 0} separator="," />
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">Companies</p>
+      </div>
+      <div className="text-center">
+        <p className="text-3xl font-bold text-primary sm:text-4xl">
+          <CountUp to={statsData.total_users || 0} separator="," />
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
+      </div>
+      <div className="text-center">
+        <p className="text-3xl font-bold text-primary sm:text-4xl">
+          <CountUp to={statsData.total_applications || 0} separator="," />
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
+      </div>
+    </div>
+  );
+}
+
+export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <div className="flex flex-col items-center text-center">
@@ -59,34 +93,9 @@ export async function HowItWorksSection() {
       </div>
 
       {/* Stats Display Block */}
-      {statsData && (
-        <div className="mt-16 grid grid-cols-2 gap-6 rounded-2xl border border-border bg-muted/30 p-8 sm:grid-cols-4">
-          <div className="text-center">
-            <p className="text-3xl font-bold text-primary sm:text-4xl">
-              <CountUp to={statsData.total_open_jobs || 0} separator="," />
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">Active jobs</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-primary sm:text-4xl">
-              <CountUp to={statsData.total_companies || 0} separator="," />
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">Companies</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-primary sm:text-4xl">
-              <CountUp to={statsData.total_users || 0} separator="," />
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">Job seekers</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-primary sm:text-4xl">
-              <CountUp to={statsData.total_applications || 0} separator="," />
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">Applications sent</p>
-          </div>
-        </div>
-      )}
+      <Suspense fallback={<div className="mt-16 h-32 flex items-center justify-center text-muted-foreground border border-border bg-muted/30 rounded-2xl">Loading stats...</div>}>
+        <HowItWorksStats />
+      </Suspense>
     </section>
   );
 }

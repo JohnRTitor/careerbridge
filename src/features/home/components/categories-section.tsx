@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   HugeiconsIcon,
   type IconSvgElement as IconSvgObject,
@@ -39,9 +40,73 @@ const categoryIcons: Record<string, IconSvgObject> = {
   Support: HeadphonesIcon,
 };
 
-export async function CategoriesSection() {
+async function CategoriesContent() {
   const categoriesData = await getJobCategories().catch(() => []);
 
+  return (
+    <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {categoriesData && categoriesData.length > 0 ? (
+        categoriesData.map((category, index) => {
+          const IconComponent =
+            categoryIcons[category.industry] || BriefcaseIcon;
+          return (
+            <FadeContent
+              key={category.industry}
+              blur={true}
+              duration={1000}
+              ease="ease-out"
+              initialOpacity={0}
+              delay={index * 100}
+            >
+              <Link
+                href={`/jobs?query=${encodeURIComponent(category.industry)}`}
+                className="block text-left w-full cursor-pointer h-full"
+              >
+                <TiltedCard
+                  imageSrc=""
+                  containerHeight="150px"
+                  containerWidth="100%"
+                  imageHeight="200px"
+                  imageWidth="100%"
+                  scaleOnHover={1.05}
+                  rotateAmplitude={8}
+                  showTooltip={false}
+                  showMobileWarning={false}
+                >
+                  <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full w-full">
+                    <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                      <HugeiconsIcon
+                        icon={IconComponent}
+                        className="size-6"
+                      />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold">{category.industry}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {category.job_count.toLocaleString()} open jobs
+                      </p>
+                    </div>
+                  </Card>
+                </TiltedCard>
+              </Link>
+            </FadeContent>
+          );
+        })
+      ) : (
+        <Empty className="col-span-full border shadow-sm">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <HugeiconsIcon icon={FolderOpenIcon} />
+            </EmptyMedia>
+            <EmptyTitle>No categories available yet.</EmptyTitle>
+          </EmptyHeader>
+        </Empty>
+      )}
+    </div>
+  );
+}
+
+export function CategoriesSection() {
   return (
     <section id="categories" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <div className="flex flex-col items-center text-center">
@@ -58,65 +123,9 @@ export async function CategoriesSection() {
         </p>
       </div>
 
-      <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {categoriesData && categoriesData.length > 0 ? (
-          categoriesData.map((category, index) => {
-            const IconComponent =
-              categoryIcons[category.industry] || BriefcaseIcon;
-            return (
-              <FadeContent
-                key={category.industry}
-                blur={true}
-                duration={1000}
-                ease="ease-out"
-                initialOpacity={0}
-                delay={index * 100}
-              >
-                <Link
-                  href={`/jobs?query=${encodeURIComponent(category.industry)}`}
-                  className="block text-left w-full cursor-pointer h-full"
-                >
-                  <TiltedCard
-                    imageSrc=""
-                    containerHeight="150px"
-                    containerWidth="100%"
-                    imageHeight="200px"
-                    imageWidth="100%"
-                    scaleOnHover={1.05}
-                    rotateAmplitude={8}
-                    showTooltip={false}
-                    showMobileWarning={false}
-                  >
-                    <Card className="group flex flex-col items-start gap-4 p-6 transition-all hover:border-primary hover:shadow-md h-full w-full">
-                      <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                        <HugeiconsIcon
-                          icon={IconComponent}
-                          className="size-6"
-                        />
-                      </span>
-                      <div>
-                        <h3 className="font-semibold">{category.industry}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {category.job_count.toLocaleString()} open jobs
-                        </p>
-                      </div>
-                    </Card>
-                  </TiltedCard>
-                </Link>
-              </FadeContent>
-            );
-          })
-        ) : (
-          <Empty className="col-span-full border shadow-sm">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <HugeiconsIcon icon={FolderOpenIcon} />
-              </EmptyMedia>
-              <EmptyTitle>No categories available yet.</EmptyTitle>
-            </EmptyHeader>
-          </Empty>
-        )}
-      </div>
+      <Suspense fallback={<div className="mt-12 h-64 flex items-center justify-center text-muted-foreground">Loading categories...</div>}>
+        <CategoriesContent />
+      </Suspense>
     </section>
   );
 }

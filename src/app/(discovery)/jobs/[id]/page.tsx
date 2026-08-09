@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeft01Icon,
@@ -12,22 +13,21 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { jobsService } from "@server/features/jobs/jobs.service";
+import { getJobByIdCached } from "@/features/jobs/api/server-cached";
 import { JobDetailsActions } from "@/features/jobs/components/job-details-actions";
 import SplitText from "@/components/react-bits/SplitText";
 import SpotlightCard from "@/components/react-bits/SpotlightCard";
 
-export default async function JobDetailsPage({
+async function JobDetailsContent({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const resolvedParams = await params;
-  const id = resolvedParams.id;
+  const { id } = await params;
 
   let job = null;
   try {
-    job = await jobsService.getJobById({ jobId: id });
+    job = await getJobByIdCached({ jobId: id });
   } catch (err) {
     // Return 404 if job not found
     return notFound();
@@ -210,5 +210,17 @@ export default async function JobDetailsPage({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function JobDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-muted-foreground">Loading job details...</div>}>
+      <JobDetailsContent params={params} />
+    </Suspense>
   );
 }

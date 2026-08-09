@@ -7,7 +7,9 @@ import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { ApplicationSettings } from "@/features/jobs/components/application-settings";
 import { useJob } from "@/features/jobs/api/queries";
 
-export default function JobSettingsPage() {
+import { Suspense } from "react";
+
+function JobSettingsContent() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -54,5 +56,20 @@ export default function JobSettingsPage() {
         <ApplicationSettings jobId={job.id} />
       </main>
     </div>
+  );
+}
+
+export default function JobSettingsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col bg-background py-12">
+        <main className="mx-auto w-full max-w-4xl px-4 sm:px-6">
+          <div className="h-8 w-32 bg-muted animate-pulse rounded-md mb-6" />
+          <div className="h-64 bg-muted animate-pulse rounded-xl" />
+        </main>
+      </div>
+    }>
+      <JobSettingsContent />
+    </Suspense>
   );
 }

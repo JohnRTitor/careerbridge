@@ -1,5 +1,9 @@
 import { getSession } from "@server/auth/utils";
 import { redirect } from "next/navigation";
+// instant = false is required here because getSession() is blocking and must complete
+// before we can determine if the user needs onboarding. We cannot stream a generic shell
+// because the layout and logic entirely depend on the auth state.
+export const instant = false;
 import { OnboardingForm } from "./onboarding-form";
 
 export default async function OnboardingPage() {

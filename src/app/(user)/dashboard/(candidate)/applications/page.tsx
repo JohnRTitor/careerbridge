@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   BriefcaseIcon,
@@ -54,12 +55,13 @@ const ApplicationCardContent = ({ app }: { app: Application }) => (
     <div className="flex gap-3">
       {app.company_logo ? (
         <div className="size-10 rounded-lg border border-border overflow-hidden shrink-0">
-          <img
+          <Image
             src={app.company_logo}
             alt={app.company_name || ""}
             width={40}
             height={40}
             className="w-full h-full object-cover"
+            unoptimized
           />
         </div>
       ) : (
@@ -109,11 +111,6 @@ const ApplicationCardContent = ({ app }: { app: Application }) => (
   </CardContent>
 );
 
-const ApplicationCard = ({ app }: { app: Application }) => (
-  <Card className="bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
-    <ApplicationCardContent app={app} />
-  </Card>
-);
 
 const COLUMNS = [
   { id: "draft", name: "Drafts", color: "#6B7280" },
@@ -129,12 +126,22 @@ type KanbanApp = Application & {
   column: string;
 };
 
-export default function ApplicationsTrackerPage() {
+import { Suspense } from "react";
+
+function ApplicationsTrackerContent() {
   const { data: serverApplications = [], isLoading } = useCandidateApplications();
   const [view, setView] = useState<"kanban" | "list">("kanban");
-  const [localApplications, setLocalApplications] = useState<KanbanApp[]>([]);
+  const [prevServerApps, setPrevServerApps] = useState(serverApplications);
+  const [localApplications, setLocalApplications] = useState<KanbanApp[]>(() =>
+    serverApplications.map((app) => ({
+      ...app,
+      name: app.job_title,
+      column: app.status,
+    }))
+  );
 
-  useEffect(() => {
+  if (serverApplications !== prevServerApps) {
+    setPrevServerApps(serverApplications);
     setLocalApplications(
       serverApplications.map((app) => ({
         ...app,
@@ -142,7 +149,7 @@ export default function ApplicationsTrackerPage() {
         column: app.status,
       }))
     );
-  }, [serverApplications]);
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -227,7 +234,7 @@ export default function ApplicationsTrackerPage() {
         </Empty>
       ) : view === "kanban" ? (
         <ScrollArea className="w-full whitespace-nowrap rounded-md">
-          <div className="flex w-max min-h-[600px] pb-4">
+          <div className="flex w-max min-h-150 pb-4">
             <KanbanProvider
               columns={COLUMNS}
               data={localApplications}
@@ -294,5 +301,22 @@ export default function ApplicationsTrackerPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ApplicationsTrackerPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-4 sm:p-8 space-y-6">
+        <div className="h-8 w-64 bg-muted animate-pulse rounded-md" />
+        <div className="flex gap-6 overflow-x-auto">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-96 w-72 bg-muted animate-pulse rounded-xl shrink-0" />
+          ))}
+        </div>
+      </div>
+    }>
+      <ApplicationsTrackerContent />
+    </Suspense>
   );
 }

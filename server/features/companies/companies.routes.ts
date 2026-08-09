@@ -9,6 +9,7 @@ import { UuidParamSchema } from "../../shared/schemas";
 import { requireAuth } from "../../app/middleware/auth";
 import { requirePermission } from "../../app/middleware/authorize";
 import { CompanySchema, UpdateCompanySchema, CompanyMemberSchema, UpdateCompanyMemberSchema } from "./companies.schemas";
+import { revalidateTag } from "next/cache";
 const app = new Hono<AppEnv>();
 
 export const companiesRoutes = app
@@ -47,6 +48,7 @@ export const companiesRoutes = app
     async (c) => {
       const data = c.req.valid("json");
       const company = await companiesService.createCompany({ data });
+      revalidateTag("companies:list", "max");
       return created(c, company, "Company created successfully");
     }
   )
@@ -61,6 +63,8 @@ export const companiesRoutes = app
       const { id } = c.req.valid("param");
       const data = c.req.valid("json");
       const company = await companiesService.updateCompany({ companyId: id, data });
+      revalidateTag("companies:list", "max");
+      revalidateTag(`companies:detail:${id}`, "max");
       return ok(c, company, "Company updated successfully");
     }
   )
@@ -73,6 +77,8 @@ export const companiesRoutes = app
     async (c) => {
       const { id } = c.req.valid("param");
       await companiesService.deleteCompany({ companyId: id });
+      revalidateTag("companies:list", "max");
+      revalidateTag(`companies:detail:${id}`, "max");
       return noContent(c);
     }
   )

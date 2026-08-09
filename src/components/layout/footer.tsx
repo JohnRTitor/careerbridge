@@ -1,7 +1,7 @@
-
-
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
 const candidateLinks = [
   { title: "Browse Jobs", href: "/jobs" },
@@ -101,7 +101,13 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-16 flex flex-col items-center justify-between gap-5 border-t pt-8 text-sm text-muted-foreground md:flex-row">
-          <p>© {new Date().getFullYear()} CareerBridge. All rights reserved.</p>
+          <p>
+            ©{" "}
+            <Suspense fallback={<span>2026</span>}>
+              <CopyrightYear />
+            </Suspense>{" "}
+            CareerBridge. All rights reserved.
+          </p>
 
           <div className="flex items-center gap-8">
             <Link href="/privacy" className="hover:text-primary">
@@ -120,4 +126,9 @@ export default function Footer() {
       </div>
     </footer>
   );
+}
+
+async function CopyrightYear() {
+  await connection();
+  return <>{new Date().getFullYear()}</>;
 }

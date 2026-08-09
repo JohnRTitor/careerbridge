@@ -1,5 +1,6 @@
-import { Suspense } from "react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { searchJobsCached } from "@/features/jobs/api/server-cached";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
@@ -25,11 +26,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { generatePagination } from "@/lib/utils";
-import { jobsService } from "../../../../server/features/jobs/jobs.service";
 import { JobsSearchForm } from "@/features/jobs/components/jobs-search-form";
 import type { Job } from "@/features/jobs/api/types";
 
-export default async function JobsPage({
+async function JobsContent({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -57,7 +57,7 @@ export default async function JobsPage({
 
   let data = null;
   try {
-    data = await jobsService.searchJobs(filters);
+    data = await searchJobsCached(filters);
   } catch (err) {
     console.error("Failed to fetch jobs", err);
   }
@@ -73,6 +73,95 @@ export default async function JobsPage({
     return `/jobs?${params.toString()}`;
   };
 
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold tracking-tight">
+          {data?.pagination.total
+            ? `${data.pagination.total} Jobs found`
+            : "No jobs found"}
+        </h2>
+      </div>
+
+      {data && data.jobs.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {data.jobs.map((job: Job, index: number) => (
+            <FadeContent key={job.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+              <JobCard job={job} />
+            </FadeContent>
+          ))}
+        </div>
+      ) : (
+        <Empty className="bg-background rounded-2xl">
+          <EmptyMedia variant="icon">
+            <HugeiconsIcon icon={Search01Icon} />
+          </EmptyMedia>
+          <EmptyTitle>
+            <DecryptedText text="No results found" speed={60} maxIterations={15} animateOn="view" />
+          </EmptyTitle>
+          <EmptyDescription>
+            We couldn&apos;t find any jobs matching your criteria. Try
+            adjusting your search keywords or filters.
+          </EmptyDescription>
+          <EmptyContent>
+            <Button variant="outline" className="mt-2" render={<Link href="/jobs">Clear Filters</Link>} nativeButton={false} />
+          </EmptyContent>
+        </Empty>
+      )}
+
+      {data && data.pagination.totalPages > 1 && (
+        <Pagination className="mt-12">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={page > 1 ? createPageUrl(page - 1) : "#"}
+                className={page === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+
+            {generatePagination(page, data.pagination.totalPages).map(
+              (p, i) => (
+                <PaginationItem key={i}>
+                  {p === "..." ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      href={createPageUrl(p as number)}
+                      isActive={page === p}
+                    >
+                      {p}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ),
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  page < data.pagination.totalPages
+                    ? createPageUrl(page + 1)
+                    : "#"
+                }
+                className={
+                  page === data.pagination.totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </>
+  );
+}
+
+export default function JobsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-background">
       {/* Search Header Banner */}
@@ -91,89 +180,16 @@ export default async function JobsPage({
             </p>
           </div>
 
-          <JobsSearchForm />
+          <Suspense fallback={<div>Loading search...</div>}>
+            <JobsSearchForm />
+          </Suspense>
         </div>
       </div>
 
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold tracking-tight">
-            {data?.pagination.total
-              ? `${data.pagination.total} Jobs found`
-              : "No jobs found"}
-          </h2>
-        </div>
-
-        {data && data.jobs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {data.jobs.map((job: Job, index: number) => (
-              <FadeContent key={job.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
-                <JobCard job={job} />
-              </FadeContent>
-            ))}
-          </div>
-        ) : (
-          <Empty className="bg-background rounded-2xl">
-            <EmptyMedia variant="icon">
-              <HugeiconsIcon icon={Search01Icon} />
-            </EmptyMedia>
-            <EmptyTitle>
-              <DecryptedText text="No results found" speed={60} maxIterations={15} animateOn="view" />
-            </EmptyTitle>
-            <EmptyDescription>
-              We couldn&apos;t find any jobs matching your criteria. Try
-              adjusting your search keywords or filters.
-            </EmptyDescription>
-            <EmptyContent>
-              <Button variant="outline" className="mt-2" render={<Link href="/jobs">Clear Filters</Link>} nativeButton={false} />
-            </EmptyContent>
-          </Empty>
-        )}
-
-        {data && data.pagination.totalPages > 1 && (
-          <Pagination className="mt-12">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={page > 1 ? createPageUrl(page - 1) : "#"}
-                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-
-              {generatePagination(page, data.pagination.totalPages).map(
-                (p, i) => (
-                  <PaginationItem key={i}>
-                    {p === "..." ? (
-                      <PaginationEllipsis />
-                    ) : (
-                      <PaginationLink
-                        href={createPageUrl(p as number)}
-                        isActive={page === p}
-                      >
-                        {p}
-                      </PaginationLink>
-                    )}
-                  </PaginationItem>
-                ),
-              )}
-
-              <PaginationItem>
-                <PaginationNext
-                  href={
-                    page < data.pagination.totalPages
-                      ? createPageUrl(page + 1)
-                      : "#"
-                  }
-                  className={
-                    page === data.pagination.totalPages
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
+        <Suspense fallback={<div className="p-12 text-center text-muted-foreground">Loading jobs...</div>}>
+          <JobsContent searchParams={searchParams} />
+        </Suspense>
       </main>
     </div>
   );

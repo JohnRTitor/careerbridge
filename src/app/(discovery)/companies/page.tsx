@@ -19,11 +19,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { generatePagination } from "@/lib/utils";
-import { companiesService } from "../../../../server/features/companies/companies.service";
+import { listCompaniesCached } from "@/features/companies/api/server-cached";
 import { CompaniesSearchForm } from "@/features/companies/components/companies-search-form";
 import type { Company } from "@/features/companies/api/types";
 
-export default async function CompaniesPage({
+async function CompaniesContent({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -38,7 +38,7 @@ export default async function CompaniesPage({
 
   let data = null;
   try {
-    data = await companiesService.listCompanies(filters);
+    data = await listCompaniesCached(filters);
   } catch (err) {
     console.error("Failed to fetch companies", err);
   }
@@ -52,6 +52,84 @@ export default async function CompaniesPage({
     return `/companies?${params.toString()}`;
   };
 
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold tracking-tight">
+          {data?.pagination.total ? `${data.pagination.total} Companies` : "No companies found"}
+        </h2>
+      </div>
+
+      {data && data.companies.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.companies.map((company: Company, index: number) => (
+            <FadeContent key={company.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
+              <CompanyCard company={company} />
+            </FadeContent>
+          ))}
+        </div>
+      ) : (
+        <Empty className="bg-background border-dashed rounded-2xl p-12">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <HugeiconsIcon icon={Search01Icon} className="size-8" />
+            </EmptyMedia>
+            <EmptyTitle className="text-xl">
+              <DecryptedText text="No companies found" speed={60} maxIterations={15} animateOn="view" />
+            </EmptyTitle>
+            <EmptyDescription className="max-w-sm mt-2">
+              We couldn&apos;t find any companies matching your search. Try adjusting your query.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button variant="outline" className="mt-4" render={<Link href="/companies">Clear Search</Link>} nativeButton={false} />
+          </EmptyContent>
+        </Empty>
+      )}
+
+      {data && data.pagination.totalPages > 1 && (
+        <Pagination className="mt-12">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                href={page > 1 ? createPageUrl(page - 1) : "#"}
+                className={page === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            
+            {generatePagination(page, data.pagination.totalPages).map((p, i) => (
+              <PaginationItem key={i}>
+                {p === "..." ? (
+                  <PaginationEllipsis />
+                ) : (
+                  <PaginationLink 
+                    href={createPageUrl(p as number)}
+                    isActive={page === p}
+                  >
+                    {p}
+                  </PaginationLink>
+                )}
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext 
+                href={page < data.pagination.totalPages ? createPageUrl(page + 1) : "#"}
+                className={page === data.pagination.totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </>
+  );
+}
+
+export default function CompaniesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] bg-background">
       <div className="bg-primary px-4 py-12 sm:py-16 sm:px-6 lg:px-8 border-b border-primary/20">
@@ -67,78 +145,16 @@ export default async function CompaniesPage({
             Explore companies, read about their culture, and find your next dream team.
           </p>
 
-          <CompaniesSearchForm />
+          <Suspense fallback={<div>Loading search...</div>}>
+            <CompaniesSearchForm />
+          </Suspense>
         </div>
       </div>
 
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold tracking-tight">
-            {data?.pagination.total ? `${data.pagination.total} Companies` : "No companies found"}
-          </h2>
-        </div>
-
-        {data && data.companies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.companies.map((company: Company, index: number) => (
-              <FadeContent key={company.id} delay={index * 100} blur duration={800} ease="power3.out" className="h-full">
-                <CompanyCard company={company} />
-              </FadeContent>
-            ))}
-          </div>
-        ) : (
-          <Empty className="bg-background border-dashed rounded-2xl p-12">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <HugeiconsIcon icon={Search01Icon} className="size-8" />
-              </EmptyMedia>
-              <EmptyTitle className="text-xl">
-                <DecryptedText text="No companies found" speed={60} maxIterations={15} animateOn="view" />
-              </EmptyTitle>
-              <EmptyDescription className="max-w-sm mt-2">
-                We couldn&apos;t find any companies matching your search. Try adjusting your query.
-              </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button variant="outline" className="mt-4" render={<Link href="/companies">Clear Search</Link>} nativeButton={false} />
-            </EmptyContent>
-          </Empty>
-        )}
-
-        {data && data.pagination.totalPages > 1 && (
-          <Pagination className="mt-12">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  href={page > 1 ? createPageUrl(page - 1) : "#"}
-                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-              
-              {generatePagination(page, data.pagination.totalPages).map((p, i) => (
-                <PaginationItem key={i}>
-                  {p === "..." ? (
-                    <PaginationEllipsis />
-                  ) : (
-                    <PaginationLink 
-                      href={createPageUrl(p as number)}
-                      isActive={page === p}
-                    >
-                      {p}
-                    </PaginationLink>
-                  )}
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext 
-                  href={page < data.pagination.totalPages ? createPageUrl(page + 1) : "#"}
-                  className={page === data.pagination.totalPages ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
+        <Suspense fallback={<div className="p-12 text-center text-muted-foreground">Loading companies...</div>}>
+          <CompaniesContent searchParams={searchParams} />
+        </Suspense>
       </main>
     </div>
   );

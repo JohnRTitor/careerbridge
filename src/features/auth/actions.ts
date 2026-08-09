@@ -3,7 +3,7 @@
 import { auth } from "@server/auth/auth";
 import { adminService } from "@server/features/admin/admin.service";
 import { headers } from "next/headers";
-
+import { revalidatePath } from "next/cache";
 
 import { pool } from "@server/app/db";
 import { OnboardingInput } from "@/features/auth/schemas";
@@ -38,6 +38,8 @@ export async function submitOnboardingAction(data: OnboardingInput) {
       `,
       [userId, data.dateOfBirth, data.gender]
     );
+
+    revalidatePath("/", "layout"); // Invalidate the entire app layout to refresh session state (e.g. navbar, dashboard)
 
     return { success: true };
   } catch (error: unknown) {

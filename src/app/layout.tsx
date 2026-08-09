@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Geist_Mono, Outfit, Public_Sans } from "next/font/google";
 import "./globals.css";
@@ -5,7 +6,7 @@ import { cn } from "@/lib/utils";
 import Providers from "@/components/providers";
 import { Toaster } from "@/components/ui/toast";
 
-import Footer from "@/components/common/footer";
+import Footer from "@/components/layout/footer";
 import Navbar from "@/components/layout/navbar/navbar";
 
 const publicSansHeading = Public_Sans({
@@ -46,7 +47,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          <Navbar />
+          <Suspense>
+            <Navbar />
+          </Suspense>
           {children}
           <Footer />
           <Toaster />

@@ -1,20 +1,24 @@
+// instant = false is required here because requirePagePermission is blocking.
+// We must verify the user's role before rendering the application form to prevent
+// unauthorized access or flickering of authorized content.
+export const instant = false;
 import { notFound } from "next/navigation";
-import { jobsService } from "@server/features/jobs/jobs.service";
+import { getJobByIdCached } from "@/features/jobs/api/server-cached";
 import { JobApplicationForm } from "@/features/applications/components/job-application-form";
+import type { Job } from "@/features/jobs/api/types";
 import { requirePagePermission } from "@server/auth/utils";
 
-export default async function ApplyForJobPage({
+export default async function JobApplyPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   await requirePagePermission("application", "create");
-  const resolvedParams = await params;
-  const id = resolvedParams.id;
-
-  let job = null;
+  const { id } = await params;
+  let job: Job | null = null;
+  
   try {
-    job = await jobsService.getJobById({ jobId: id });
+    job = (await getJobByIdCached({ jobId: id })) as unknown as Job;
   } catch (err) {
     return notFound();
   }

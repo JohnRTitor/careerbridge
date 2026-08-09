@@ -3,12 +3,13 @@ import { HomeHeroSearch } from "./home-hero-search";
 import Particles from "@/components/react-bits/Particles";
 import ShinyText from "@/components/react-bits/ShinyText";
 import BlurText from "@/components/react-bits/BlurText";
+import { Suspense } from "react";
 
 type HeroSectionProps = {
   searchMessage?: { type: "success" | "error" | null; text: string };
 };
 
-export async function HeroSection({ searchMessage }: HeroSectionProps) {
+async function HeroStats() {
   let statsData = null;
   try {
     statsData = await statsRepository.getHomepageStats();
@@ -16,6 +17,24 @@ export async function HeroSection({ searchMessage }: HeroSectionProps) {
     console.error("Failed to fetch homepage stats", err);
   }
 
+  if (statsData) {
+    return (
+      <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
+        <span className="size-2 rounded-full bg-primary" />
+        Over {statsData.total_open_jobs?.toLocaleString() || "1000+"} active jobs available
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
+      <span className="size-2 rounded-full bg-primary" />
+      Thousands of active jobs available
+    </span>
+  );
+}
+
+export function HeroSection({ searchMessage }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="absolute inset-0 z-0">
@@ -32,17 +51,14 @@ export async function HeroSection({ searchMessage }: HeroSectionProps) {
       <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none z-0" />
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
         <div className="mx-auto max-w-3xl text-center flex flex-col items-center">
-          {statsData ? (
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
-              <span className="size-2 rounded-full bg-primary" />
-              Over {statsData.total_open_jobs?.toLocaleString() || "1000+"} active jobs available
-            </span>
-          ) : (
+          <Suspense fallback={
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-secondary-foreground">
               <span className="size-2 rounded-full bg-primary" />
               Thousands of active jobs available
             </span>
-          )}
+          }>
+            <HeroStats />
+          </Suspense>
 
           <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
             Find your role <ShinyText text="reach" className="text-primary" /> your goal
@@ -56,7 +72,9 @@ export async function HeroSection({ searchMessage }: HeroSectionProps) {
             direction="top"
           />
 
-          <HomeHeroSearch />
+          <Suspense fallback={<div>Loading search...</div>}>
+            <HomeHeroSearch />
+          </Suspense>
         </div>
       </div>
     </section>

@@ -10,6 +10,7 @@ import { recruitersService } from "./recruiters.service";
 import { CreateJobSchema, UpdateJobSchema, UpdateApplicationStatusSchema, RecruiterProfileSchema, GetRecruiterJobsSchema, GetRecruiterApplicationsSchema } from "./recruiters.schemas";
 import { ok, created, noContent } from "../../shared/responses";
 import { UuidParamSchema } from "../../shared/schemas";
+import { revalidateTag } from "next/cache";
 
 const app = new Hono<AppEnv>();
 app.use("*", requireAuth);
@@ -27,6 +28,7 @@ export const recruitersRoutes = app
       const user = c.get("user");
       const data = c.req.valid("json");
       const job = await recruitersService.createJob({ recruiterId: user.id, data });
+      revalidateTag("jobs:list", "max");
       return created(c, job, "Job created successfully");
     }
   )
@@ -48,6 +50,8 @@ export const recruitersRoutes = app
       const { id: jobId } = c.req.valid("param");
       const data = c.req.valid("json");
       const job = await recruitersService.updateJob({ jobId, recruiterId: user.id, data });
+      revalidateTag("jobs:list", "max");
+      revalidateTag(`jobs:detail:${jobId}`, "max");
       return ok(c, job, "Job updated successfully");
     }
   )
@@ -67,6 +71,8 @@ export const recruitersRoutes = app
       const user = c.get("user");
       const { id: jobId } = c.req.valid("param");
       await recruitersService.deleteJob({ jobId, recruiterId: user.id });
+      revalidateTag("jobs:list", "max");
+      revalidateTag(`jobs:detail:${jobId}`, "max");
       return noContent(c);
     }
   )

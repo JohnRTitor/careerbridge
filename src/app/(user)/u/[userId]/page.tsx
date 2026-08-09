@@ -21,7 +21,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export default function PublicProfilePage() {
+import { Suspense } from "react";
+
+function PublicProfileContent() {
   const { userId } = useParams<{ userId: string }>();
   const { data: profile, isLoading, isError, error } = usePublicProfile(userId);
 
@@ -448,5 +450,26 @@ export default function PublicProfilePage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function PublicProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col bg-background p-4 sm:p-8 space-y-6">
+        <Skeleton className="h-48 w-full rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <Skeleton className="h-64 w-full rounded-2xl" />
+            <Skeleton className="h-64 w-full rounded-2xl" />
+          </div>
+          <div className="space-y-6">
+            <Skeleton className="h-96 w-full rounded-2xl" />
+          </div>
+        </div>
+      </div>
+    }>
+      <PublicProfileContent />
+    </Suspense>
   );
 }
